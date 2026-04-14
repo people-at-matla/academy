@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graduation - Matla Academy</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+    /* ═══════════════════════════════════════════════════
+       GRADUATION PAGE
+       ═══════════════════════════════════════════════════ */
+    .grad-page {
+        font-family: 'DM Sans', 'Space Grotesk', sans-serif;
+        min-height: 100vh; padding-bottom: 5rem;
+    }
+
+    /* ── Hero ──────────────────────────────────────── */
+    .grad-hero {
+        background: linear-gradient(135deg, #0f172a 0%, #1a2d5a 40%, #1e3a8a 75%, #312e81 100%);
+        color: #fff; padding: 3.5rem 1.5rem 3rem;
+        text-align: center; position: relative; overflow: hidden;
+    }
+    .grad-hero::before {
+        content: '';
+        position: absolute; inset: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        pointer-events: none;
+    }
+    /* Floating gold orb */
+    .grad-hero::after {
+        content: '';
+        position: absolute; top: -60px; right: -60px;
+        width: 240px; height: 240px; border-radius: 50%;
+        background: radial-gradient(circle, rgba(245,158,11,0.12) 0%, transparent 70%);
+        pointer-events: none;
+    }
+    .grad-hero-inner { position: relative; max-width: 680px; margin: 0 auto; }
+    .grad-cap-icon {
+        width: 90px; height: 90px; border-radius: 50%;
+        background: linear-gradient(135deg, #b45309, #f59e0b);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 2.4rem; color: #fff; margin: 0 auto 1.25rem;
+        box-shadow: 0 0 0 8px rgba(245,158,11,0.12), 0 0 0 16px rgba(245,158,11,0.06);
+    }
+    .grad-hero-badge {
+        display: inline-flex; align-items: center; gap: 0.5rem;
+        background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.3);
+        border-radius: 50px; padding: 0.3rem 0.9rem;
+        font-size: 0.78rem; font-weight: 600; letter-spacing: 0.05em;
+        text-transform: uppercase; color: #fbbf24; margin-bottom: 0.85rem;
+    }
+    .grad-hero h1 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: clamp(1.7rem, 4vw, 2.8rem); font-weight: 800;
+        line-height: 1.1; margin-bottom: 0.6rem;
+    }
+    .grad-hero h1 span { color: #fbbf24; }
+    .grad-hero-sub {
+        color: rgba(255,255,255,0.6); font-size: 0.92rem;
+        margin-bottom: 1.75rem; line-height: 1.6;
+    }
+    /* Standing pill */
+    .standing-pill {
+        display: inline-flex; align-items: center; gap: 0.75rem;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 50px; padding: 0.5rem 1.25rem;
+        font-size: 0.85rem; color: rgba(255,255,255,0.75);
+    }
+    .standing-dot {
+        width: 9px; height: 9px; border-radius: 50%;
+        background: #f59e0b; animation: gPulse 2s ease-in-out infinite;
+    }
+    @keyframes gPulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.6; transform: scale(0.85); }
+    }
+    .standing-pill strong { color: #fbbf24; font-weight: 700; }
+
+    /* ── Stats bar ─────────────────────────────────── */
+    .grad-stats-bar {
+        background: #1e293b;
+        border-top: 1px solid rgba(255,255,255,0.06);
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        padding: 1rem 1.5rem;
+    }
+    .grad-stats-inner {
+        max-width: 900px; margin: 0 auto;
+        display: flex; flex-wrap: wrap; justify-content: center; gap: 0;
+    }
+    .grad-stat-item {
+        flex: 1; min-width: 100px;
+        display: flex; flex-direction: column; align-items: center;
+        padding: 0.5rem 1rem;
+        border-right: 1px solid rgba(255,255,255,0.06);
+    }
+    .grad-stat-item:last-child { border-right: none; }
+    .grad-stat-val {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.35rem; font-weight: 700; color: #fff;
+        line-height: 1;
+    }
+    .grad-stat-lbl {
+        font-size: 0.68rem; font-weight: 600; text-transform: uppercase;
+        letter-spacing: 0.05em; color: rgba(255,255,255,0.4);
+        margin-top: 0.25rem;
+    }
+
+    /* ── Page body ─────────────────────────────────── */
+    .grad-body { max-width: 900px; margin: 0 auto; padding: 2rem 1rem; }
+
+    /* ── Section title ─────────────────────────────── */
+    .g-section-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.1rem; font-weight: 700;
+        color: var(--color-text-primary, #1e293b);
+        margin-bottom: 1rem;
+        display: flex; align-items: center; gap: 0.55rem;
+    }
+    .g-section-title i { color: var(--matla-blue, #2563eb); font-size: 0.95rem; }
+
+    /* ── Base card ─────────────────────────────────── */
+    .g-card {
+        background: var(--color-bg-primary, #fff);
+        border: 1px solid var(--color-border, #e2e8f0);
+        border-radius: 16px; overflow: hidden;
+        opacity: 0; transform: translateY(14px);
+    }
+    .g-card.anim-in { animation: gIn 0.4s ease forwards; }
+    @keyframes gIn { to { opacity: 1; transform: translateY(0); } }
+
+    /* ── Requirements checklist ─────────────────────── */
+    .req-list { padding: 0.5rem 0; }
+    .req-item {
+        display: flex; align-items: flex-start; gap: 1rem;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--color-border, #e2e8f0);
+        transition: background 0.15s;
+    }
+    .req-item:last-child { border-bottom: none; }
+    .req-item:hover { background: var(--color-bg-secondary, #f8fafc); }
+    .req-icon {
+        width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1rem;
+    }
+    .req-icon.done  { background: rgba(16,185,129,0.12); color: #059669; }
+    .req-icon.pend  { background: rgba(245,158,11,0.12); color: #b45309; }
+    .req-icon.lock  { background: rgba(100,116,139,0.1); color: #94a3b8; }
+    .req-content { flex: 1; }
+    .req-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.9rem; font-weight: 700;
+        color: var(--color-text-primary, #1e293b); margin-bottom: 0.2rem;
+    }
+    .req-desc { font-size: 0.78rem; color: var(--color-text-secondary, #64748b); line-height: 1.5; }
+    .req-badge {
+        flex-shrink: 0; align-self: center;
+        padding: 0.25rem 0.75rem; border-radius: 50px;
+        font-size: 0.72rem; font-weight: 700; white-space: nowrap;
+    }
+    .rb-done  { background: rgba(16,185,129,0.12); color: #059669; border: 1px solid rgba(16,185,129,0.2); }
+    .rb-pend  { background: rgba(245,158,11,0.12); color: #b45309; border: 1px solid rgba(245,158,11,0.2); }
+    .rb-lock  { background: rgba(100,116,139,0.08); color: #94a3b8; border: 1px solid rgba(100,116,139,0.15); }
+
+    /* ── Two-column grid ────────────────────────────── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+    @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+    /* ── Academic Scorecard ─────────────────────────── */
+    .scorecard-row {
+        display: flex; align-items: center; gap: 1rem;
+        padding: 0.85rem 1.5rem;
+        border-bottom: 1px solid var(--color-border, #e2e8f0);
+    }
+    .scorecard-row:last-child { border-bottom: none; }
+    .sc-week {
+        width: 34px; height: 34px; border-radius: 8px; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.75rem; font-weight: 700; color: #fff;
+    }
+    .sc-info { flex: 1; }
+    .sc-name { font-size: 0.85rem; font-weight: 600; color: var(--color-text-primary, #1e293b); }
+    .sc-sub  { font-size: 0.73rem; color: var(--color-text-secondary, #64748b); }
+    .sc-bar-wrap { flex: 1.5; }
+    .sc-bar-track { height: 6px; border-radius: 99px; background: var(--color-border, #e2e8f0); }
+    .sc-bar-fill  { height: 6px; border-radius: 99px; width: 0; transition: width 1.2s ease; }
+    .sc-score { width: 50px; text-align: right; flex-shrink: 0; }
+    .sc-score-val { font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem; font-weight: 700; }
+    .sc-score-lbl { font-size: 0.68rem; color: var(--color-text-secondary, #64748b); }
+
+    /* ── Sales Performance ──────────────────────────── */
+    .sales-grid {
+        display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
+    }
+    @media (max-width: 500px) { .sales-grid { grid-template-columns: 1fr; } }
+    .sales-metric {
+        padding: 1.25rem; text-align: center;
+        border-right: 1px solid var(--color-border, #e2e8f0);
+    }
+    .sales-metric:last-child { border-right: none; }
+    .sales-metric-icon {
+        width: 42px; height: 42px; border-radius: 10px; margin: 0 auto 0.6rem;
+        display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+    }
+    .sales-metric-val {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.4rem; font-weight: 700; line-height: 1;
+        margin-bottom: 0.2rem;
+    }
+    .sales-metric-lbl { font-size: 0.73rem; color: var(--color-text-secondary, #64748b); margin-bottom: 0.4rem; }
+    .sales-metric-bar { height: 4px; border-radius: 99px; background: var(--color-border, #e2e8f0); margin: 0.4rem auto 0; max-width: 70px; }
+    .sales-metric-fill { height: 4px; border-radius: 99px; width: 0; transition: width 1.4s ease; }
+    .supervisor-note {
+        padding: 0.85rem 1.5rem;
+        border-top: 1px solid var(--color-border, #e2e8f0);
+        font-size: 0.78rem; color: var(--color-text-secondary, #64748b);
+        display: flex; align-items: center; gap: 0.5rem;
+    }
+    .supervisor-note i { color: #f59e0b; }
+
+    /* ── Certificate Preview ──────────────────────── */
+    .cert-preview-wrap {
+        position: relative; border-radius: 12px; overflow: hidden;
+        background: linear-gradient(135deg, #1e293b, #0f172a);
+        padding: 2.5rem; text-align: center; min-height: 200px;
+        display: flex; flex-direction: column; align-items: center;
+        justify-content: center; gap: 0.75rem;
+    }
+    .cert-mock {
+        width: 100%; max-width: 420px;
+        background: linear-gradient(135deg, #fffbeb, #fef3c7);
+        border: 2px solid rgba(245,158,11,0.4);
+        border-radius: 12px; padding: 1.75rem;
+        filter: blur(4px); user-select: none;
+        position: relative;
+    }
+    .cert-mock-logo {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1rem; font-weight: 800;
+        color: #92400e; letter-spacing: 0.1em; margin-bottom: 0.5rem;
+    }
+    .cert-mock-title { font-size: 0.7rem; color: #b45309; margin-bottom: 0.75rem; }
+    .cert-mock-name { font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; font-weight: 700; color: #1a2d5a; margin-bottom: 0.3rem; }
+    .cert-mock-sub { font-size: 0.65rem; color: #64748b; margin-bottom: 0.75rem; }
+    .cert-mock-badge { display: inline-flex; align-items: center; gap: 0.3rem; background: #1a2d5a; color: #fff; padding: 0.3rem 0.85rem; border-radius: 50px; font-size: 0.65rem; font-weight: 700; }
+    .cert-lock-ov {
+        position: absolute; inset: 0; border-radius: 12px;
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 0.5rem;
+    }
+    .cert-lock-ov i { font-size: 1.6rem; color: rgba(255,255,255,0.45); }
+    .cert-lock-ov span { font-size: 0.8rem; font-weight: 600; color: rgba(255,255,255,0.5); }
+    .cert-lock-ov small { font-size: 0.72rem; color: rgba(255,255,255,0.3); text-align: center; max-width: 220px; }
+
+    /* ── What You'll Earn ─────────────────────────── */
+    .benefit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1rem; }
+    .benefit-card {
+        background: var(--color-bg-primary, #fff);
+        border: 1px solid var(--color-border, #e2e8f0);
+        border-radius: 14px; padding: 1.1rem 1rem; text-align: center;
+        opacity: 0; transform: translateY(12px);
+    }
+    .benefit-card.anim-in { animation: gIn 0.4s ease forwards; }
+    .benefit-icon {
+        width: 46px; height: 46px; border-radius: 12px; margin: 0 auto 0.7rem;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.15rem; color: #fff;
+    }
+    .benefit-title { font-family: 'Space Grotesk', sans-serif; font-size: 0.85rem; font-weight: 700; color: var(--color-text-primary, #1e293b); margin-bottom: 0.3rem; }
+    .benefit-desc  { font-size: 0.75rem; color: var(--color-text-secondary, #64748b); line-height: 1.5; }
+
+    /* ── Overall ring ─────────────────────────────── */
+    .overall-ring-wrap {
+        display: flex; align-items: center; gap: 1.5rem;
+        padding: 1.25rem 1.5rem; flex-wrap: wrap;
+    }
+    .ring-outer { position: relative; width: 100px; height: 100px; flex-shrink: 0; }
+    .ring-outer svg { width: 100px; height: 100px; }
+    .ring-inner-label {
+        position: absolute; inset: 0;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .ring-inner-label .rn { font-family: 'Space Grotesk', sans-serif; font-size: 1.25rem; font-weight: 700; color: var(--color-text-primary, #1e293b); line-height: 1; }
+    .ring-inner-label .rs { font-size: 0.65rem; color: var(--color-text-secondary, #64748b); }
+    .overall-text h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 700; color: var(--color-text-primary, #1e293b); margin-bottom: 0.3rem; }
+    .overall-text p  { font-size: 0.8rem; color: var(--color-text-secondary, #64748b); line-height: 1.5; }
+    .overall-checklist { margin-top: 0.65rem; display: flex; flex-direction: column; gap: 0.3rem; }
+    .oc-row { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; }
+    .oc-row i.done { color: #10b981; }
+    .oc-row i.pend { color: #94a3b8; }
+    .oc-row span { color: var(--color-text-secondary, #64748b); }
+    .oc-row strong { color: var(--color-text-primary, #1e293b); }
+
+    /* ── Theme overrides ─────────────────────────── */
+    [data-theme="dark"] .g-card,
+    [data-theme="grey"] .g-card,
+    [data-theme="blue"] .g-card,
+    [data-theme="dark"] .benefit-card,
+    [data-theme="grey"] .benefit-card,
+    [data-theme="blue"] .benefit-card { background: var(--color-bg-secondary); border-color: var(--color-border); }
+    [data-theme="dark"] .req-item:hover,
+    [data-theme="grey"] .req-item:hover,
+    [data-theme="blue"] .req-item:hover { background: var(--color-bg-tertiary); }
+
+    /* ── Confetti canvas ─────────────────────────── */
+    #confettiCanvas {
+        position: fixed; inset: 0; pointer-events: none;
+        z-index: 9999; display: none;
+    }
+    </style>
+</head>
+<body class="grad-page">
+
+    <canvas id="confettiCanvas"></canvas>
+
+    <!-- Navigation -->
+    <nav class="enhanced-nav"></nav>
+    <aside id="sidebar" class="sidebar"></aside>
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- ══════════ HERO ══════════ -->
+    <div class="grad-hero">
+        <div class="grad-hero-inner">
+            <div class="grad-cap-icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <div class="grad-hero-badge">
+                <i class="fas fa-route"></i>
+                JFA → FA Accelerator Programme
+            </div>
+            <h1>Your Path to<br><span>Graduation</span></h1>
+            <p class="grad-hero-sub">
+                Complete all 4 weekly assessments, the Final Exam, generate <strong>20 leads</strong> and close <strong>10 sales</strong> to earn your Financial Advisor qualification.
+            </p>
+            <div class="standing-pill">
+                <div class="standing-dot"></div>
+                Programme standing: <strong>Week 1 Complete — On Track</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════ STATS BAR ══════════ -->
+    <div class="grad-stats-bar">
+        <div class="grad-stats-inner">
+            <div class="grad-stat-item">
+                <div class="grad-stat-val" style="color:#10b981;">1/5</div>
+                <div class="grad-stat-lbl">Assessments</div>
+            </div>
+            <div class="grad-stat-item">
+                <div class="grad-stat-val" style="color:#60a5fa;">87%</div>
+                <div class="grad-stat-lbl">Academic Avg</div>
+            </div>
+            <div class="grad-stat-item">
+                <div class="grad-stat-val" style="color:#fbbf24;">0/20</div>
+                <div class="grad-stat-lbl">Leads</div>
+            </div>
+            <div class="grad-stat-item">
+                <div class="grad-stat-val" style="color:#34d399;">0/10</div>
+                <div class="grad-stat-lbl">Sales</div>
+            </div>
+            <div class="grad-stat-item">
+                <div class="grad-stat-val" style="color:#a78bfa;">3 wks</div>
+                <div class="grad-stat-lbl">Remaining</div>
+            </div>
+            <div class="grad-stat-item">
+                <div class="grad-stat-val" style="color:#f87171;">80%</div>
+                <div class="grad-stat-lbl">Min Required</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════ BODY ══════════ -->
+    <div class="grad-body">
+
+        <!-- ─── GRADUATION CHECKLIST ─── -->
+        <p class="g-section-title"><i class="fas fa-list-check"></i> Graduation Requirements</p>
+        <div class="g-card" id="req-card" style="margin-bottom:1.5rem;">
+            <div class="req-list">
+
+                <div class="req-item">
+                    <div class="req-icon done"><i class="fas fa-clipboard-check"></i></div>
+                    <div class="req-content">
+                        <div class="req-title">Week 1 Assessment</div>
+                        <div class="req-desc">Sales Training · Product Knowledge · Compliance · Dear Money I</div>
+                    </div>
+                    <span class="req-badge rb-done"><i class="fas fa-check" style="margin-right:3px;"></i>87% Passed</span>
+                </div>
+
+                <div class="req-item">
+                    <div class="req-icon lock"><i class="fas fa-lock"></i></div>
+                    <div class="req-content">
+                        <div class="req-title">Week 2 Assessment</div>
+                        <div class="req-desc">Content TBC · Complete Week 2 courses to unlock</div>
+                    </div>
+                    <span class="req-badge rb-lock"><i class="fas fa-lock" style="margin-right:3px;"></i>Locked</span>
+                </div>
+
+                <div class="req-item">
+                    <div class="req-icon lock"><i class="fas fa-lock"></i></div>
+                    <div class="req-content">
+                        <div class="req-title">Week 3 Assessment</div>
+                        <div class="req-desc">Content TBC · Complete Week 3 courses to unlock</div>
+                    </div>
+                    <span class="req-badge rb-lock"><i class="fas fa-lock" style="margin-right:3px;"></i>Locked</span>
+                </div>
+
+                <div class="req-item">
+                    <div class="req-icon lock"><i class="fas fa-lock"></i></div>
+                    <div class="req-content">
+                        <div class="req-title">Week 4 Assessment</div>
+                        <div class="req-desc">Content TBC · Complete Week 4 courses to unlock</div>
+                    </div>
+                    <span class="req-badge rb-lock"><i class="fas fa-lock" style="margin-right:3px;"></i>Locked</span>
+                </div>
+
+                <div class="req-item" style="background:rgba(220,38,38,0.025);">
+                    <div class="req-icon" style="background:rgba(220,38,38,0.1);color:#dc2626;">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="req-content">
+                        <div class="req-title">Final Exam — JFA to FA</div>
+                        <div class="req-desc">Comprehensive · Covers all 4 weeks · No retries · Minimum 80%</div>
+                    </div>
+                    <span class="req-badge" style="background:rgba(220,38,38,0.08);color:#dc2626;border:1px solid rgba(220,38,38,0.18);">
+                        <i class="fas fa-lock" style="margin-right:3px;"></i>Locked
+                    </span>
+                </div>
+
+                <div class="req-item">
+                    <div class="req-icon pend"><i class="fas fa-user-plus"></i></div>
+                    <div class="req-content">
+                        <div class="req-title">Lead Generation Target</div>
+                        <div class="req-desc">Minimum <strong style="color:var(--color-text-primary);">20 leads</strong> generated across the 4-week programme</div>
+                    </div>
+                    <span class="req-badge rb-pend"><i class="fas fa-hourglass-half" style="margin-right:3px;"></i>0 / 20</span>
+                </div>
+
+                <div class="req-item">
+                    <div class="req-icon pend"><i class="fas fa-handshake"></i></div>
+                    <div class="req-content">
+                        <div class="req-title">Sales Conversion Target</div>
+                        <div class="req-desc">Minimum <strong style="color:var(--color-text-primary);">10 conversions</strong> (closed sales) from your leads</div>
+                    </div>
+                    <span class="req-badge rb-pend"><i class="fas fa-hourglass-half" style="margin-right:3px;"></i>0 / 10</span>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ─── ACADEMIC + OVERALL RING ─── -->
+        <div class="two-col">
+
+            <!-- Academic Scorecard -->
+            <div>
+                <p class="g-section-title"><i class="fas fa-clipboard-list"></i> Academic Scorecard</p>
+                <div class="g-card" id="scorecard-card">
+                    <!-- Overall ring header -->
+                    <div class="overall-ring-wrap" style="border-bottom:1px solid var(--color-border,#e2e8f0);">
+                        <div class="ring-outer">
+                            <svg viewBox="0 0 100 100" fill="none">
+                                <circle cx="50" cy="50" r="42" stroke="rgba(0,0,0,0.06)" stroke-width="7"/>
+                                <!-- 20% of assessments done: 1/5 = 20%, but score-weighted: 87% on 20% weight = 17.4% overall academic -->
+                                <circle cx="50" cy="50" r="42"
+                                    stroke="#3b82f6" stroke-width="7"
+                                    stroke-dasharray="263.89"
+                                    stroke-dashoffset="263.89"
+                                    stroke-linecap="round"
+                                    transform="rotate(-90 50 50)"
+                                    class="ring-arc" data-pct="20"/>
+                            </svg>
+                            <div class="ring-inner-label">
+                                <div class="rn">20%</div>
+                                <div class="rs">Done</div>
+                            </div>
+                        </div>
+                        <div class="overall-text">
+                            <h3>Academic Progress</h3>
+                            <p>1 of 5 assessments completed.<br>Maintain 80%+ to stay on track.</p>
+                            <div class="overall-checklist">
+                                <div class="oc-row"><i class="fas fa-check-circle done"></i><span>W1 Assessment — </span><strong>87%</strong></div>
+                                <div class="oc-row"><i class="fas fa-circle pend"></i><span>W2 Assessment — </span><strong>Locked</strong></div>
+                                <div class="oc-row"><i class="fas fa-circle pend"></i><span>W3 Assessment — </span><strong>Locked</strong></div>
+                                <div class="oc-row"><i class="fas fa-circle pend"></i><span>W4 + Final Exam — </span><strong>Locked</strong></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Score rows -->
+                    <div class="scorecard-row">
+                        <div class="sc-week" style="background:linear-gradient(135deg,#1d4ed8,#3b82f6);">W1</div>
+                        <div class="sc-info"><div class="sc-name">Week 1 Assessment</div><div class="sc-sub">Passed · 1 attempt</div></div>
+                        <div class="sc-bar-wrap">
+                            <div class="sc-bar-track"><div class="sc-bar-fill" style="background:#10b981;" data-width="87"></div></div>
+                        </div>
+                        <div class="sc-score"><div class="sc-score-val" style="color:#10b981;">87%</div><div class="sc-score-lbl">Passed</div></div>
+                    </div>
+                    <div class="scorecard-row" style="opacity:0.5;">
+                        <div class="sc-week" style="background:linear-gradient(135deg,#5b21b6,#7c3aed);">W2</div>
+                        <div class="sc-info"><div class="sc-name">Week 2 Assessment</div><div class="sc-sub">Not yet taken</div></div>
+                        <div class="sc-bar-wrap"><div class="sc-bar-track"><div class="sc-bar-fill" style="background:#e2e8f0;" data-width="0"></div></div></div>
+                        <div class="sc-score"><div class="sc-score-val" style="color:#94a3b8;">—</div><div class="sc-score-lbl">Locked</div></div>
+                    </div>
+                    <div class="scorecard-row" style="opacity:0.5;">
+                        <div class="sc-week" style="background:linear-gradient(135deg,#0e7490,#0891b2);">W3</div>
+                        <div class="sc-info"><div class="sc-name">Week 3 Assessment</div><div class="sc-sub">Not yet taken</div></div>
+                        <div class="sc-bar-wrap"><div class="sc-bar-track"><div class="sc-bar-fill" style="background:#e2e8f0;" data-width="0"></div></div></div>
+                        <div class="sc-score"><div class="sc-score-val" style="color:#94a3b8;">—</div><div class="sc-score-lbl">Locked</div></div>
+                    </div>
+                    <div class="scorecard-row" style="opacity:0.5;">
+                        <div class="sc-week" style="background:linear-gradient(135deg,#b45309,#d97706);">W4</div>
+                        <div class="sc-info"><div class="sc-name">Week 4 + Final Exam</div><div class="sc-sub">Not yet taken</div></div>
+                        <div class="sc-bar-wrap"><div class="sc-bar-track"><div class="sc-bar-fill" style="background:#e2e8f0;" data-width="0"></div></div></div>
+                        <div class="sc-score"><div class="sc-score-val" style="color:#94a3b8;">—</div><div class="sc-score-lbl">Locked</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sales Performance -->
+            <div>
+                <p class="g-section-title"><i class="fas fa-chart-line"></i> Sales Performance</p>
+                <div class="g-card" id="sales-card">
+                    <!-- Target summary strip -->
+                    <div style="display:flex;gap:0.75rem;padding:0.85rem 1.25rem;border-bottom:1px solid var(--color-border,#e2e8f0);flex-wrap:wrap;">
+                        <div style="flex:1;min-width:120px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.18);border-radius:10px;padding:0.6rem 0.85rem;text-align:center;">
+                            <div style="font-size:1.3rem;font-weight:800;color:#b45309;font-family:'Space Grotesk',sans-serif;">0 <span style="font-size:0.7rem;color:#92400e;font-weight:600;">/ 20</span></div>
+                            <div style="font-size:0.72rem;color:#92400e;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-top:2px;">Leads Generated</div>
+                        </div>
+                        <div style="flex:1;min-width:120px;background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.18);border-radius:10px;padding:0.6rem 0.85rem;text-align:center;">
+                            <div style="font-size:1.3rem;font-weight:800;color:#059669;font-family:'Space Grotesk',sans-serif;">0 <span style="font-size:0.7rem;color:#065f46;font-weight:600;">/ 10</span></div>
+                            <div style="font-size:0.72rem;color:#065f46;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-top:2px;">Conversions</div>
+                        </div>
+                        <div style="flex:1;min-width:120px;background:rgba(124,58,237,0.06);border:1px solid rgba(124,58,237,0.18);border-radius:10px;padding:0.6rem 0.85rem;text-align:center;">
+                            <div style="font-size:1.3rem;font-weight:800;color:#7c3aed;font-family:'Space Grotesk',sans-serif;">— <span style="font-size:0.7rem;color:#5b21b6;font-weight:600;">50% min</span></div>
+                            <div style="font-size:0.72rem;color:#5b21b6;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-top:2px;">Conv. Rate</div>
+                        </div>
+                    </div>
+
+                    <div class="sales-grid">
+                        <div class="sales-metric">
+                            <div class="sales-metric-icon" style="background:linear-gradient(135deg,#b45309,#f59e0b);">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <div class="sales-metric-val" style="color:#b45309;">0</div>
+                            <div class="sales-metric-lbl">Leads Generated</div>
+                            <div style="font-size:0.67rem;color:var(--color-text-tertiary,#9ca3af);margin-top:2px;">Target: 20</div>
+                            <div class="sales-metric-bar"><div class="sales-metric-fill" style="background:#f59e0b;" data-width="0"></div></div>
+                        </div>
+                        <div class="sales-metric">
+                            <div class="sales-metric-icon" style="background:linear-gradient(135deg,#065f46,#10b981);">
+                                <i class="fas fa-handshake"></i>
+                            </div>
+                            <div class="sales-metric-val" style="color:#059669;">0</div>
+                            <div class="sales-metric-lbl">Sales Closed</div>
+                            <div style="font-size:0.67rem;color:var(--color-text-tertiary,#9ca3af);margin-top:2px;">Target: 10</div>
+                            <div class="sales-metric-bar"><div class="sales-metric-fill" style="background:#10b981;" data-width="0"></div></div>
+                        </div>
+                        <div class="sales-metric">
+                            <div class="sales-metric-icon" style="background:linear-gradient(135deg,#5b21b6,#7c3aed);">
+                                <i class="fas fa-percent"></i>
+                            </div>
+                            <div class="sales-metric-val" style="color:#7c3aed;">—</div>
+                            <div class="sales-metric-lbl">Conv. Rate</div>
+                            <div style="font-size:0.67rem;color:var(--color-text-tertiary,#9ca3af);margin-top:2px;">Target: 50%</div>
+                            <div class="sales-metric-bar"><div class="sales-metric-fill" style="background:#7c3aed;" data-width="0"></div></div>
+                        </div>
+                    </div>
+                    <div class="supervisor-note">
+                        <i class="fas fa-info-circle"></i>
+                        Lead &amp; conversion counts are updated by your supervisor weekly. You need <strong>20 leads</strong> and <strong>10 closed sales</strong> to qualify for graduation.
+                    </div>
+
+                    <!-- Sales ring -->
+                    <div style="padding:1.25rem 1.5rem;border-top:1px solid var(--color-border,#e2e8f0);display:flex;align-items:center;gap:1rem;">
+                        <div class="ring-outer" style="width:80px;height:80px;flex-shrink:0;">
+                            <svg viewBox="0 0 100 100" fill="none" style="width:80px;height:80px;">
+                                <circle cx="50" cy="50" r="42" stroke="rgba(0,0,0,0.06)" stroke-width="7"/>
+                                <circle cx="50" cy="50" r="42" stroke="rgba(245,158,11,0.2)" stroke-width="7" stroke-dasharray="263.89" stroke-dashoffset="263.89"/>
+                            </svg>
+                            <div class="ring-inner-label">
+                                <div class="rn" style="font-size:0.95rem;color:#94a3b8;">—</div>
+                                <div class="rs">Score</div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="font-family:'Space Grotesk',sans-serif;font-size:0.88rem;font-weight:700;color:var(--color-text-primary,#1e293b);margin-bottom:0.25rem;">Awaiting Supervisor Input</div>
+                            <div style="font-size:0.77rem;color:var(--color-text-secondary,#64748b);line-height:1.5;">Your sales score will appear here once your supervisor submits your Week 1 performance review.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ─── CERTIFICATE PREVIEW ─── -->
+        <p class="g-section-title"><i class="fas fa-certificate"></i> FA Certificate Preview</p>
+        <div class="g-card" id="cert-card" style="margin-bottom:1.5rem;">
+            <div class="cert-preview-wrap">
+                <div class="cert-mock">
+                    <div class="cert-mock-logo">MATLA ACADEMY</div>
+                    <div class="cert-mock-title">CERTIFICATE OF COMPLETION</div>
+                    <div style="width:40px;height:2px;background:#f59e0b;margin:0 auto 0.75rem;border-radius:2px;"></div>
+                    <div class="cert-mock-name">Your Name Here</div>
+                    <div class="cert-mock-sub">has successfully completed the JFA to FA Accelerator Programme<br>and is hereby certified as a</div>
+                    <div class="cert-mock-badge"><i class="fas fa-graduation-cap" style="margin-right:4px;"></i> Financial Advisor</div>
+                    <div style="display:flex;justify-content:space-between;margin-top:1rem;padding-top:0.75rem;border-top:1px solid rgba(245,158,11,0.3);">
+                        <div style="text-align:left;"><div style="font-size:0.5rem;color:#92400e;">DATE</div><div style="font-size:0.6rem;font-weight:600;color:#78350f;">—</div></div>
+                        <div style="text-align:center;"><div style="font-size:0.5rem;color:#92400e;">MATLA ACADEMY</div><div style="font-size:0.55rem;color:#92400e;">Authorised Signatory</div></div>
+                        <div style="text-align:right;"><div style="font-size:0.5rem;color:#92400e;">CERT NO.</div><div style="font-size:0.6rem;font-weight:600;color:#78350f;">—</div></div>
+                    </div>
+                </div>
+                <div class="cert-lock-ov">
+                    <i class="fas fa-lock"></i>
+                    <span>Certificate Locked</span>
+                    <small>Pass all assessments and the Final Exam to unlock your FA Certificate</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── WHAT YOU'LL EARN ─── -->
+        <p class="g-section-title"><i class="fas fa-star"></i> What You Earn at Graduation</p>
+        <div class="benefit-grid" id="benefit-grid">
+
+            <div class="benefit-card">
+                <div class="benefit-icon" style="background:linear-gradient(135deg,#b45309,#f59e0b);">
+                    <i class="fas fa-id-badge"></i>
+                </div>
+                <div class="benefit-title">FA Title</div>
+                <div class="benefit-desc">Official Financial Advisor designation, replacing Junior FA status</div>
+            </div>
+
+            <div class="benefit-card">
+                <div class="benefit-icon" style="background:linear-gradient(135deg,#1d4ed8,#3b82f6);">
+                    <i class="fas fa-certificate"></i>
+                </div>
+                <div class="benefit-title">Digital Certificate</div>
+                <div class="benefit-desc">Shareable PDF certificate with a unique verification code</div>
+            </div>
+
+            <div class="benefit-card">
+                <div class="benefit-icon" style="background:linear-gradient(135deg,#059669,#10b981);">
+                    <i class="fas fa-hand-holding-dollar"></i>
+                </div>
+                <div class="benefit-title">Upgraded Commission</div>
+                <div class="benefit-desc">Access to FA-tier commission rates and product range</div>
+            </div>
+
+            <div class="benefit-card">
+                <div class="benefit-icon" style="background:linear-gradient(135deg,#5b21b6,#7c3aed);">
+                    <i class="fas fa-unlock"></i>
+                </div>
+                <div class="benefit-title">Full Platform Access</div>
+                <div class="benefit-desc">Unlock advanced courses, tools, and mentor resources</div>
+            </div>
+
+            <div class="benefit-card">
+                <div class="benefit-icon" style="background:linear-gradient(135deg,#0e7490,#0891b2);">
+                    <i class="fas fa-users-gear"></i>
+                </div>
+                <div class="benefit-title">Mentorship Track</div>
+                <div class="benefit-desc">Eligible to mentor incoming JFA trainees in future cohorts</div>
+            </div>
+
+            <div class="benefit-card">
+                <div class="benefit-icon" style="background:linear-gradient(135deg,#dc2626,#ef4444);">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <div class="benefit-title">Leaderboard Status</div>
+                <div class="benefit-desc">Permanent entry in the Matla Academy alumni hall of fame</div>
+            </div>
+
+        </div>
+
+        <!-- ─── MOTIVATIONAL CTA STRIP ─── -->
+        <div style="margin-top:2rem;background:linear-gradient(135deg,#0f172a,#1a2d5a);border-radius:16px;padding:2rem;text-align:center;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:-30px;right:-30px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,0.1),transparent);pointer-events:none;"></div>
+            <div style="position:relative;">
+                <div style="font-size:1.5rem;margin-bottom:0.5rem;">🎓</div>
+                <div style="font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:0.4rem;">Keep Going — You're On Track</div>
+                <div style="font-size:0.85rem;color:rgba(255,255,255,0.55);margin-bottom:1.25rem;">Week 1 complete · 3 weeks to graduation · Current average: 87%</div>
+                <div style="display:flex;justify-content:center;gap:0.75rem;flex-wrap:wrap;">
+                    <a href="courses.html" style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(59,130,246,0.2);border:1px solid rgba(59,130,246,0.35);color:#93c5fd;padding:0.55rem 1.25rem;border-radius:50px;font-size:0.85rem;font-weight:600;text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='rgba(59,130,246,0.3)'" onmouseout="this.style.background='rgba(59,130,246,0.2)'">
+                        <i class="fas fa-book-open"></i> Start Week 2 Courses
+                    </a>
+                    <a href="assessments.html" style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:#6ee7b7;padding:0.55rem 1.25rem;border-radius:50px;font-size:0.85rem;font-weight:600;text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='rgba(16,185,129,0.25)'" onmouseout="this.style.background='rgba(16,185,129,0.15)'">
+                        <i class="fas fa-clipboard-check"></i> Review W1 Assessment
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /grad-body -->
+
+    <footer id="main-footer"></footer>
+
+    <script src="script.js"></script>
+    <script>
+    /* ── Live data sync from localStorage ─────────── */
+    (function syncGraduationData() {
+        function lsJ(k) { try { return JSON.parse(localStorage.getItem(k) || '{}'); } catch(e) { return {}; } }
+
+        var pro     = lsJ('matlaProfile');
+        var w1      = lsJ('matla_assess_w1');
+        var sales   = lsJ('matla_crs_sales');
+        var rma     = lsJ('matla_crs_rma');
+        var cap     = lsJ('matla_crs_capital_legacy');
+        var fais    = lsJ('matla_crs_fais');
+        var fin     = lsJ('matla_crs_fin_lit');
+
+        // ── Student name on certificate ──────────────
+        var name = (pro.name || localStorage.getItem('userEmail') || 'Your Name Here').split('@')[0]
+                        .replace(/[._-]/g, ' ')
+                        .replace(/\b\w/g, function(c) { return c.toUpperCase(); });
+        var certName = document.querySelector('.cert-mock-name');
+        if (certName) certName.textContent = name;
+
+        // ── W1 Assessment score ──────────────────────
+        var w1Score    = w1.score != null ? Math.round(w1.score) : null;
+        var w1Passed   = w1Score != null && w1Score >= 75;
+        var w1Attempts = w1.attemptUsed ? 1 : 0;
+
+        if (w1Score != null) {
+            // Overall ring — proportional to score
+            var ringArc = document.querySelector('.ring-arc');
+            var C = 263.89;
+            if (ringArc) {
+                ringArc.dataset.pct = w1Score;
+                ringArc.style.stroke = w1Passed ? '#10b981' : '#ef4444';
+            }
+            // Ring inner label
+            var ringLabel = document.querySelector('.rn');
+            if (ringLabel) {
+                ringLabel.textContent = w1Score + '%';
+                ringLabel.style.color = w1Passed ? '#10b981' : '#ef4444';
+            }
+            // Academic progress text
+            var progText = document.querySelector('.overall-text p');
+            if (progText) progText.textContent = '1 of 5 assessments completed. Maintain 80%+ to stay on track.';
+
+            // Checklist row
+            var checkRows = document.querySelectorAll('.oc-row');
+            if (checkRows.length > 0) {
+                checkRows[0].querySelector('strong').textContent = w1Score + '%';
+                checkRows[0].querySelector('span').textContent = 'W1 Assessment — ';
+                var chkIcon = checkRows[0].querySelector('i');
+                if (chkIcon) {
+                    chkIcon.className = w1Passed ? 'fas fa-check-circle done' : 'fas fa-times-circle';
+                    chkIcon.style.color = w1Passed ? '' : '#ef4444';
+                }
+            }
+
+            // W1 scorecard row
+            var w1Row = document.querySelector('.scorecard-row');
+            if (w1Row) {
+                var scoreVal = w1Row.querySelector('.sc-score-val');
+                var scoreLbl = w1Row.querySelector('.sc-score-lbl');
+                var barFill  = w1Row.querySelector('.sc-bar-fill');
+                var scInfo   = w1Row.querySelector('.sc-sub');
+                if (scoreVal) { scoreVal.textContent = w1Score + '%'; scoreVal.style.color = w1Passed ? '#10b981' : '#ef4444'; }
+                if (scoreLbl) scoreLbl.textContent = w1Passed ? 'Passed' : 'Failed';
+                if (barFill)  { barFill.dataset.width = w1Score; barFill.style.background = w1Passed ? '#10b981' : '#ef4444'; }
+                if (scInfo)   scInfo.textContent = (w1Passed ? 'Passed' : 'Failed') + ' · ' + w1Attempts + ' attempt';
+            }
+
+            // Motivational strip
+            var motivDesc = document.querySelector('[style*="Week 1 complete"]');
+            if (motivDesc) motivDesc.textContent = 'Week 1 complete · 3 weeks to graduation · Current average: ' + w1Score + '%';
+        }
+
+        // ── Course XP progress rings (req-card circles) ──
+        var COURSES = [
+            { key: 'matla_crs_sales', label: 'Sales Training', total: 5 },
+            { key: 'matla_crs_rma', label: 'Product (RMA)', total: 4 },
+            { key: 'matla_crs_capital_legacy', label: 'Capital Legacy', total: 4 },
+            { key: 'matla_crs_fais', label: 'FAIS Compliance', total: 5 },
+            { key: 'matla_crs_fin_lit', label: 'Financial Literacy', total: 4 },
+        ];
+        var datas = [sales, rma, cap, fais, fin];
+        var rings = document.querySelectorAll('.ring-arc');
+        // Skip first ring (overall) — update subsequent ones
+        rings.forEach(function(arc, idx) {
+            if (idx === 0) return; // overall
+            var ci = idx - 1;
+            if (ci < datas.length) {
+                var d = datas[ci];
+                var completed = Array.isArray(d.completed) ? d.completed.length : 0;
+                var total = COURSES[ci].total;
+                var pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+                arc.dataset.pct = pct;
+                arc.style.stroke = pct >= 100 ? '#10b981' : (pct > 0 ? '#3b82f6' : 'rgba(0,0,0,0.06)');
+            }
+        });
+    })();
+
+    /* ── Entrance animations ──────────────────────── */
+    function animateRings() {
+        const C = 263.89;
+        document.querySelectorAll('.ring-arc').forEach(arc => {
+            const pct = parseFloat(arc.dataset.pct) / 100;
+            setTimeout(() => {
+                arc.style.transition = 'stroke-dashoffset 1.3s cubic-bezier(0.4,0,0.2,1)';
+                arc.style.strokeDashoffset = C * (1 - pct);
+            }, 300);
+        });
+    }
+
+    function animateBars() {
+        document.querySelectorAll('.sc-bar-fill, .sales-metric-fill, .grad-bar-fill').forEach(bar => {
+            const w = bar.dataset.width || 0;
+            requestAnimationFrame(() => { bar.style.width = w + '%'; });
+        });
+    }
+
+    function animateCards() {
+        const cards = [
+            { el: document.getElementById('req-card'),       delay: 0   },
+            { el: document.getElementById('scorecard-card'), delay: 80  },
+            { el: document.getElementById('sales-card'),     delay: 160 },
+            { el: document.getElementById('cert-card'),      delay: 240 },
+        ];
+        cards.forEach(({ el, delay }) => {
+            if (el) setTimeout(() => el.classList.add('anim-in'), delay);
+        });
+
+        document.querySelectorAll('.benefit-card').forEach((card, i) => {
+            setTimeout(() => card.classList.add('anim-in'), 320 + i * 60);
+        });
+    }
+
+    /* ── Confetti burst (fires on graduation — demo button) ── */
+    function launchConfetti() {
+        const canvas = document.getElementById('confettiCanvas');
+        canvas.style.display = 'block';
+        const ctx = canvas.getContext('2d');
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const colors = ['#f59e0b','#3b82f6','#10b981','#8b5cf6','#ef4444','#fff'];
+        const pieces = Array.from({ length: 140 }, () => ({
+            x: Math.random() * canvas.width,
+            y: -10 - Math.random() * 200,
+            r: 3 + Math.random() * 5,
+            d: Math.random() * 80,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            tilt: Math.random() * 10 - 10,
+            tiltAngle: 0,
+            tiltSpeed: 0.1 + Math.random() * 0.1,
+        }));
+
+        let angle = 0;
+        let frame;
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            angle += 0.01;
+            pieces.forEach(p => {
+                p.tiltAngle += p.tiltSpeed;
+                p.y += (Math.cos(angle + p.d) + 2.5);
+                p.x += Math.sin(angle);
+                p.tilt = Math.sin(p.tiltAngle) * 12;
+                ctx.beginPath();
+                ctx.lineWidth = p.r;
+                ctx.strokeStyle = p.color;
+                ctx.moveTo(p.x + p.tilt + p.r / 3, p.y);
+                ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 5);
+                ctx.stroke();
+            });
+            if (pieces.some(p => p.y <= canvas.height)) {
+                frame = requestAnimationFrame(draw);
+            } else {
+                cancelAnimationFrame(frame);
+                canvas.style.display = 'none';
+            }
+        }
+        draw();
+        setTimeout(() => { cancelAnimationFrame(frame); canvas.style.display = 'none'; }, 5000);
+    }
+
+    /* ── Init ─────────────────────────────────────── */
+    document.addEventListener('DOMContentLoaded', () => {
+        animateCards();
+        setTimeout(animateRings, 200);
+        setTimeout(animateBars,  300);
+    });
+    </script>
+</body>
+</html>

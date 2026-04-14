@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register | Matla Academy Admin</title>
+<link rel="icon" href="../../assets/images/pam_transparent_final.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
+<script src="db.js"></script>
+<style>
+:root {
+  --navy:       #0f172a;
+  --navy-mid:   #1e3a8a;
+  --navy-lt:    #2563eb;
+  --gold:       #f59e0b;
+  --gold-lt:    #fbbf24;
+  --green:      #10b981;
+  --surface:    rgba(255,255,255,0.04);
+  --border:     rgba(255,255,255,0.09);
+  --border-lt:  rgba(255,255,255,0.16);
+  --text-1:     #f1f5f9;
+  --text-2:     #94a3b8;
+  --text-3:     #475569;
+  --ease:       cubic-bezier(0.22,1,0.36,1);
+  --spring:     cubic-bezier(0.34,1.56,0.64,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--navy);min-height:100vh;color:var(--text-1);-webkit-font-smoothing:antialiased}
+
+/* ── LAYOUT ── */
+.reg-layout{display:flex;min-height:100vh}
+
+/* Brand panel */
+.reg-brand{
+  flex:0 0 36%;position:sticky;top:0;height:100vh;
+  background:linear-gradient(155deg,#0a0f1e 0%,#0d1f50 45%,#1e3a8a 100%);
+  display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
+  padding:3rem 2.75rem;overflow:hidden;
+}
+.reg-brand::before{
+  content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,0.022) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,0.022) 1px,transparent 1px);
+  background-size:44px 44px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 40%,transparent 100%);
+  -webkit-mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 40%,transparent 100%);
+  pointer-events:none;
+}
+.reg-orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none}
+.reg-orb-1{width:350px;height:350px;background:radial-gradient(circle,rgba(30,58,138,0.45) 0%,transparent 70%);top:-80px;left:-80px}
+.reg-orb-2{width:280px;height:280px;background:radial-gradient(circle,rgba(245,158,11,0.1) 0%,transparent 70%);bottom:-60px;right:-40px}
+
+.brand-inner{position:relative;z-index:2;max-width:320px}
+.reg-logo{width:130px;height:auto;margin-bottom:2rem;filter:drop-shadow(0 0 20px rgba(245,158,11,0.2));animation:logoGlow 4s ease-in-out infinite alternate}
+@keyframes logoGlow{from{filter:drop-shadow(0 0 14px rgba(245,158,11,0.14))}to{filter:drop-shadow(0 0 28px rgba(245,158,11,0.32))}}
+
+.reg-eyebrow{
+  display:inline-flex;align-items:center;gap:0.4rem;margin-bottom:1.125rem;
+  background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.25);
+  border-radius:50px;padding:0.28rem 0.8rem;
+  font-size:0.63rem;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:#fbbf24;
+}
+.reg-eyebrow .pulse{width:5px;height:5px;border-radius:50%;background:#f59e0b;box-shadow:0 0 6px #f59e0b;animation:dp 1.8s ease-in-out infinite}
+@keyframes dp{0%,100%{opacity:1}50%{opacity:0.3}}
+
+.reg-heading{font-family:'Sora',sans-serif;font-size:1.9rem;font-weight:800;line-height:1.12;letter-spacing:-0.04em;color:#fff;margin-bottom:0.75rem}
+.reg-heading span{color:#60a5fa}
+.reg-desc{font-size:0.85rem;color:rgba(255,255,255,0.42);line-height:1.7;margin-bottom:2rem}
+
+/* Step indicator in brand */
+.reg-steps-list{display:flex;flex-direction:column;gap:0;position:relative}
+.reg-steps-list::before{content:'';position:absolute;left:15px;top:18px;bottom:18px;width:1px;background:rgba(255,255,255,0.07)}
+.reg-step-item{
+  display:flex;align-items:center;gap:0.875rem;padding:0.7rem 0;position:relative;z-index:1;
+  transition:all 0.3s;
+}
+.rsi-num{
+  width:30px;height:30px;border-radius:50%;flex-shrink:0;
+  background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Sora',sans-serif;font-size:0.7rem;font-weight:700;color:var(--text-3);
+  transition:all 0.3s;
+}
+.reg-step-item.active .rsi-num{background:var(--navy-mid);border-color:rgba(37,99,235,0.4);color:#fff}
+.reg-step-item.done .rsi-num{background:rgba(16,185,129,0.2);border-color:rgba(16,185,129,0.4);color:var(--green)}
+.rsi-label{font-size:0.82rem;color:var(--text-3);transition:color 0.3s}
+.reg-step-item.active .rsi-label{color:var(--text-1);font-weight:600}
+.reg-step-item.done .rsi-label{color:var(--green)}
+
+.brand-ft{position:absolute;bottom:1.5rem;left:2.75rem;right:2.75rem;font-size:0.68rem;color:rgba(255,255,255,0.18)}
+
+/* ── FORM PANEL ── */
+.reg-form-panel{
+  flex:1;padding:3rem 2rem;overflow-y:auto;
+  background:linear-gradient(160deg,#0d1526 0%,#0a0f1e 100%);
+  display:flex;flex-direction:column;align-items:center;
+  position:relative;
+}
+.reg-form-panel::before{
+  content:'';position:fixed;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 55% 45% at 75% 15%,rgba(30,58,138,0.13) 0%,transparent 60%);
+  z-index:0;
+}
+
+.reg-shell{position:relative;z-index:1;width:100%;max-width:600px;padding-bottom:3rem}
+
+/* Progress bar at top */
+.reg-progress-bar{
+  height:3px;border-radius:3px;
+  background:rgba(255,255,255,0.07);margin-bottom:2rem;overflow:hidden;
+}
+.reg-progress-fill{
+  height:100%;border-radius:3px;
+  background:linear-gradient(90deg,var(--navy-mid),var(--gold));
+  transition:width 0.5s var(--ease);
+}
+
+/* Step header */
+.step-header{margin-bottom:1.875rem}
+.step-header .step-num{
+  display:inline-flex;align-items:center;gap:0.4rem;margin-bottom:0.875rem;
+  font-family:'Sora',sans-serif;font-size:0.64rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.15em;color:var(--text-3);
+}
+.step-header .step-num .sn-dot{width:4px;height:4px;border-radius:50%;background:var(--text-3)}
+.step-title{font-family:'Sora',sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:-0.03em;color:var(--text-1);margin-bottom:0.3rem}
+.step-sub{font-size:0.86rem;color:var(--text-2);line-height:1.55}
+
+/* Glass card wrapping form */
+.form-card{
+  background:rgba(255,255,255,0.025);
+  backdrop-filter:blur(40px) saturate(150%);
+  -webkit-backdrop-filter:blur(40px) saturate(150%);
+  border:1px solid var(--border);border-radius:20px;
+  padding:2rem 2.25rem;margin-bottom:1.25rem;
+  box-shadow:0 24px 64px rgba(0,0,0,0.4);
+}
+.form-card-accent{
+  height:2px;border-radius:2px;margin-bottom:1.875rem;
+  background:linear-gradient(90deg,var(--navy-lt),var(--gold));
+  opacity:0.6;
+}
+
+/* Form fields */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.form-row.cols-3{grid-template-columns:1fr 1fr 1fr}
+.form-row.full{grid-template-columns:1fr}
+.fg{margin-bottom:1.125rem}
+.fg-label{
+  display:block;font-family:'Sora',sans-serif;font-size:0.63rem;font-weight:700;
+  color:var(--text-3);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.5rem;
+}
+.fg-required::after{content:' *';color:rgba(245,158,11,0.8)}
+.inp-wrap{position:relative}
+.inp{
+  width:100%;padding:0.875rem 1.125rem;
+  background:rgba(255,255,255,0.05);border:1px solid var(--border);
+  border-radius:11px;color:var(--text-1);
+  font-family:'DM Sans',sans-serif;font-size:0.93rem;
+  outline:none;transition:all 0.22s var(--ease);
+}
+.inp::placeholder{color:var(--text-3)}
+.inp:focus{border-color:var(--gold);background:rgba(245,158,11,0.04);box-shadow:0 0 0 3px rgba(245,158,11,0.09)}
+.fg.err .inp{border-color:rgba(248,113,113,0.5)}
+.inp-select{-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='%23475569' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;padding-right:2.5rem}
+.err-txt{display:none;margin-top:0.35rem;font-size:0.73rem;color:rgba(248,113,113,0.9);padding-left:0.2rem}
+.fg.err .err-txt{display:block}
+
+/* Role selector */
+.role-picker{display:grid;grid-template-columns:1fr 1fr;gap:0.875rem;margin-top:0.5rem}
+.role-opt{
+  border:1.5px solid var(--border);border-radius:12px;padding:1.125rem 1rem;
+  background:rgba(255,255,255,0.03);cursor:pointer;transition:all 0.2s var(--ease);
+  display:flex;align-items:flex-start;gap:0.75rem;
+}
+.role-opt:hover{background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.15)}
+.role-opt.selected.r-student{background:rgba(37,99,235,0.1);border-color:rgba(37,99,235,0.4)}
+.role-opt.selected.r-admin{background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.35)}
+.role-opt input[type=radio]{display:none}
+.role-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem}
+.ri-blue{background:rgba(37,99,235,0.15);color:#60a5fa}
+.ri-gold{background:rgba(245,158,11,0.12);color:#fbbf24}
+.role-txt-label{font-family:'Sora',sans-serif;font-size:0.85rem;font-weight:700;color:var(--text-1)}
+.role-txt-desc{font-size:0.73rem;color:var(--text-2);line-height:1.45;margin-top:0.2rem}
+
+/* Password strength */
+.pw-strength{margin-top:0.5rem}
+.pw-bars{display:flex;gap:4px;margin-bottom:0.35rem}
+.pw-bar{flex:1;height:3px;border-radius:3px;background:rgba(255,255,255,0.08);transition:background 0.3s}
+.pw-bar.weak{background:#ef4444}
+.pw-bar.fair{background:#f59e0b}
+.pw-bar.strong{background:#10b981}
+.pw-label{font-size:0.7rem;color:var(--text-3)}
+
+/* Nav buttons */
+.form-nav{display:flex;gap:0.875rem;margin-top:0.5rem}
+.btn-next{
+  flex:1;padding:1rem;
+  background:linear-gradient(135deg,var(--navy-mid),var(--navy-lt));
+  color:#fff;border:none;border-radius:12px;
+  font-family:'Sora',sans-serif;font-size:0.93rem;font-weight:700;
+  cursor:pointer;transition:all 0.25s var(--ease);
+  box-shadow:0 8px 24px rgba(30,58,138,0.3),0 1px 0 rgba(255,255,255,0.1) inset;
+  position:relative;overflow:hidden;
+}
+.btn-next::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.08) 0%,transparent 60%);pointer-events:none}
+.btn-next:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(30,58,138,0.45),0 1px 0 rgba(255,255,255,0.1) inset}
+.btn-back{
+  padding:1rem 1.5rem;background:transparent;color:var(--text-2);
+  border:1px solid var(--border);border-radius:12px;
+  font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:500;
+  cursor:pointer;transition:all 0.22s var(--ease);white-space:nowrap;
+}
+.btn-back:hover{background:var(--surface);border-color:var(--border-lt);color:var(--text-1)}
+
+/* Success screen */
+.success-screen{
+  display:none;text-align:center;padding:3rem 2rem;
+  animation:successIn 0.6s var(--spring) both;
+}
+@keyframes successIn{from{opacity:0;transform:scale(0.9) translateY(20px)}to{opacity:1;transform:none}}
+.success-icon{
+  width:80px;height:80px;border-radius:50%;
+  background:rgba(16,185,129,0.15);border:2px solid rgba(16,185,129,0.35);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 1.5rem;font-size:2rem;
+  box-shadow:0 0 0 12px rgba(16,185,129,0.06);
+}
+.success-title{font-family:'Sora',sans-serif;font-size:1.5rem;font-weight:800;color:var(--text-1);margin-bottom:0.5rem}
+.success-sub{font-size:0.9rem;color:var(--text-2);line-height:1.6;margin-bottom:2rem;max-width:380px;margin-left:auto;margin-right:auto}
+.success-actions{display:flex;gap:0.875rem;justify-content:center;flex-wrap:wrap}
+.sa-btn{
+  padding:0.875rem 1.5rem;border-radius:11px;
+  font-family:'Sora',sans-serif;font-size:0.88rem;font-weight:700;
+  cursor:pointer;transition:all 0.22s var(--ease);text-decoration:none;border:none;display:inline-flex;align-items:center;gap:0.5rem;
+}
+.sa-prim{background:linear-gradient(135deg,var(--navy-mid),var(--navy-lt));color:#fff;box-shadow:0 8px 20px rgba(30,58,138,0.3)}
+.sa-prim:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(30,58,138,0.4)}
+.sa-sec{background:transparent;border:1px solid var(--border);color:var(--text-2)}
+.sa-sec:hover{background:var(--surface);border-color:var(--border-lt);color:var(--text-1)}
+
+/* Login link */
+.login-link-wrap{text-align:center;margin-top:1.25rem;font-size:0.83rem;color:var(--text-3)}
+.login-link-wrap a{color:rgba(96,165,250,0.85);text-decoration:none;transition:color 0.2s}
+.login-link-wrap a:hover{color:#93c5fd}
+
+/* Loader */
+#reg-loader{
+  position:fixed;inset:0;z-index:99999;
+  background:rgba(6,9,26,0.95);backdrop-filter:blur(24px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;
+  opacity:0;pointer-events:none;transition:opacity 0.45s;
+}
+#reg-loader.show{opacity:1;pointer-events:all}
+.rl-ring{width:72px;height:72px;border-radius:50%;border:3px solid transparent;background:linear-gradient(var(--navy),var(--navy)) padding-box,conic-gradient(var(--navy-mid),var(--gold),var(--navy-mid)) border-box;animation:spin 1.3s linear infinite;display:flex;align-items:center;justify-content:center}
+@keyframes spin{to{transform:rotate(360deg)}}
+.rl-icon{font-size:1.5rem}
+.rl-txt{font-family:'Sora',sans-serif;font-size:0.63rem;font-weight:700;text-transform:uppercase;letter-spacing:0.2em;color:var(--text-3)}
+
+/* Responsive */
+@media(max-width:900px){.reg-brand{display:none}.reg-form-panel{padding:2rem 1.25rem}}
+@media(max-width:640px){.form-row{grid-template-columns:1fr}.form-row.cols-3{grid-template-columns:1fr}}
+@media(max-width:480px){.form-card{padding:1.5rem 1.25rem}.role-picker{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div id="reg-loader">
+  <div class="rl-ring"><span class="rl-icon">🎓</span></div>
+  <div class="rl-txt">Creating Account</div>
+</div>
+
+<div class="reg-layout">
+
+  <!-- ── BRAND PANEL ── -->
+  <div class="reg-brand">
+    <div class="reg-orb reg-orb-1"></div>
+    <div class="reg-orb reg-orb-2"></div>
+    <div class="brand-inner">
+      <img src="../Matla Academy .png" alt="Matla Academy" class="reg-logo">
+      <div class="reg-eyebrow"><span class="pulse"></span> New Member Registration</div>
+      <h2 class="reg-heading">Join the<br><span>Academy</span></h2>
+      <p class="reg-desc">Create your account to access world-class insurance training, CPD courses, and track your professional development journey.</p>
+      <div class="reg-steps-list" id="sideSteps">
+        <div class="reg-step-item active" data-step="1"><div class="rsi-num">1</div><div class="rsi-label">Personal Information</div></div>
+        <div class="reg-step-item" data-step="2"><div class="rsi-num">2</div><div class="rsi-label">Employment Details</div></div>
+        <div class="reg-step-item" data-step="3"><div class="rsi-num">3</div><div class="rsi-label">Account Setup</div></div>
+        <div class="reg-step-item" data-step="4"><div class="rsi-num">4</div><div class="rsi-label">Choose Your Team</div></div>
+        <div class="reg-step-item" data-step="5"><div class="rsi-num">5</div><div class="rsi-label">Confirm &amp; Submit</div></div>
+      </div>
+    </div>
+    <div class="brand-ft">© 2025 Matla Life · Proprietary Learning System</div>
+  </div>
+
+  <!-- ── FORM PANEL ── -->
+  <div class="reg-form-panel">
+    <div class="reg-shell">
+      <div class="reg-progress-bar">
+        <div class="reg-progress-fill" id="progFill" style="width:25%"></div>
+      </div>
+
+      <!-- SUCCESS -->
+      <div class="success-screen" id="successScreen">
+        <div class="success-icon">✅</div>
+        <div class="success-title">Account Created!</div>
+        <div class="success-sub">
+          Your registration has been submitted. If you registered as an admin, your access will be approved by a superadmin. You'll receive confirmation shortly.
+        </div>
+        <div class="success-actions">
+          <a href="login.html" class="sa-btn sa-prim"><i class="fas fa-sign-in-alt"></i> Go to Admin Login</a>
+          <a href="../login.html" class="sa-btn sa-sec"><i class="fas fa-graduation-cap"></i> Student Portal</a>
+        </div>
+      </div>
+
+      <!-- STEP 1: Personal Info -->
+      <div class="step-pane" id="pane1">
+        <div class="step-header">
+          <div class="step-num"><span>Step 1</span><span class="sn-dot"></span><span>of 4</span></div>
+          <div class="step-title">Personal Information</div>
+          <div class="step-sub">Tell us about yourself. This information appears on your masterfile and certificates.</div>
+        </div>
+        <div class="form-card">
+          <div class="form-card-accent"></div>
+          <div class="form-row">
+            <div class="fg" id="fg-fname">
+              <label class="fg-label fg-required">First Name</label>
+              <div class="inp-wrap"><input class="inp" type="text" id="firstName" placeholder="e.g. Thabo"></div>
+              <div class="err-txt">First name is required.</div>
+            </div>
+            <div class="fg" id="fg-lname">
+              <label class="fg-label fg-required">Last Name</label>
+              <div class="inp-wrap"><input class="inp" type="text" id="lastName" placeholder="e.g. Mokoena"></div>
+              <div class="err-txt">Last name is required.</div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="fg" id="fg-id">
+              <label class="fg-label fg-required">SA ID Number</label>
+              <div class="inp-wrap"><input class="inp" type="text" id="idNumber" placeholder="13-digit ID number" maxlength="13" inputmode="numeric"></div>
+              <div class="err-txt">Enter a valid 13-digit SA ID number.</div>
+            </div>
+            <div class="fg" id="fg-dob">
+              <label class="fg-label">Date of Birth</label>
+              <div class="inp-wrap"><input class="inp" type="date" id="dob"></div>
+              <div class="err-txt"></div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="fg" id="fg-gender">
+              <label class="fg-label">Gender</label>
+              <div class="inp-wrap">
+                <select class="inp inp-select" id="gender">
+                  <option value="">Select gender</option>
+                  <option>Male</option><option>Female</option><option>Non-binary</option><option>Prefer not to say</option>
+                </select>
+              </div>
+              <div class="err-txt"></div>
+            </div>
+            <div class="fg" id="fg-race">
+              <label class="fg-label">Race (EE)</label>
+              <div class="inp-wrap">
+                <select class="inp inp-select" id="race">
+                  <option value="">Select</option>
+                  <option>African</option><option>Coloured</option><option>Indian/Asian</option><option>White</option><option>Prefer not to say</option>
+                </select>
+              </div>
+              <div class="err-txt"></div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="fg" id="fg-phone">
+              <label class="fg-label fg-required">Cell Phone Number</label>
+              <div class="inp-wrap"><input class="inp" type="tel" id="phone" placeholder="+27 82 000 0000"></div>
+              <div class="err-txt">Enter a valid phone number.</div>
+            </div>
+            <div class="fg" id="fg-altphone">
+              <label class="fg-label">Alternative Number</label>
+              <div class="inp-wrap"><input class="inp" type="tel" id="altPhone" placeholder="Optional"></div>
+              <div class="err-txt"></div>
+            </div>
+          </div>
+          <div class="form-row full">
+            <div class="fg" id="fg-addr">
+              <label class="fg-label">Residential Address</label>
+              <div class="inp-wrap"><input class="inp" type="text" id="address" placeholder="Street, Suburb, City, Province, Code"></div>
+              <div class="err-txt"></div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="fg" id="fg-disability">
+              <label class="fg-label">Disability Status</label>
+              <div class="inp-wrap">
+                <select class="inp inp-select" id="disability">
+                  <option value="none">No disability</option>
+                  <option value="visual">Visual impairment</option>
+                  <option value="hearing">Hearing impairment</option>
+                  <option value="physical">Physical disability</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="err-txt"></div>
+            </div>
+            <div class="fg" id="fg-qual">
+              <label class="fg-label">Highest Qualification</label>
+              <div class="inp-wrap">
+                <select class="inp inp-select" id="qualification">
+                  <option value="">Select</option>
+                  <option>Grade 12 / Matric</option><option>Certificate</option><option>Diploma</option>
+                  <option>Degree (Bachelor's)</option><option>Honours</option><option>Masters</option><option>PhD</option>
+                </select>
+              </div>
+              <div class="err-txt"></div>
+            </div>
+          </div>
+        </div>
+        <div class="form-nav">
+          <button class="btn-next" onclick="nextStep(1)">Continue <i class="fas fa-arrow-right" style="margin-left:0.4rem"></i></button>
+        </div>
+      </div>
+
+      <!-- STEP 2: Employment -->
+      <div class="step-pane" id="pane2" style="display:none">
+        <div class="step-header">
+          <div class="step-num"><span>Step 2</span><span class="sn-dot"></span><span>of 4</span></div>
+          <div class="step-title">Employment Details</div>
+          <div class="step-sub">Your Matla Life employment information for your student profile.</div>
+        </div>
+        <div class="form-card">
+          <div class="form-card-accent"></div>
+          <div class="form-row">
+            <div class="fg" id="fg-empid">
+              <label class="fg-label fg-required">Employee ID</label>
+              <div class="inp-wrap"><input class="inp" type="text" id="empId" placeholder="e.g. ML-00123"></div>
+              <div class="err-txt">Employee ID is required.</div>
+            </div>
+            <div class="fg" id="fg-dept">
+              <label class="fg-label fg-required">Department / Team</label>
+              <div class="inp-wrap">
+                <select class="inp inp-select" id="department">
+                  <option value="">Select department</option>
+                  <option>Sales</option><option>Claims</option><option>Finance</option><option>Operations</option>
+                  <option>Compliance</option><option>HR</option><option>IT</option><option>Management</option><option>Other</option>
+                </select>
+              </div>
+              <div class="err-txt">Department is required.</div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="fg" id="fg-jobtitle">
+              <label class="fg-label fg-required">Job Title</label>
+              <div class="inp-wrap"><input class="inp" type="text" id="jobTitle" placeholder="e.g. Financial Advisor"></div>
+              <div class="err-txt">Job title is required.</div>
+            </div>
+            <div class="fg" id="fg-emptype">
+              <label class="fg-label">Employment Type</label>
+              <div class="inp-wrap">
+                <select class="inp inp-select" id="empType">
+                  <option value="">Select</option>
+                  <option>Permanent</option><option>Fixed-term contract</option><option>Internship</option><option>Part-time</option>
+                </select>
+              </div>
+              <div class="err-txt"></div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="fg" id="fg-branch">
+              <label class="fg-label">Branch / Region</label>
+              <div class="inp-wrap">
+                <select class="inp inp-select" id="branch">
+                  <option value="">Select branch</option>
+                  <option>Head Office (JHB)</option><option>Cape Town</option><option>Durban</option>
+                  <option>Pretoria</option><option>East London</option><option>Polokwane</option><option>Other</option>
+                </select>
+              </div>
+              <div class="err-txt"></div>
+            </div>
+            <div class="fg" id="fg-startdate">
+              <label class="fg-label">Start Date</label>
+              <div class="inp-wrap"><input class="inp" type="date" id="startDate"></div>
+              <div class="err-txt"></div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="fg" id="fg-manager">
+              <label class="fg-label">Line Manager</label>
+              <div class="inp-wrap"><input class="inp" type="text" id="manager" placeholder="Full name of your manager"></div>
+              <div class="err-txt"></div>
+            </div>
+            <div class="fg" id="fg-fais">
+              <label class="fg-label">FAIS Category</label>
+              <div class="inp-wrap">
+                <select class="inp inp-select" id="faisCategory">
+                  <option value="">Select</option>
+                  <option>Key Individual</option><option>Representative</option><option>Support Staff</option><option>N/A</option>
+                </select>
+              </div>
+              <div class="err-txt"></div>
+            </div>
+          </div>
+          <div class="form-row full">
+            <div class="fg" id="fg-faisnum">
+              <label class="fg-label">FAIS Registration Number</label>
+              <div class="inp-wrap"><input class="inp" type="text" id="faisNumber" placeholder="FSP / Rep number (if applicable)"></div>
+              <div class="err-txt"></div>
+            </div>
+          </div>
+        </div>
+        <div class="form-nav">
+          <button class="btn-back" onclick="prevStep(2)"><i class="fas fa-arrow-left" style="margin-right:0.4rem"></i> Back</button>
+          <button class="btn-next" onclick="nextStep(2)">Continue <i class="fas fa-arrow-right" style="margin-left:0.4rem"></i></button>
+        </div>
+      </div>
+
+      <!-- STEP 3: Account Setup -->
+      <div class="step-pane" id="pane3" style="display:none">
+        <div class="step-header">
+          <div class="step-num"><span>Step 3</span><span class="sn-dot"></span><span>of 4</span></div>
+          <div class="step-title">Account Setup</div>
+          <div class="step-sub">Set up your login credentials and choose your access role.</div>
+        </div>
+        <div class="form-card">
+          <div class="form-card-accent"></div>
+          <div class="form-row full">
+            <div class="fg" id="fg-regemail">
+              <label class="fg-label fg-required">Email Address</label>
+              <div class="inp-wrap"><input class="inp" type="email" id="regEmail" placeholder="your.name@matlalife.co.za or personal email" autocomplete="email"></div>
+              <div class="err-txt" id="emailErrTxt">Enter a valid email address.</div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="fg" id="fg-regpw">
+              <label class="fg-label fg-required">Password</label>
+              <div class="inp-wrap">
+                <input class="inp" type="password" id="regPw" placeholder="Min. 8 characters" autocomplete="new-password" oninput="checkPwStrength()">
+                <button class="inp-eye" style="position:absolute;right:.875rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-3)" onclick="toggleEye('regPw','pwEyeI')" type="button"><i class="fas fa-eye" id="pwEyeI"></i></button>
+              </div>
+              <div class="pw-strength">
+                <div class="pw-bars"><div class="pw-bar" id="pb1"></div><div class="pw-bar" id="pb2"></div><div class="pw-bar" id="pb3"></div><div class="pw-bar" id="pb4"></div></div>
+                <div class="pw-label" id="pwLabel">Enter a password</div>
+              </div>
+              <div class="err-txt">Password must be at least 8 characters.</div>
+            </div>
+            <div class="fg" id="fg-confpw">
+              <label class="fg-label fg-required">Confirm Password</label>
+              <div class="inp-wrap">
+                <input class="inp" type="password" id="confPw" placeholder="Repeat password" autocomplete="new-password">
+                <button class="inp-eye" style="position:absolute;right:.875rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-3)" onclick="toggleEye('confPw','confEyeI')" type="button"><i class="fas fa-eye" id="confEyeI"></i></button>
+              </div>
+              <div class="err-txt" id="confPwErr">Passwords do not match.</div>
+            </div>
+          </div>
+
+          <div class="fg" id="fg-role">
+            <label class="fg-label fg-required" style="margin-bottom:0.75rem">Access Role</label>
+            <div class="role-picker">
+              <label class="role-opt r-student selected" id="roleOptStudent" onclick="selectRole('student')">
+                <input type="radio" name="role" value="student" checked>
+                <div class="role-icon ri-blue"><i class="fas fa-graduation-cap"></i></div>
+                <div>
+                  <div class="role-txt-label">Student</div>
+                  <div class="role-txt-desc">Access courses, assessments and learning content</div>
+                </div>
+              </label>
+              <label class="role-opt r-admin" id="roleOptAdmin" onclick="selectRole('admin')">
+                <input type="radio" name="role" value="admin">
+                <div class="role-icon ri-gold"><i class="fas fa-shield-halved"></i></div>
+                <div>
+                  <div class="role-txt-label">Admin</div>
+                  <div class="role-txt-desc">Manage students and content (requires approval)</div>
+                </div>
+              </label>
+            </div>
+            <div class="err-txt"></div>
+          </div>
+        </div>
+        <div class="form-nav">
+          <button class="btn-back" onclick="prevStep(3)"><i class="fas fa-arrow-left" style="margin-right:0.4rem"></i> Back</button>
+          <button class="btn-next" onclick="nextStep(3)">Review &amp; Submit <i class="fas fa-arrow-right" style="margin-left:0.4rem"></i></button>
+        </div>
+      </div>
+
+      <!-- STEP 4: Team Selection -->
+      <div class="step-pane" id="pane4" style="display:none">
+        <div class="step-header">
+          <div class="step-num"><span>Step 4</span><span class="sn-dot"></span><span>of 5</span></div>
+          <div class="step-title">Choose Your <em>Team</em></div>
+          <div class="step-sub">Select the Sales Manager team you belong to. You can skip if teams haven't been set up yet.</div>
+        </div>
+        <div class="form-card">
+          <div class="form-card-accent"></div>
+          <div id="teamGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-top:.5rem"></div>
+          <p id="noTeamsMsg" style="display:none;text-align:center;color:var(--text-3);font-style:italic;padding:1.5rem 0">Teams haven't been configured yet — you'll be assigned later.</p>
+        </div>
+        <div class="form-nav">
+          <button class="btn-back" onclick="prevStep(4)"><i class="fas fa-arrow-left" style="margin-right:0.4rem"></i> Back</button>
+          <button class="btn-next" onclick="nextStep(4)">Review &amp; Submit <i class="fas fa-arrow-right" style="margin-left:0.4rem"></i></button>
+        </div>
+      </div>
+
+      <!-- STEP 5: Review & Submit -->
+      <div class="step-pane" id="pane5" style="display:none">
+        <div class="step-header">
+          <div class="step-num"><span>Step 5</span><span class="sn-dot"></span><span>of 5</span></div>
+          <div class="step-title">Review &amp; Confirm</div>
+          <div class="step-sub">Please review your details before submitting. You can go back to edit any section.</div>
+        </div>
+        <div class="form-card">
+          <div class="form-card-accent"></div>
+          <div id="reviewContent" style="font-size:0.88rem;color:var(--text-2);line-height:1.8"></div>
+        </div>
+        <div class="form-nav">
+          <button class="btn-back" onclick="prevStep(5)"><i class="fas fa-arrow-left" style="margin-right:0.4rem"></i> Back</button>
+          <button class="btn-next" id="btnSubmit" onclick="submitReg()">Create Account <i class="fas fa-check" style="margin-left:0.4rem"></i></button>
+        </div>
+      </div>
+
+      <div class="login-link-wrap" id="loginLinkWrap">
+        Already have an account? <a href="login.html">Sign in here</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let currentStep = 1;
+let selectedRole = 'student';
+
+/* ── STEP NAV ── */
+function showPane(n) {
+  document.querySelectorAll('.step-pane').forEach(p => p.style.display = 'none');
+  const pane = document.getElementById('pane' + n);
+  if (pane) pane.style.display = 'block';
+
+  // Progress bar
+  const fill = document.getElementById('progFill');
+  if (fill) fill.style.width = (n / 5 * 100) + '%';
+
+  // Side steps
+  document.querySelectorAll('.reg-step-item').forEach(s => {
+    const sn = parseInt(s.dataset.step);
+    s.classList.toggle('active', sn === n);
+    s.classList.toggle('done', sn < n);
+  });
+
+  // Hide login link on step 5 / success
+  const ll = document.getElementById('loginLinkWrap');
+  if (ll) ll.style.display = n === 5 ? 'none' : '';
+
+  // Load team grid when entering step 4
+  if (n === 4 && typeof loadTeamStep === 'function') loadTeamStep();
+
+  currentStep = n;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function nextStep(from) {
+  if (!validateStep(from)) return;
+  if (from === 4) buildReview();
+  showPane(from + 1);
+}
+
+function prevStep(from) { showPane(from - 1); }
+
+/* ── VALIDATION ── */
+function setFgErr(fgId, show, msg) {
+  const fg = document.getElementById(fgId);
+  if (!fg) return;
+  fg.classList.toggle('err', show);
+  if (msg) { const e = fg.querySelector('.err-txt'); if (e) e.textContent = msg; }
+}
+
+function validateStep(step) {
+  let ok = true;
+  if (step === 1) {
+    const fn = document.getElementById('firstName')?.value.trim();
+    const ln = document.getElementById('lastName')?.value.trim();
+    const id = document.getElementById('idNumber')?.value.trim();
+    const ph = document.getElementById('phone')?.value.trim();
+    if (!fn) { setFgErr('fg-fname', true); ok = false; } else setFgErr('fg-fname', false);
+    if (!ln) { setFgErr('fg-lname', true); ok = false; } else setFgErr('fg-lname', false);
+    if (!id || id.length !== 13 || !/^\d{13}$/.test(id)) { setFgErr('fg-id', true, 'Enter a valid 13-digit SA ID number.'); ok = false; } else setFgErr('fg-id', false);
+    if (!ph || ph.length < 10) { setFgErr('fg-phone', true, 'Enter a valid phone number.'); ok = false; } else setFgErr('fg-phone', false);
+  }
+  if (step === 2) {
+    const eid  = document.getElementById('empId')?.value.trim();
+    const dept = document.getElementById('department')?.value;
+    const jt   = document.getElementById('jobTitle')?.value.trim();
+    if (!eid)  { setFgErr('fg-empid',  true); ok = false; } else setFgErr('fg-empid',  false);
+    if (!dept) { setFgErr('fg-dept',   true, 'Please select a department.'); ok = false; } else setFgErr('fg-dept',   false);
+    if (!jt)   { setFgErr('fg-jobtitle', true); ok = false; } else setFgErr('fg-jobtitle', false);
+  }
+  if (step === 3) {
+    const email = document.getElementById('regEmail')?.value.trim();
+    const pw    = document.getElementById('regPw')?.value;
+    const cpw   = document.getElementById('confPw')?.value;
+    if (!email || !email.includes('@') || !email.includes('.')) { setFgErr('fg-regemail', true, 'Enter a valid email address.'); ok = false; } else { setFgErr('fg-regemail', false); checkDuplicateEmail(email); }
+    if (!pw || pw.length < 8) { setFgErr('fg-regpw', true, 'Password must be at least 8 characters.'); ok = false; } else setFgErr('fg-regpw', false);
+    if (pw !== cpw) { setFgErr('fg-confpw', true, 'Passwords do not match.'); ok = false; } else setFgErr('fg-confpw', false);
+  }
+  return ok;
+}
+
+function checkDuplicateEmail(email) {
+  const users = getUsers();
+  if (users.some(u => u.email?.toLowerCase() === email.toLowerCase())) {
+    setFgErr('fg-regemail', true, 'An account with this email already exists.');
+    return false;
+  }
+  return true;
+}
+
+/* ── ROLE PICK ── */
+function selectRole(role) {
+  selectedRole = role;
+  document.getElementById('roleOptStudent')?.classList.toggle('selected', role === 'student');
+  document.getElementById('roleOptAdmin')?.classList.toggle('selected', role === 'admin');
+}
+
+/* ── PASSWORD STRENGTH ── */
+function checkPwStrength() {
+  const pw = document.getElementById('regPw')?.value || '';
+  const bars = [document.getElementById('pb1'),document.getElementById('pb2'),document.getElementById('pb3'),document.getElementById('pb4')];
+  const lbl  = document.getElementById('pwLabel');
+  let score = 0;
+  if (pw.length >= 8)   score++;
+  if (/[A-Z]/.test(pw)) score++;
+  if (/\d/.test(pw))    score++;
+  if (/[^a-zA-Z0-9]/.test(pw)) score++;
+  bars.forEach((b, i) => {
+    b.className = 'pw-bar';
+    if (i < score) b.classList.add(score <= 1 ? 'weak' : score === 2 ? 'fair' : 'strong');
+  });
+  if (lbl) lbl.textContent = score === 0 ? 'Enter a password' : score <= 1 ? 'Weak' : score === 2 ? 'Fair' : score === 3 ? 'Good' : 'Strong';
+}
+
+/* ── BUILD REVIEW ── */
+function buildReview() {
+  const v = id => document.getElementById(id)?.value || '—';
+  const reviewContent = document.getElementById('reviewContent');
+  if (!reviewContent) return;
+
+  const rows = [
+    ['👤 Personal', [
+      ['First Name', v('firstName')], ['Last Name', v('lastName')],
+      ['ID Number', v('idNumber')], ['Date of Birth', v('dob') || '—'],
+      ['Gender', v('gender') || '—'], ['Race (EE)', v('race') || '—'],
+      ['Phone', v('phone')], ['Address', v('address') || '—'],
+      ['Qualification', v('qualification') || '—'],
+    ]],
+    ['🏢 Employment', [
+      ['Employee ID', v('empId')], ['Department', v('department') || '—'],
+      ['Job Title', v('jobTitle')], ['Employment Type', v('empType') || '—'],
+      ['Branch', v('branch') || '—'], ['Line Manager', v('manager') || '—'],
+      ['FAIS Category', v('faisCategory') || '—'], ['FAIS Number', v('faisNumber') || '—'],
+    ]],
+    ['🔐 Account', [
+      ['Email', v('regEmail')], ['Role', selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)],
+    ]],
+  ];
+
+  reviewContent.innerHTML = rows.map(([section, fields]) => `
+    <div style="margin-bottom:1.5rem">
+      <div style="font-family:'Sora',sans-serif;font-size:0.8rem;font-weight:700;color:var(--text-1);margin-bottom:0.75rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border)">${section}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.375rem 1.5rem">
+        ${fields.map(([k,v]) => `
+          <div style="display:contents">
+            <span style="color:var(--text-3);font-size:0.78rem">${k}</span>
+            <span style="color:var(--text-1);font-size:0.83rem;font-weight:500">${v}</span>
+          </div>`).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ── SUBMIT ── */
+function getUsers() {
+  try { return JSON.parse(localStorage.getItem('matla_admin_users') || '[]'); } catch { return []; }
+}
+
+async function submitReg() {
+  const email = document.getElementById('regEmail')?.value.trim().toLowerCase();
+  if (!checkDuplicateEmail(email)) return;
+
+  const btn = document.getElementById('btnSubmit');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch fa-spin" style="margin-right:0.4rem"></i> Creating...'; }
+
+  const users = getUsers();
+  const newUser = {
+    id:           'usr_' + Date.now(),
+    firstName:    document.getElementById('firstName')?.value.trim(),
+    lastName:     document.getElementById('lastName')?.value.trim(),
+    idNumber:     document.getElementById('idNumber')?.value.trim(),
+    dob:          document.getElementById('dob')?.value,
+    gender:       document.getElementById('gender')?.value,
+    race:         document.getElementById('race')?.value,
+    phone:        document.getElementById('phone')?.value.trim(),
+    altPhone:     document.getElementById('altPhone')?.value.trim(),
+    address:      document.getElementById('address')?.value.trim(),
+    disability:   document.getElementById('disability')?.value,
+    qualification:document.getElementById('qualification')?.value,
+    empId:        document.getElementById('empId')?.value.trim(),
+    department:   document.getElementById('department')?.value,
+    jobTitle:     document.getElementById('jobTitle')?.value.trim(),
+    empType:      document.getElementById('empType')?.value,
+    branch:       document.getElementById('branch')?.value,
+    manager:      document.getElementById('manager')?.value.trim(),
+    faisCategory: document.getElementById('faisCategory')?.value,
+    faisNumber:   document.getElementById('faisNumber')?.value.trim(),
+    email:        email,
+    role:         selectedRole,
+    approved:     selectedRole === 'student', // admin roles need approval
+    startDate:    document.getElementById('startDate')?.value,
+    registeredAt: new Date().toISOString(),
+  };
+
+  users.push(newUser);
+  localStorage.setItem('matla_admin_users', JSON.stringify(users));
+
+  // If student, also set them up in the student portal
+  if (selectedRole === 'student') {
+    localStorage.setItem('userEmail', email);
+  }
+
+  // Show loader
+  const loader = document.getElementById('reg-loader');
+  if (loader) loader.classList.add('show');
+
+  await new Promise(r => setTimeout(r, 1800));
+  if (loader) loader.classList.remove('show');
+
+  // Hide all panes, show success
+  document.querySelectorAll('.step-pane').forEach(p => p.style.display = 'none');
+  const progFill = document.getElementById('progFill');
+  if (progFill) progFill.style.width = '100%';
+  const ss = document.getElementById('successScreen');
+  if (ss) ss.style.display = 'block';
+  const ll = document.getElementById('loginLinkWrap');
+  if (ll) ll.style.display = 'none';
+
+  // Side steps all done
+  document.querySelectorAll('.reg-step-item').forEach(s => { s.classList.remove('active'); s.classList.add('done'); });
+}
+
+/* ── EYE TOGGLE ── */
+function toggleEye(inputId, iconId) {
+  const inp = document.getElementById(inputId);
+  const ico = document.getElementById(iconId);
+  if (!inp || !ico) return;
+  const hidden = inp.type === 'password';
+  inp.type = hidden ? 'text' : 'password';
+  ico.className = hidden ? 'fas fa-eye-slash' : 'fas fa-eye';
+}
+
+
+/* ── TEAM SELECTION ── */
+var selectedTeamData = null;
+
+function loadTeamStep() {
+  var sms = [];
+  try { sms = JSON.parse(localStorage.getItem("matla_sales_managers") || "[]"); } catch(e) {}
+  var allUsers = [];
+  try { allUsers = JSON.parse(localStorage.getItem("matla_db_users") || "[]"); } catch(e) {}
+  var grid = document.getElementById("teamGrid");
+  var noMsg = document.getElementById("noTeamsMsg");
+  if (!grid) return;
+  if (!sms.length) {
+    grid.style.display = "none";
+    if (noMsg) noMsg.style.display = "block";
+    return;
+  }
+  if (noMsg) noMsg.style.display = "none";
+  grid.style.display = "";
+  var html = "";
+  sms.forEach(function(sm) {
+    var cnt = allUsers.filter(function(u) { return u.teamId === sm.id; }).length;
+    var sel = !!(selectedTeamData && selectedTeamData.teamId === sm.id);
+    html += "<div id=tc-" + sm.id
+      + " onclick="selectTeam(" + JSON.stringify(sm.id) + "," + JSON.stringify(sm.name) + "," + JSON.stringify(sm.teamName) + ")""
+      + " style="border:2px solid " + (sel ? "#2563eb" : "rgba(255,255,255,0.1)") + ";border-radius:.75rem;padding:1.2rem;cursor:pointer;background:" + (sel ? "rgba(37,99,235,0.12)" : "var(--surface)") + ";transition:all .2s">"
+      + "<div style="font-weight:700;font-size:1rem;color:var(--text-1)">"+sm.teamName+"</div>"
+      + "<div style="font-size:.8rem;color:var(--text-3);margin-top:.2rem">"+sm.name+"</div>"
+      + "<div style="font-size:.75rem;color:var(--text-3);margin-top:.4rem">"+cnt+" member(s)</div>"
+      + "</div>";
+  });
+  grid.innerHTML = html;
+}
+
+function selectTeam(id, smName, teamName) {
+  selectedTeamData = { teamId: id, smName: smName, teamName: teamName };
+  loadTeamStep();
+}
+
+/* ── SUBMIT v2 (Fixed: uses MatlaDB) ── */
+async function submitReg() {
+  const email = document.getElementById("regEmail")?.value.trim().toLowerCase();
+  if (!checkDuplicateEmail(email)) return;
+
+  if (typeof MatlaDB === "undefined") {
+    alert("Registration system not loaded. Please refresh the page.");
+    return;
+  }
+
+  const existing = MatlaDB.getByEmail(email);
+  if (existing) {
+    alert("An account with this email already exists. Please log in instead.");
+    return;
+  }
+
+  const btn = document.getElementById("btnSubmit");
+  if (btn) { btn.disabled = true; btn.textContent = "Creating account..."; }
+
+  const firstName = document.getElementById("firstName")?.value.trim() || "";
+  const lastName  = document.getElementById("lastName")?.value.trim()  || "";
+  const password  = document.getElementById("regPw")?.value || "";
+
+  const newUser = {
+    email:        email,
+    firstName:    firstName,
+    lastName:     lastName,
+    name:         (firstName + " " + lastName).trim(),
+    idNumber:     document.getElementById("idNumber")?.value.trim(),
+    dob:          document.getElementById("dob")?.value,
+    gender:       document.getElementById("gender")?.value,
+    race:         document.getElementById("race")?.value,
+    phone:        document.getElementById("phone")?.value.trim(),
+    altPhone:     document.getElementById("altPhone")?.value.trim(),
+    address:      document.getElementById("address")?.value.trim(),
+    disability:   document.getElementById("disability")?.value,
+    qualification:document.getElementById("qualification")?.value,
+    empId:        document.getElementById("empId")?.value.trim(),
+    department:   document.getElementById("department")?.value,
+    jobTitle:     document.getElementById("jobTitle")?.value.trim(),
+    empType:      document.getElementById("empType")?.value,
+    branch:       document.getElementById("branch")?.value,
+    manager:      document.getElementById("manager")?.value.trim(),
+    faisCategory: document.getElementById("faisCategory")?.value,
+    faisNumber:   document.getElementById("faisNumber")?.value.trim(),
+    role:         selectedRole,
+    approved:     true,
+    teamId:       selectedTeamData ? selectedTeamData.teamId   : null,
+    smName:       selectedTeamData ? selectedTeamData.smName   : null,
+    teamName:     selectedTeamData ? selectedTeamData.teamName : null,
+    startDate:    document.getElementById("startDate")?.value,
+    registeredAt: new Date().toISOString(),
+  };
+
+  MatlaDB.upsert(newUser);
+  if (password) MatlaDB.setPassword(email, password);
+  MatlaDB.startSession(email, newUser.role);
+
+  const loader = document.getElementById("reg-loader");
+  if (loader) loader.classList.add("show");
+  await new Promise(r => setTimeout(r, 1200));
+  if (loader) loader.classList.remove("show");
+
+  document.querySelectorAll(".step-pane").forEach(p => p.style.display = "none");
+  const progFill = document.getElementById("progFill");
+  if (progFill) progFill.style.width = "100%";
+  const ss = document.getElementById("successScreen");
+  if (ss) ss.style.display = "block";
+  const ll = document.getElementById("loginLinkWrap");
+  if (ll) ll.style.display = "none";
+  document.querySelectorAll(".reg-step-item").forEach(s => { s.classList.remove("active"); s.classList.add("done"); });
+
+  setTimeout(function() { window.location.href = "home.html"; }, 2500);
+}
+
+// Clear errors on input
+document.addEventListener('input', e => e.target?.closest?.('.fg')?.classList.remove('err'));
+</script>
+</body>
+</html>

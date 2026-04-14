@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meneer AI Coach — Matla Academy</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* ── Meneer AI page layout ─────────────────────────────────── */
+        body { font-family: 'DM Sans', sans-serif; }
+        .mai-shell {
+            display: flex;
+            height: calc(100vh - var(--nav-h, 70px));
+            margin-top: var(--nav-h, 70px);
+            overflow: hidden;
+        }
+
+        /* ── Left sidebar ─────────────────────────────────────────── */
+        .mai-sidebar {
+            width: 280px;
+            flex-shrink: 0;
+            background: var(--color-bg-secondary, #f9fafb);
+            border-right: 1px solid var(--color-border, #e5e7eb);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: width 0.3s ease;
+        }
+        [data-theme="dark"] .mai-sidebar,
+        [data-theme="blue"] .mai-sidebar { background: #0f1f40; border-right-color: rgba(255,255,255,0.07); }
+        .mai-sidebar.collapsed { width: 0; }
+
+        .mai-brand {
+            padding: 1.2rem 1.2rem 0.6rem;
+            display: flex; align-items: center; gap: 0.7rem;
+            border-bottom: 1px solid var(--color-border, #e5e7eb);
+            flex-shrink: 0;
+        }
+        [data-theme="dark"] .mai-brand,
+        [data-theme="blue"] .mai-brand { border-bottom-color: rgba(255,255,255,0.07); }
+
+        .mai-avatar-wrap {
+            width: 44px; height: 44px; border-radius: 14px;
+            background: linear-gradient(135deg, #065f46, #10b981);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; color: #fff;
+            box-shadow: 0 4px 14px rgba(16,185,129,0.4);
+            flex-shrink: 0;
+            animation: avatarGlow 3s ease-in-out infinite;
+        }
+        @keyframes avatarGlow {
+            0%,100% { box-shadow: 0 4px 14px rgba(16,185,129,0.4); }
+            50%      { box-shadow: 0 4px 24px rgba(16,185,129,0.7); }
+        }
+        .mai-brand-name  { font-family: 'Space Grotesk',sans-serif; font-weight: 800; font-size: 1rem; color: var(--color-text-primary,#111827); }
+        .mai-brand-sub   { font-size: 0.72rem; color: var(--color-text-secondary,#6b7280); margin-top: 0.05rem; }
+        [data-theme="dark"] .mai-brand-name,
+        [data-theme="blue"] .mai-brand-name { color: #f1f5f9; }
+        [data-theme="dark"] .mai-brand-sub,
+        [data-theme="blue"] .mai-brand-sub  { color: #94a3b8; }
+
+        /* Mode tabs */
+        .mai-modes {
+            padding: 0.8rem;
+            flex-shrink: 0;
+            border-bottom: 1px solid var(--color-border, #e5e7eb);
+        }
+        [data-theme="dark"] .mai-modes,
+        [data-theme="blue"] .mai-modes { border-bottom-color: rgba(255,255,255,0.07); }
+        .mai-mode-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-secondary,#6b7280); margin-bottom: 0.5rem; padding-left: 0.2rem; }
+        [data-theme="dark"] .mai-mode-label,
+        [data-theme="blue"] .mai-mode-label { color: #64748b; }
+        .mai-mode-btn {
+            width: 100%; display: flex; align-items: center; gap: 0.75rem;
+            padding: 0.6rem 0.75rem; border-radius: 10px; border: none;
+            background: transparent; cursor: pointer; text-align: left;
+            transition: background 0.18s ease, color 0.18s ease;
+            margin-bottom: 0.22rem;
+        }
+        .mai-mode-btn .mi { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; transition: background 0.18s ease; }
+        .mai-mode-btn .mt { font-size: 0.82rem; font-weight: 600; color: var(--color-text-primary,#111827); }
+        .mai-mode-btn .ms { font-size: 0.7rem; color: var(--color-text-secondary,#6b7280); display: block; }
+        [data-theme="dark"] .mai-mode-btn .mt,
+        [data-theme="blue"] .mai-mode-btn .mt { color: #e2e8f0; }
+        [data-theme="dark"] .mai-mode-btn .ms,
+        [data-theme="blue"] .mai-mode-btn .ms { color: #64748b; }
+        .mai-mode-btn:hover { background: rgba(16,185,129,0.07); }
+        .mai-mode-btn.active { background: rgba(16,185,129,0.1); }
+        .mai-mode-btn.active .mt { color: #065f46; }
+        [data-theme="dark"] .mai-mode-btn.active .mt,
+        [data-theme="blue"] .mai-mode-btn.active .mt { color: #34d399; }
+        .mai-mode-btn[data-mode="learn"].active .mi    { background: rgba(59,130,246,0.15); color: #1d4ed8; }
+        .mai-mode-btn[data-mode="roleplay"].active .mi { background: rgba(245,158,11,0.15); color: #92400e; }
+        .mai-mode-btn[data-mode="qa"].active .mi       { background: rgba(16,185,129,0.15); color: #065f46; }
+        .mai-mode-btn[data-mode="learn"] .mi    { background: rgba(59,130,246,0.08); color: #3b82f6; }
+        .mai-mode-btn[data-mode="roleplay"] .mi { background: rgba(245,158,11,0.08); color: #f59e0b; }
+        .mai-mode-btn[data-mode="qa"] .mi       { background: rgba(16,185,129,0.08); color: #10b981; }
+        [data-theme="dark"] .mai-mode-btn[data-mode="learn"] .mi    { background: rgba(59,130,246,0.15); color: #60a5fa; }
+        [data-theme="dark"] .mai-mode-btn[data-mode="roleplay"] .mi { background: rgba(245,158,11,0.15); color: #fbbf24; }
+        [data-theme="dark"] .mai-mode-btn[data-mode="qa"] .mi       { background: rgba(16,185,129,0.15); color: #34d399; }
+
+        /* Session history */
+        .mai-history { flex: 1; overflow-y: auto; padding: 0.6rem 0.8rem; }
+        .mai-hist-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-secondary,#6b7280); margin-bottom: 0.4rem; padding-left: 0.2rem; }
+        [data-theme="dark"] .mai-hist-label,
+        [data-theme="blue"] .mai-hist-label { color: #64748b; }
+        .mai-hist-item {
+            display: flex; align-items: center; gap: 0.5rem;
+            padding: 0.48rem 0.6rem; border-radius: 8px;
+            font-size: 0.78rem; color: var(--color-text-secondary,#6b7280);
+            cursor: pointer; transition: background 0.15s ease;
+            margin-bottom: 0.1rem; white-space: nowrap; overflow: hidden;
+        }
+        .mai-hist-item:hover { background: rgba(16,185,129,0.07); color: var(--color-text-primary,#111827); }
+        [data-theme="dark"] .mai-hist-item:hover,
+        [data-theme="blue"] .mai-hist-item:hover { background: rgba(16,185,129,0.1); color: #e2e8f0; }
+        .mai-hist-item i { flex-shrink: 0; font-size: 0.72rem; }
+        .mai-hist-item span { overflow: hidden; text-overflow: ellipsis; }
+
+        .mai-new-btn {
+            margin: 0 0.8rem 0.8rem;
+            width: calc(100% - 1.6rem);
+            padding: 0.55rem 1rem;
+            border-radius: 10px;
+            background: linear-gradient(135deg,#065f46,#10b981);
+            color: #fff; font-size: 0.8rem; font-weight: 700;
+            border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            transition: opacity 0.2s ease;
+            flex-shrink: 0;
+        }
+        .mai-new-btn:hover { opacity: 0.88; }
+
+        /* ── Main content area ────────────────────────────────────── */
+        .mai-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: var(--color-bg-primary, #fff);
+            position: relative;
+        }
+        [data-theme="dark"] .mai-main { background: #0d1829; }
+        [data-theme="blue"] .mai-main { background: #060e22; }
+
+        /* Mode top bar */
+        .mai-topbar {
+            padding: 0.9rem 1.4rem;
+            border-bottom: 1px solid var(--color-border,#e5e7eb);
+            display: flex; align-items: center; gap: 1rem;
+            flex-shrink: 0;
+        }
+        [data-theme="dark"] .mai-topbar,
+        [data-theme="blue"] .mai-topbar { border-bottom-color: rgba(255,255,255,0.07); }
+        .mai-topbar-toggle {
+            width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--color-border,#e5e7eb);
+            background: var(--color-bg-secondary,#f9fafb); cursor: pointer;
+            display: flex; align-items: center; justify-content: center; color: var(--color-text-secondary,#6b7280);
+            transition: background 0.15s ease;
+        }
+        .mai-topbar-toggle:hover { background: var(--color-bg-tertiary,#f3f4f6); }
+        [data-theme="dark"] .mai-topbar-toggle,
+        [data-theme="blue"] .mai-topbar-toggle { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: #94a3b8; }
+        .mai-mode-badge {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            padding: 0.3rem 0.8rem; border-radius: 99px; font-size: 0.78rem; font-weight: 700;
+        }
+        .mai-mode-badge.learn    { background: rgba(59,130,246,0.1);  color: #1d4ed8; border: 1px solid rgba(59,130,246,0.2); }
+        .mai-mode-badge.roleplay { background: rgba(245,158,11,0.1);  color: #92400e; border: 1px solid rgba(245,158,11,0.2); }
+        .mai-mode-badge.qa       { background: rgba(16,185,129,0.1);  color: #065f46; border: 1px solid rgba(16,185,129,0.2); }
+        [data-theme="dark"] .mai-mode-badge.learn,
+        [data-theme="blue"] .mai-mode-badge.learn    { background: rgba(59,130,246,0.15); color: #93c5fd; border-color: rgba(59,130,246,0.25); }
+        [data-theme="dark"] .mai-mode-badge.roleplay,
+        [data-theme="blue"] .mai-mode-badge.roleplay { background: rgba(245,158,11,0.15); color: #fcd34d; border-color: rgba(245,158,11,0.25); }
+        [data-theme="dark"] .mai-mode-badge.qa,
+        [data-theme="blue"] .mai-mode-badge.qa       { background: rgba(16,185,129,0.15); color: #6ee7b7; border-color: rgba(16,185,129,0.25); }
+
+        .mai-topbar-title { font-family: 'Space Grotesk',sans-serif; font-weight: 700; font-size: 1rem; color: var(--color-text-primary,#111827); }
+        [data-theme="dark"] .mai-topbar-title,
+        [data-theme="blue"] .mai-topbar-title { color: #f1f5f9; }
+        .mai-topbar-sub { font-size: 0.75rem; color: var(--color-text-secondary,#6b7280); }
+        [data-theme="dark"] .mai-topbar-sub,
+        [data-theme="blue"] .mai-topbar-sub { color: #64748b; }
+        .mai-topbar-end { margin-left: auto; display: flex; gap: 0.5rem; }
+
+        /* ── Mode views ────────────────────────────────────────────── */
+        .mai-view { flex: 1; overflow: hidden; display: none; flex-direction: column; }
+        .mai-view.active { display: flex; }
+
+        /* ── LEARN: Chat view ───────────────────────────────────────── */
+        .mai-chat-area {
+            flex: 1; overflow-y: auto; padding: 1.2rem 1.4rem;
+            display: flex; flex-direction: column; gap: 1rem;
+        }
+        .mai-msg { display: flex; gap: 0.7rem; max-width: 80%; }
+        .mai-msg.user { align-self: flex-end; flex-direction: row-reverse; }
+        .mai-msg-av {
+            width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem; color: #fff;
+        }
+        .mai-msg.ai .mai-msg-av   { background: linear-gradient(135deg,#065f46,#10b981); }
+        .mai-msg.user .mai-msg-av { background: linear-gradient(135deg,#1e40af,#3b82f6); }
+        .mai-msg-bubble {
+            padding: 0.72rem 0.9rem; border-radius: 14px;
+            font-size: 0.85rem; line-height: 1.55;
+            color: var(--color-text-primary,#111827);
+            position: relative;
+        }
+        .mai-msg.ai .mai-msg-bubble {
+            background: var(--color-bg-secondary,#f3f4f6);
+            border-bottom-left-radius: 4px;
+        }
+        .mai-msg.user .mai-msg-bubble {
+            background: linear-gradient(135deg,#1e40af,#2563eb);
+            color: #fff;
+            border-bottom-right-radius: 4px;
+        }
+        [data-theme="dark"] .mai-msg.ai .mai-msg-bubble,
+        [data-theme="blue"] .mai-msg.ai .mai-msg-bubble { background: rgba(255,255,255,0.07); color: #e2e8f0; }
+        .mai-msg-time { font-size: 0.65rem; color: var(--color-text-secondary,#9ca3af); margin-top: 0.25rem; text-align: right; }
+        .mai-msg.user .mai-msg-time { text-align: left; }
+        [data-theme="dark"] .mai-msg-time,
+        [data-theme="blue"] .mai-msg-time { color: #64748b; }
+
+        /* Typing indicator */
+        .mai-typing { display: flex; gap: 0.7rem; align-items: flex-end; }
+        .mai-typing .mai-msg-av { background: linear-gradient(135deg,#065f46,#10b981); }
+        .mai-typing-dots { display: flex; gap: 4px; padding: 0.72rem 0.9rem; background: var(--color-bg-secondary,#f3f4f6); border-radius: 14px; border-bottom-left-radius: 4px; }
+        [data-theme="dark"] .mai-typing-dots,
+        [data-theme="blue"] .mai-typing-dots { background: rgba(255,255,255,0.07); }
+        .mai-dot { width: 7px; height: 7px; border-radius: 50%; background: #9ca3af; animation: dotBounce 1.2s ease-in-out infinite; }
+        .mai-dot:nth-child(2) { animation-delay: 0.2s; }
+        .mai-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes dotBounce { 0%,80%,100% { transform: translateY(0); } 40% { transform: translateY(-7px); } }
+
+        /* Learning card inside chat */
+        .mai-learn-card {
+            background: linear-gradient(135deg,#eff6ff,#dbeafe);
+            border: 1px solid #bfdbfe; border-radius: 12px;
+            padding: 0.8rem 1rem; margin-top: 0.5rem;
+            font-size: 0.8rem;
+        }
+        [data-theme="dark"] .mai-learn-card,
+        [data-theme="blue"] .mai-learn-card { background: rgba(59,130,246,0.1); border-color: rgba(59,130,246,0.2); color: #bfdbfe; }
+        .mai-learn-card-title { font-weight: 700; color: #1d4ed8; font-size: 0.78rem; margin-bottom: 0.3rem; display: flex; align-items: center; gap: 0.35rem; }
+        [data-theme="dark"] .mai-learn-card-title,
+        [data-theme="blue"] .mai-learn-card-title { color: #93c5fd; }
+
+        /* Quick chips */
+        .mai-chips { padding: 0.6rem 1.4rem; display: flex; flex-wrap: wrap; gap: 0.4rem; flex-shrink: 0; }
+        .mai-chip {
+            padding: 0.32rem 0.8rem; border-radius: 99px; font-size: 0.76rem; font-weight: 600;
+            border: 1.5px solid var(--color-border,#e5e7eb);
+            background: var(--color-bg-primary,#fff);
+            color: var(--color-text-secondary,#374151);
+            cursor: pointer; transition: all 0.18s ease;
+            white-space: nowrap;
+        }
+        .mai-chip:hover { border-color: #10b981; color: #065f46; background: rgba(16,185,129,0.05); }
+        [data-theme="dark"] .mai-chip,
+        [data-theme="blue"] .mai-chip { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); color: #94a3b8; }
+        [data-theme="dark"] .mai-chip:hover,
+        [data-theme="blue"] .mai-chip:hover { border-color: #10b981; color: #34d399; background: rgba(16,185,129,0.1); }
+
+        /* Input bar */
+        .mai-input-bar {
+            padding: 0.8rem 1.2rem;
+            border-top: 1px solid var(--color-border,#e5e7eb);
+            display: flex; gap: 0.6rem; align-items: flex-end;
+            flex-shrink: 0;
+        }
+        [data-theme="dark"] .mai-input-bar,
+        [data-theme="blue"] .mai-input-bar { border-top-color: rgba(255,255,255,0.07); }
+        .mai-textarea {
+            flex: 1; resize: none; border: 1.5px solid var(--color-border,#e5e7eb);
+            border-radius: 12px; padding: 0.65rem 0.9rem; font-size: 0.85rem;
+            font-family: 'DM Sans',sans-serif; outline: none; line-height: 1.5;
+            background: var(--color-bg-primary,#fff);
+            color: var(--color-text-primary,#111827);
+            transition: border-color 0.18s ease;
+            max-height: 120px; overflow-y: auto;
+        }
+        .mai-textarea:focus { border-color: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,0.1); }
+        [data-theme="dark"] .mai-textarea,
+        [data-theme="blue"] .mai-textarea { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: #e2e8f0; }
+        [data-theme="dark"] .mai-textarea:focus,
+        [data-theme="blue"] .mai-textarea:focus { border-color: #10b981; }
+        .mai-send-btn {
+            width: 42px; height: 42px; border-radius: 11px; border: none;
+            background: linear-gradient(135deg,#065f46,#10b981);
+            color: #fff; font-size: 0.9rem;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.18s ease, transform 0.12s ease;
+            flex-shrink: 0;
+        }
+        .mai-send-btn:hover { opacity: 0.88; transform: scale(1.05); }
+        .mai-send-btn:disabled { opacity: 0.45; cursor: default; transform: none; }
+
+        /* ── ROLE PLAY view ─────────────────────────────────────────── */
+        .mai-rp-scroll { flex: 1; overflow-y: auto; padding: 1.2rem 1.4rem; }
+        .mai-rp-grid {
+            display: grid; grid-template-columns: repeat(auto-fill,minmax(200px,1fr));
+            gap: 0.9rem; margin-bottom: 1.4rem;
+        }
+        .mai-scenario {
+            border: 1.5px solid var(--color-border,#e5e7eb);
+            border-radius: 14px; padding: 1.1rem 1rem;
+            cursor: pointer; transition: all 0.2s ease;
+            background: var(--color-bg-primary,#fff);
+            position: relative; overflow: hidden;
+        }
+        .mai-scenario::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            border-radius: 3px 3px 0 0;
+            transition: opacity 0.2s ease; opacity: 0;
+        }
+        .mai-scenario:hover::before { opacity: 1; }
+        .mai-scenario:hover { border-color: transparent; transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .mai-scenario[data-sc="cold"]     ::before,
+        .mai-scenario[data-sc="cold"]:hover     { --sc-color: #3b82f6; }
+        .mai-scenario[data-sc="objection"]::before,
+        .mai-scenario[data-sc="objection"]:hover { --sc-color: #f59e0b; }
+        .mai-scenario[data-sc="fna"]      ::before,
+        .mai-scenario[data-sc="fna"]:hover      { --sc-color: #10b981; }
+        .mai-scenario[data-sc="difficult"]::before,
+        .mai-scenario[data-sc="difficult"]:hover { --sc-color: #ef4444; }
+        .mai-scenario[data-sc="cold"]::before     { background: #3b82f6; }
+        .mai-scenario[data-sc="objection"]::before { background: #f59e0b; }
+        .mai-scenario[data-sc="fna"]::before      { background: #10b981; }
+        .mai-scenario[data-sc="difficult"]::before { background: #ef4444; }
+        [data-theme="dark"] .mai-scenario,
+        [data-theme="blue"] .mai-scenario { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.08); }
+        .mai-sc-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; margin-bottom: 0.65rem; }
+        .mai-sc-name { font-family: 'Space Grotesk',sans-serif; font-weight: 700; font-size: 0.9rem; color: var(--color-text-primary,#111827); margin-bottom: 0.25rem; }
+        .mai-sc-desc { font-size: 0.74rem; color: var(--color-text-secondary,#6b7280); line-height: 1.45; }
+        .mai-sc-diff { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 99px; font-size: 0.65rem; font-weight: 700; margin-top: 0.5rem; }
+        [data-theme="dark"] .mai-sc-name,
+        [data-theme="blue"] .mai-sc-name { color: #e2e8f0; }
+        [data-theme="dark"] .mai-sc-desc,
+        [data-theme="blue"] .mai-sc-desc { color: #64748b; }
+
+        /* In-session role-play chat */
+        .mai-rp-session { display: none; flex-direction: column; flex: 1; overflow: hidden; }
+        .mai-rp-session.active { display: flex; }
+        .mai-rp-header {
+            padding: 0.75rem 1.4rem; background: var(--color-bg-secondary,#f9fafb);
+            border-bottom: 1px solid var(--color-border,#e5e7eb);
+            display: flex; align-items: center; gap: 0.8rem; flex-shrink: 0;
+        }
+        [data-theme="dark"] .mai-rp-header,
+        [data-theme="blue"] .mai-rp-header { background: rgba(255,255,255,0.04); border-bottom-color: rgba(255,255,255,0.07); }
+        .mai-rp-char-av { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+        .mai-rp-char-name { font-weight: 700; font-size: 0.88rem; color: var(--color-text-primary,#111827); }
+        [data-theme="dark"] .mai-rp-char-name,
+        [data-theme="blue"] .mai-rp-char-name { color: #e2e8f0; }
+        .mai-rp-char-role { font-size: 0.72rem; color: var(--color-text-secondary,#6b7280); }
+        .mai-end-btn {
+            margin-left: auto; padding: 0.38rem 0.9rem; border-radius: 8px;
+            border: 1.5px solid #ef4444; background: rgba(239,68,68,0.06);
+            color: #ef4444; font-size: 0.76rem; font-weight: 700; cursor: pointer;
+            transition: background 0.18s ease;
+        }
+        .mai-end-btn:hover { background: rgba(239,68,68,0.12); }
+
+        /* Performance review */
+        .mai-review { display: none; padding: 1.2rem 1.4rem; flex: 1; overflow-y: auto; }
+        .mai-review.active { display: block; }
+        .mai-review-title { font-family: 'Space Grotesk',sans-serif; font-weight: 800; font-size: 1.2rem; color: var(--color-text-primary,#111827); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+        [data-theme="dark"] .mai-review-title,
+        [data-theme="blue"] .mai-review-title { color: #f1f5f9; }
+        .mai-score-ring-wrap { display: flex; justify-content: center; margin-bottom: 1rem; }
+        .mai-kpi-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(160px,1fr)); gap: 0.7rem; margin-bottom: 1rem; }
+        .mai-kpi { background: var(--color-bg-secondary,#f9fafb); border: 1px solid var(--color-border,#e5e7eb); border-radius: 12px; padding: 0.9rem; }
+        [data-theme="dark"] .mai-kpi,
+        [data-theme="blue"] .mai-kpi { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.08); }
+        .mai-kpi-val { font-family: 'Space Grotesk',sans-serif; font-weight: 800; font-size: 1.4rem; }
+        .mai-kpi-lbl { font-size: 0.73rem; color: var(--color-text-secondary,#6b7280); margin-top: 0.1rem; }
+        [data-theme="dark"] .mai-kpi-lbl,
+        [data-theme="blue"] .mai-kpi-lbl { color: #64748b; }
+        .mai-feedback-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+        .mai-fb-item { display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.82rem; color: var(--color-text-primary,#374151); padding: 0.55rem 0.75rem; border-radius: 9px; }
+        .mai-fb-item.good { background: rgba(16,185,129,0.07); }
+        .mai-fb-item.improve { background: rgba(245,158,11,0.07); }
+        [data-theme="dark"] .mai-fb-item { color: #cbd5e1; }
+        [data-theme="dark"] .mai-fb-item.good    { background: rgba(16,185,129,0.1); }
+        [data-theme="dark"] .mai-fb-item.improve { background: rgba(245,158,11,0.1); }
+        [data-theme="blue"] .mai-fb-item { color: #cbd5e1; }
+        .mai-fb-icon { flex-shrink: 0; margin-top: 0.1rem; }
+        .mai-try-again-btn {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            margin-top: 1rem; padding: 0.6rem 1.4rem; border-radius: 10px;
+            background: linear-gradient(135deg,#1e40af,#3b82f6); color: #fff;
+            font-size: 0.84rem; font-weight: 700; border: none; cursor: pointer;
+            transition: opacity 0.18s ease;
+        }
+        .mai-try-again-btn:hover { opacity: 0.88; }
+
+        /* ── PRODUCT Q&A view ─────────────────────────────────────────── */
+        .mai-qa-scroll { flex: 1; overflow-y: auto; padding: 1.2rem 1.4rem; }
+        .mai-qa-search-wrap {
+            position: relative; margin-bottom: 1rem;
+        }
+        .mai-qa-search {
+            width: 100%; padding: 0.75rem 1rem 0.75rem 2.8rem;
+            border: 1.5px solid var(--color-border,#e5e7eb); border-radius: 12px;
+            font-size: 0.88rem; font-family: 'DM Sans',sans-serif;
+            background: var(--color-bg-secondary,#f9fafb);
+            color: var(--color-text-primary,#111827); outline: none;
+            transition: border-color 0.18s ease;
+        }
+        .mai-qa-search:focus { border-color: #10b981; background: var(--color-bg-primary,#fff); box-shadow: 0 0 0 3px rgba(16,185,129,0.1); }
+        [data-theme="dark"] .mai-qa-search,
+        [data-theme="blue"] .mai-qa-search { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); color: #e2e8f0; }
+        .mai-qa-si { position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 0.9rem; }
+        .mai-cat-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.1rem; }
+        .mai-cat-pill {
+            padding: 0.28rem 0.8rem; border-radius: 99px; font-size: 0.76rem; font-weight: 600;
+            border: 1.5px solid var(--color-border,#e5e7eb);
+            background: var(--color-bg-primary,#fff);
+            color: var(--color-text-secondary,#374151);
+            cursor: pointer; transition: all 0.18s ease;
+        }
+        .mai-cat-pill:hover,
+        .mai-cat-pill.active { border-color: #10b981; color: #065f46; background: rgba(16,185,129,0.08); }
+        [data-theme="dark"] .mai-cat-pill,
+        [data-theme="blue"] .mai-cat-pill { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); color: #94a3b8; }
+        [data-theme="dark"] .mai-cat-pill:hover,
+        [data-theme="dark"] .mai-cat-pill.active,
+        [data-theme="blue"] .mai-cat-pill:hover,
+        [data-theme="blue"] .mai-cat-pill.active { border-color: #10b981; color: #34d399; background: rgba(16,185,129,0.1); }
+        .mai-qa-card {
+            border: 1px solid var(--color-border,#e5e7eb); border-radius: 13px;
+            padding: 1rem 1.1rem; margin-bottom: 0.7rem; cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--color-bg-primary,#fff);
+        }
+        .mai-qa-card:hover { border-color: #10b981; box-shadow: 0 6px 20px rgba(16,185,129,0.1); transform: translateY(-2px); }
+        [data-theme="dark"] .mai-qa-card,
+        [data-theme="blue"] .mai-qa-card { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.08); }
+        .mai-qa-q { font-weight: 700; font-size: 0.86rem; color: var(--color-text-primary,#111827); margin-bottom: 0.38rem; display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; }
+        [data-theme="dark"] .mai-qa-q,
+        [data-theme="blue"] .mai-qa-q { color: #e2e8f0; }
+        .mai-qa-a { font-size: 0.81rem; color: var(--color-text-secondary,#6b7280); line-height: 1.5; display: none; }
+        .mai-qa-a.open { display: block; }
+        [data-theme="dark"] .mai-qa-a,
+        [data-theme="blue"] .mai-qa-a { color: #94a3b8; }
+        .mai-qa-tag { flex-shrink: 0; padding: 0.18rem 0.55rem; border-radius: 99px; font-size: 0.65rem; font-weight: 700; background: rgba(16,185,129,0.1); color: #065f46; border: 1px solid rgba(16,185,129,0.2); }
+        [data-theme="dark"] .mai-qa-tag,
+        [data-theme="blue"] .mai-qa-tag { background: rgba(16,185,129,0.15); color: #34d399; border-color: rgba(16,185,129,0.25); }
+        .mai-qa-chevron { transition: transform 0.2s ease; color: #9ca3af; }
+        .mai-qa-card.open .mai-qa-chevron { transform: rotate(90deg); }
+
+        /* ── Mobile overlay backdrop ──────────────────────────────── */
+        .mai-overlay {
+            display: none;
+            position: fixed; inset: 0; z-index: 49;
+            background: rgba(0,0,0,0.45);
+            backdrop-filter: blur(2px);
+            transition: opacity 0.25s ease;
+            opacity: 0;
+        }
+        .mai-overlay.active { opacity: 1; }
+
+        /* ── Responsive sidebar collapse ──────────────────────────── */
+        @media (max-width: 768px) {
+            .mai-sidebar {
+                position: fixed; z-index: 50;
+                height: calc(100% - var(--nav-h, 70px));
+                top: var(--nav-h, 70px); left: 0;
+                box-shadow: 4px 0 24px rgba(0,0,0,0.25);
+                transform: translateX(0);
+                transition: transform 0.3s cubic-bezier(.4,0,.2,1), width 0.3s ease;
+            }
+            .mai-sidebar.collapsed {
+                transform: translateX(-100%);
+                width: 280px; /* keep width so animation is smooth */
+            }
+            .mai-overlay { display: block; }
+        }
+    </style>
+</head>
+<body>
+    <!-- ── Nav / Sidebar (from script.js) ────────────────────────── -->
+    <nav class="enhanced-nav"></nav>
+    <aside id="sidebar" class="sidebar"></aside>
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- ── Meneer AI Shell ──────────────────────────────────────── -->
+    <div class="mai-shell">
+
+        <!-- Mobile overlay (closes sidebar on tap) -->
+        <div class="mai-overlay" id="maiOverlay" onclick="closeMaiSidebar()"></div>
+
+        <!-- Left sidebar -->
+        <aside class="mai-sidebar" id="maiSidebar">
+            <!-- Brand -->
+            <div class="mai-brand">
+                <div class="mai-avatar-wrap"><i class="fas fa-robot"></i></div>
+                <div>
+                    <div class="mai-brand-name">Meneer AI</div>
+                    <div class="mai-brand-sub">Your JFA Learning Coach</div>
+                </div>
+            </div>
+
+            <!-- Mode switcher -->
+            <div class="mai-modes">
+                <div class="mai-mode-label">Mode</div>
+                <button class="mai-mode-btn active" data-mode="learn" onclick="switchMode('learn')">
+                    <div class="mi"><i class="fas fa-book-open"></i></div>
+                    <div>
+                        <div class="mt">Learn</div>
+                        <span class="ms">Concepts &amp; coaching</span>
+                    </div>
+                </button>
+                <button class="mai-mode-btn" data-mode="roleplay" onclick="switchMode('roleplay')">
+                    <div class="mi"><i class="fas fa-masks-theater"></i></div>
+                    <div>
+                        <div class="mt">Role Play</div>
+                        <span class="ms">Client scenarios</span>
+                    </div>
+                </button>
+                <button class="mai-mode-btn" data-mode="qa" onclick="switchMode('qa')">
+                    <div class="mi"><i class="fas fa-circle-question"></i></div>
+                    <div>
+                        <div class="mt">Product Q&amp;A</div>
+                        <span class="ms">Quick answers</span>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Session history -->
+            <div class="mai-history">
+                <div class="mai-hist-label">Recent sessions</div>
+                <div class="mai-hist-item"><i class="fas fa-book-open" style="color:#3b82f6;"></i><span>Explaining FSCA regulations</span></div>
+                <div class="mai-hist-item"><i class="fas fa-masks-theater" style="color:#f59e0b;"></i><span>Cold call role play</span></div>
+                <div class="mai-hist-item"><i class="fas fa-circle-question" style="color:#10b981;"></i><span>RA contribution limits</span></div>
+                <div class="mai-hist-item"><i class="fas fa-book-open" style="color:#3b82f6;"></i><span>What is risk profiling?</span></div>
+                <div class="mai-hist-item"><i class="fas fa-masks-theater" style="color:#f59e0b;"></i><span>Objection handling practice</span></div>
+                <div class="mai-hist-item"><i class="fas fa-circle-question" style="color:#10b981;"></i><span>TFSA vs RA comparison</span></div>
+            </div>
+
+            <button class="mai-new-btn" onclick="newSession()">
+                <i class="fas fa-plus"></i> New session
+            </button>
+        </aside>
+
+        <!-- Main content -->
+        <div class="mai-main">
+
+            <!-- Top bar -->
+            <div class="mai-topbar">
+                <button class="mai-topbar-toggle" onclick="toggleMaiSidebar()" title="Toggle panel">
+                    <i class="fas fa-bars" id="sidebarToggleIcon"></i>
+                </button>
+                <div>
+                    <div style="display:flex;align-items:center;gap:0.6rem;">
+                        <span class="mai-mode-badge learn" id="modeBadge"><i class="fas fa-book-open"></i> Learn mode</span>
+                    </div>
+                    <div class="mai-topbar-sub" id="modeDesc">Ask me anything about the JFA curriculum</div>
+                </div>
+                <div class="mai-topbar-end">
+                    <button onclick="clearChat()" style="padding:0.35rem 0.8rem;border-radius:8px;border:1px solid var(--color-border,#e5e7eb);background:transparent;font-size:0.75rem;color:var(--color-text-secondary,#6b7280);cursor:pointer;" title="Clear conversation">
+                        <i class="fas fa-broom"></i> Clear
+                    </button>
+                </div>
+            </div>
+
+            <!-- ── LEARN view ─────────────────────────────────────── -->
+            <div class="mai-view active" id="view-learn">
+                <div class="mai-chat-area" id="chatArea">
+                    <!-- Initial AI greeting message -->
+                    <div class="mai-msg ai" id="greetMsg">
+                        <div class="mai-msg-av"><i class="fas fa-robot"></i></div>
+                        <div>
+                            <div class="mai-msg-bubble">
+                                Hey there! I'm <strong>Meneer</strong>, your JFA learning coach. 👋<br><br>
+                                I can help you understand compliance rules, sales techniques, financial products, ethics, and everything else in the JFA curriculum.<br><br>
+                                What would you like to explore today?
+                                <div class="mai-learn-card">
+                                    <div class="mai-learn-card-title"><i class="fas fa-lightbulb"></i> Tip of the day</div>
+                                    Under the FAIS Act, a Financial Service Provider must ensure all Representatives are adequately supervised. Make sure you understand the difference between <strong>Cat I</strong> and <strong>Cat II</strong> FSPs.
+                                </div>
+                            </div>
+                            <div class="mai-msg-time">Just now</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick-action chips -->
+                <div class="mai-chips">
+                    <button class="mai-chip" onclick="sendChip(this, 'Quiz me on Week 1')"><i class="fas fa-question-circle"></i> Quiz me</button>
+                    <button class="mai-chip" onclick="sendChip(this, 'Explain that simpler')"><i class="fas fa-volume-low"></i> Simpler</button>
+                    <button class="mai-chip" onclick="sendChip(this, 'Give me a real-world example')"><i class="fas fa-lightbulb"></i> Example</button>
+                    <button class="mai-chip" onclick="sendChip(this, 'What does FAIS stand for?')"><i class="fas fa-book"></i> FAIS</button>
+                    <button class="mai-chip" onclick="sendChip(this, 'What is a needs analysis?')"><i class="fas fa-chart-pie"></i> Needs Analysis</button>
+                    <button class="mai-chip" onclick="sendChip(this, 'Explain risk profiling')"><i class="fas fa-shield-alt"></i> Risk Profile</button>
+                    <button class="mai-chip" onclick="sendChip(this, 'What is the 80% pass mark about?')"><i class="fas fa-graduation-cap"></i> Pass mark</button>
+                </div>
+
+                <!-- Input bar -->
+                <div class="mai-input-bar">
+                    <textarea class="mai-textarea" id="chatInput" rows="1" placeholder="Ask Meneer anything…" onkeydown="chatKeydown(event)" oninput="autoResize(this)"></textarea>
+                    <button class="mai-send-btn" id="sendBtn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+
+            <!-- ── ROLE PLAY view ──────────────────────────────────── -->
+            <div class="mai-view" id="view-roleplay">
+                <!-- Scenario selector (shown by default) -->
+                <div class="mai-rp-scroll" id="rpSelector">
+                    <div style="margin-bottom:1rem;">
+                        <div style="font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:1.1rem;color:var(--color-text-primary,#111827);" id="rpTitle1">Choose a scenario</div>
+                        <div style="font-size:0.8rem;color:var(--color-text-secondary,#6b7280);margin-top:0.2rem;">Practice real client situations. Meneer plays the client — you play the advisor.</div>
+                    </div>
+                    <div class="mai-rp-grid">
+                        <!-- Cold Call -->
+                        <div class="mai-scenario" data-sc="cold" onclick="startScenario('cold')">
+                            <div class="mai-sc-icon" style="background:rgba(59,130,246,0.1);color:#2563eb;"><i class="fas fa-phone"></i></div>
+                            <div class="mai-sc-name">Cold Call</div>
+                            <div class="mai-sc-desc">Open a cold call, build rapport, and pitch a discovery meeting with a sceptical prospect.</div>
+                            <span class="mai-sc-diff" style="background:rgba(59,130,246,0.1);color:#1d4ed8;">Beginner</span>
+                        </div>
+                        <!-- Objection Handling -->
+                        <div class="mai-scenario" data-sc="objection" onclick="startScenario('objection')">
+                            <div class="mai-sc-icon" style="background:rgba(245,158,11,0.1);color:#d97706;"><i class="fas fa-hand-paper"></i></div>
+                            <div class="mai-sc-name">Objection Handling</div>
+                            <div class="mai-sc-desc">Navigate price objections, "I need to think about it", and product comparisons from a tough client.</div>
+                            <span class="mai-sc-diff" style="background:rgba(245,158,11,0.1);color:#92400e;">Intermediate</span>
+                        </div>
+                        <!-- Financial Needs Analysis -->
+                        <div class="mai-scenario" data-sc="fna" onclick="startScenario('fna')">
+                            <div class="mai-sc-icon" style="background:rgba(16,185,129,0.1);color:#059669;"><i class="fas fa-chart-pie"></i></div>
+                            <div class="mai-sc-name">Financial Needs Analysis</div>
+                            <div class="mai-sc-desc">Conduct a full FNA: income, expenses, goals, risk tolerance, and appropriate product recommendation.</div>
+                            <span class="mai-sc-diff" style="background:rgba(16,185,129,0.1);color:#065f46;">Intermediate</span>
+                        </div>
+                        <!-- Difficult Client -->
+                        <div class="mai-scenario" data-sc="difficult" onclick="startScenario('difficult')">
+                            <div class="mai-sc-icon" style="background:rgba(239,68,68,0.1);color:#dc2626;"><i class="fas fa-fire"></i></div>
+                            <div class="mai-sc-name">Difficult Client</div>
+                            <div class="mai-sc-desc">De-escalate a frustrated client who feels mis-sold a product and wants to cancel immediately.</div>
+                            <span class="mai-sc-diff" style="background:rgba(239,68,68,0.1);color:#991b1b;">Advanced</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- In-session chat (hidden until scenario starts) -->
+                <div class="mai-rp-session" id="rpSession">
+                    <div class="mai-rp-header">
+                        <div class="mai-rp-char-av" id="rpCharAv"></div>
+                        <div>
+                            <div class="mai-rp-char-name" id="rpCharName">Client</div>
+                            <div class="mai-rp-char-role" id="rpCharRole">Cold Call Prospect</div>
+                        </div>
+                        <div style="margin-left:auto;display:flex;gap:0.5rem;align-items:center;">
+                            <span style="font-size:0.72rem;color:var(--color-text-secondary,#6b7280);padding:0.25rem 0.6rem;border-radius:99px;background:var(--color-bg-tertiary,#f3f4f6);" id="rpTurnBadge">Your turn</span>
+                            <button class="mai-end-btn" onclick="endSession()"><i class="fas fa-flag-checkered"></i> End &amp; Review</button>
+                        </div>
+                    </div>
+                    <div class="mai-chat-area" id="rpChatArea"></div>
+                    <div class="mai-chips" id="rpChips"></div>
+                    <div class="mai-input-bar">
+                        <textarea class="mai-textarea" id="rpInput" rows="1" placeholder="Your response as advisor…" onkeydown="rpKeydown(event)" oninput="autoResize(this)"></textarea>
+                        <button class="mai-send-btn" onclick="sendRpMessage()"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+
+                <!-- Performance review (hidden until end session) -->
+                <div class="mai-review" id="rpReview">
+                    <div class="mai-review-title"><i class="fas fa-chart-line" style="color:#10b981;"></i> Session Review</div>
+
+                    <!-- Score ring -->
+                    <div class="mai-score-ring-wrap">
+                        <svg width="120" height="120" viewBox="0 0 120 120">
+                            <circle cx="60" cy="60" r="50" fill="none" stroke="#e5e7eb" stroke-width="10"/>
+                            <circle cx="60" cy="60" r="50" fill="none" stroke="url(#scoreGrad)" stroke-width="10"
+                                stroke-dasharray="314.16" stroke-dashoffset="314.16" stroke-linecap="round"
+                                transform="rotate(-90 60 60)" id="scoreRing" style="transition:stroke-dashoffset 1.2s ease;"/>
+                            <defs>
+                                <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#10b981"/>
+                                    <stop offset="100%" stop-color="#059669"/>
+                                </linearGradient>
+                            </defs>
+                            <text x="60" y="55" text-anchor="middle" font-family="Space Grotesk" font-weight="800" font-size="24" fill="var(--color-text-primary,#111827)" id="scoreVal">0%</text>
+                            <text x="60" y="72" text-anchor="middle" font-family="DM Sans" font-size="10" fill="#9ca3af">overall</text>
+                        </svg>
+                    </div>
+
+                    <div class="mai-kpi-grid" id="reviewKpis"></div>
+
+                    <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.88rem;color:var(--color-text-primary,#111827);margin-bottom:0.5rem;">Feedback</div>
+                    <ul class="mai-feedback-list" id="reviewFeedback"></ul>
+
+                    <button class="mai-try-again-btn" onclick="backToScenarios()"><i class="fas fa-redo"></i> Try another scenario</button>
+                </div>
+            </div>
+
+            <!-- ── PRODUCT Q&A view ───────────────────────────────── -->
+            <div class="mai-view" id="view-qa">
+                <div class="mai-qa-scroll">
+                    <div class="mai-qa-search-wrap">
+                        <i class="fas fa-search mai-qa-si"></i>
+                        <input class="mai-qa-search" type="text" id="qaSearch" placeholder="Search product questions…" oninput="filterQA()" autocomplete="off">
+                    </div>
+                    <div class="mai-cat-pills">
+                        <button class="mai-cat-pill active" data-cat="all" onclick="filterCat(this,'all')">All</button>
+                        <button class="mai-cat-pill" data-cat="ra" onclick="filterCat(this,'ra')">Retirement Annuity</button>
+                        <button class="mai-cat-pill" data-cat="tfsa" onclick="filterCat(this,'tfsa')">TFSA</button>
+                        <button class="mai-cat-pill" data-cat="li" onclick="filterCat(this,'li')">Life Insurance</button>
+                        <button class="mai-cat-pill" data-cat="ut" onclick="filterCat(this,'ut')">Unit Trusts</button>
+                        <button class="mai-cat-pill" data-cat="fais" onclick="filterCat(this,'fais')">FAIS / Compliance</button>
+                    </div>
+                    <div id="qaCards"></div>
+                </div>
+            </div>
+
+        </div><!-- /mai-main -->
+    </div><!-- /mai-shell -->
+
+    <footer id="main-footer"></footer>
+    <script src="script.js"></script>
+    <script>
+    /* ════════════════════════════════════════════════════════════════
+       Meneer AI — Logic
+    ════════════════════════════════════════════════════════════════ */
+
+    var currentMode = 'learn';
+    var isTyping    = false;
+    var rpScenario  = null;
+    var rpTurn      = 0;
+    var currentQaCat = 'all';
+
+    /* ── Simulated AI responses (Learn mode) ─────────────────── */
+    var learnResponses = {
+        'quiz': [
+            'Here\'s a quick question:\n\n<strong>Q: What does FAIS stand for?</strong>\n\nA. Financial Advisory and Investment Services\nB. Financial Advisory and Intermediary Services\nC. Fiscal Advisory and Insurance Services\nD. Financial Assurance and Information Systems\n\nType the letter of your answer!',
+            'Let\'s test your knowledge!\n\n<strong>Q: What is the minimum pass mark required for JFA assessments?</strong>\n\nA. 60%\nB. 70%\nC. 80%\nD. 90%'
+        ],
+        'fais': '<strong>FAIS stands for the Financial Advisory and Intermediary Services Act (No. 37 of 2002).</strong>\n\nKey points:\n• It regulates who can provide financial advice in South Africa\n• Requires FSPs to be registered with the FSCA\n• Representatives must meet Fit & Proper requirements\n• Failure to comply can result in debarment',
+        'risk': 'Risk profiling is the process of determining a client\'s:\n\n1. <strong>Risk capacity</strong> — how much risk they CAN afford to take\n2. <strong>Risk tolerance</strong> — how much risk they\'re COMFORTABLE with\n3. <strong>Risk requirement</strong> — how much risk they NEED to take to achieve their goals\n\nAs a JFA advisor, you\'re required under FAIS to conduct a risk profile before recommending any product.',
+        'needs': 'A Financial Needs Analysis (FNA) is a structured fact-finding process where you:\n\n• Collect income & expense data\n• Identify short, medium, and long-term goals\n• Assess existing cover and savings\n• Determine gaps between current position and desired outcomes\n\nUnder FAIS, an FNA is mandatory before making any financial product recommendation.',
+        'simple': 'Let me simplify that!\n\nThink of it like this: FAIS is basically the rulebook that says "before you can give someone financial advice for money, you need to be properly trained, registered, and follow certain rules — to protect the client."\n\nIt\'s the reason your JFA qualification matters.',
+        'example': 'Real-world example:\n\nYour client Sipho earns R25,000/month. He has no retirement savings and wants to retire at 65 (he\'s 35 now). You conduct a needs analysis and find he needs R5M at retirement.\n\nYou recommend a combination of a Retirement Annuity (RA) and a Unit Trust for flexibility. You document the recommendation with reasoning — as required under FAIS Record of Advice.',
+        'pass': 'The 80% pass mark is the minimum score you need to achieve on each JFA assessment to progress to the next week\'s content.\n\nYou get <strong>2 attempts</strong> per assessment. If you fail both, you\'ll need to go through remedial coaching before re-attempting.\n\nTip: Meneer can quiz you before any assessment!',
+        'default': [
+            'Great question! Let me think through that with you.\n\nIn the JFA curriculum, understanding regulatory context is crucial. The FSCA (formerly FSB) oversees all financial service providers in South Africa, ensuring they act in clients\' best interests.\n\nWould you like me to go deeper on any specific aspect?',
+            'That\'s a core concept in financial advisory! Here\'s what you need to know:\n\nThe principle of <strong>Treating Customers Fairly (TCF)</strong> is embedded throughout the JFA programme. It means ensuring your product recommendations are suitable, your advice is honest, and your clients understand what they\'re getting.\n\nWant an example or a quiz on this?',
+            'Good thinking! Let me give you the examiner\'s perspective on that.\n\nFor assessments, you need to be able to explain concepts in your own words, not just recite definitions. Try the "explain to a 10-year-old" technique to really test your understanding.\n\nShall I quiz you on this topic?'
+        ]
+    };
+
+    /* ── Role play scenario configs ───────────────────────────── */
+    var rpConfigs = {
+        cold: {
+            charName: 'Mr Mokoena',
+            charRole: 'Cold Call Prospect',
+            charColor: '#2563eb',
+            charEmoji: '🧑‍💼',
+            opening: 'Hello? Who is this? I\'m actually quite busy right now...',
+            hints: ['Introduce yourself clearly', 'Ask for 30 seconds only', 'Reference a mutual benefit'],
+            clientReplies: [
+                'I\'m not really interested in financial advice, I already have someone.',
+                'How did you get my number? I don\'t appreciate cold calls.',
+                'What makes you different from all the others who call me?',
+                'Okay, I\'ll give you two minutes. What\'s this about?',
+                'That actually sounds interesting. Can we schedule a proper meeting?'
+            ]
+        },
+        objection: {
+            charName: 'Mrs Naidoo',
+            charRole: 'Objection Handling',
+            charColor: '#d97706',
+            charEmoji: '👩‍💼',
+            opening: 'Look, I\'ve already heard your presentation but honestly — it\'s too expensive. I can get this cheaper elsewhere.',
+            hints: ['Acknowledge the objection first', 'Isolate if it\'s the only concern', 'Reframe value vs cost'],
+            clientReplies: [
+                'The price is still too high. My friend pays less at XYZ.',
+                'I need to talk to my husband first. Can you call me next week?',
+                'What guarantees do I have that this will actually work?',
+                'Okay, let\'s say I\'m open to it — what exactly am I getting?',
+                'Fine. I\'m willing to move forward if you can review the structure.'
+            ]
+        },
+        fna: {
+            charName: 'Thabo Sithole',
+            charRole: 'Financial Needs Analysis',
+            charColor: '#059669',
+            charEmoji: '😊',
+            opening: 'Hi, my colleague recommended I speak to you. I\'m 38, married, 2 kids, and honestly I don\'t really know if I\'m financially sorted or not.',
+            hints: ['Ask open-ended income questions', 'Explore existing financial products', 'Identify short and long-term goals'],
+            clientReplies: [
+                'I earn about R45,000 a month after tax. My wife earns R28,000.',
+                'We have a home loan, two car payments, and school fees. I have an old RA from my previous job.',
+                'I want to retire at 60 comfortably. And I want my kids to go to university.',
+                'I\'ve never really thought about life cover. Is that important?',
+                'So based on all that — what do you recommend?'
+            ]
+        },
+        difficult: {
+            charName: 'Angry Client',
+            charRole: 'Complaint — Mis-selling',
+            charColor: '#dc2626',
+            charEmoji: '😤',
+            opening: 'I am FURIOUS. This policy I took out six months ago is NOT what you sold me. I want to cancel everything RIGHT NOW.',
+            hints: ['Stay calm, don\'t match aggression', 'Acknowledge feelings first', 'Ask to understand the specific concern'],
+            clientReplies: [
+                'Don\'t try to calm me down! I was told this would cover X but it doesn\'t!',
+                'Why didn\'t you tell me about these exclusions when I signed?',
+                'How am I supposed to trust you again after this?',
+                'Fine. Explain to me exactly what IS covered then.',
+                'I suppose if you can fix the issue, I\'ll reconsider cancelling.'
+            ]
+        }
+    };
+
+    /* ── Product Q&A data ───────────────────────────────────────── */
+    var qaData = [
+        { cat:'ra',   q:'What is the annual contribution limit for a Retirement Annuity?',    a:'You may deduct contributions up to 27.5% of your taxable income or R350,000 per year (whichever is lower) for tax purposes. Contributions above this are carried forward.' },
+        { cat:'ra',   q:'Can I withdraw from my RA before retirement?',                         a:'Generally no — you cannot access RA funds before age 55, except in cases of emigration, disability, or if the value is below R7,000 (de minimis). This is governed by the Pension Funds Act.' },
+        { cat:'ra',   q:'What is the two-thirds annuitisation rule for RAs?',                   a:'At retirement, you must use at least two-thirds of your RA to purchase an annuity. You may take up to one-third as a cash lump sum (the first R550,000 of which is tax-free over your lifetime).' },
+        { cat:'tfsa', q:'What is the annual contribution limit for a Tax-Free Savings Account?', a:'R36,000 per tax year, with a lifetime limit of R500,000. Contributions above these limits are taxed at 40%. Interest, dividends, and capital gains within a TFSA are tax-free.' },
+        { cat:'tfsa', q:'Can I carry over unused TFSA contributions to next year?',              a:'No — unused annual allowance is forfeited. If you contribute R20,000 in a year, you cannot "catch up" with R52,000 the next year. Only R36,000 is allowed per year regardless.' },
+        { cat:'tfsa', q:'Is a TFSA or RA better for a young client?',                          a:'Both serve different purposes. An RA provides immediate tax relief and enforced savings for retirement. A TFSA offers flexibility (withdrawals anytime) but no upfront tax deduction. Young clients with high income benefit from RAs; those needing flexibility should consider TFSAs.' },
+        { cat:'li',   q:'What is the difference between life cover and income protection?',     a:'Life cover (death benefit) pays a lump sum to beneficiaries on the policyholder\'s death. Income protection pays a monthly benefit (usually 75% of income) if the policyholder cannot work due to illness or injury — while still alive.' },
+        { cat:'li',   q:'What does "dread disease" or "critical illness" cover mean?',         a:'It pays a lump sum on diagnosis of a specified critical illness (e.g. cancer, heart attack, stroke). The payout is typically used to cover medical costs, adapt lifestyle, or replace lost income. It supplements rather than replaces income protection.' },
+        { cat:'li',   q:'What is a needs-based approach to life cover?',                       a:'Instead of selling a set amount, you calculate the client\'s actual financial obligations — outstanding debt, dependants\' income replacement needs, education costs — to determine the exact cover required. This is a regulatory requirement under FAIS.' },
+        { cat:'ut',   q:'What is a unit trust and how does it work?',                          a:'A unit trust (collective investment scheme) pools money from many investors to buy a diversified portfolio managed by a professional fund manager. Investors buy "units" and profit from growth and income distributions proportional to their holdings.' },
+        { cat:'ut',   q:'What is the difference between an active and passive fund?',          a:'Active funds employ a fund manager who selects investments to outperform a benchmark. Passive funds (index trackers) simply replicate a market index. Active funds typically have higher fees; passive funds offer lower costs and are harder to outperform consistently.' },
+        { cat:'ut',   q:'What does Total Expense Ratio (TER) mean?',                          a:'TER is the annual cost of owning a unit trust, expressed as a percentage of assets. It includes management fees, admin costs, and other expenses. A TER of 1.5% means you pay R1,500 per year on a R100,000 investment. Lower TER = more of your return stays with you.' },
+        { cat:'fais', q:'What does FAIS stand for and who does it apply to?',                 a:'FAIS stands for the Financial Advisory and Intermediary Services Act (37 of 2002). It applies to anyone who provides financial advice or intermediary services for compensation — including all JFA advisors. It regulates conduct, disclosure, and competency requirements.' },
+        { cat:'fais', q:'What is a Record of Advice (ROA) and when must I provide it?',       a:'An ROA documents the basis of your financial recommendation. It must be given to the client before or at the time of the transaction. It should include the client\'s needs, your recommendation, the product selected, and why it\'s suitable. Failure to provide one can result in debarment.' },
+        { cat:'fais', q:'What are Fit & Proper requirements?',                                 a:'Fit & Proper requirements are standards set by the FSCA that all FSP representatives must meet: (1) Honesty and integrity, (2) Competency (qualifications and experience), (3) Operational ability. Representatives who don\'t meet these cannot be authorised.' }
+    ];
+
+    /* ────────────────────────────────────────────────────────────
+       Mode switching
+    ──────────────────────────────────────────────────────────── */
+    function switchMode(mode) {
+        currentMode = mode;
+        document.querySelectorAll('.mai-mode-btn').forEach(function(b) {
+            b.classList.toggle('active', b.getAttribute('data-mode') === mode);
+        });
+        document.querySelectorAll('.mai-view').forEach(function(v) {
+            v.classList.remove('active');
+        });
+        document.getElementById('view-' + mode).classList.add('active');
+
+        var badge = document.getElementById('modeBadge');
+        var desc  = document.getElementById('modeDesc');
+        badge.className = 'mai-mode-badge ' + mode;
+        if (mode === 'learn') {
+            badge.innerHTML = '<i class="fas fa-book-open"></i> Learn mode';
+            desc.textContent = 'Ask me anything about the JFA curriculum';
+        } else if (mode === 'roleplay') {
+            badge.innerHTML = '<i class="fas fa-masks-theater"></i> Role Play mode';
+            desc.textContent = 'Practice client conversations with AI';
+        } else {
+            badge.innerHTML = '<i class="fas fa-circle-question"></i> Product Q&A mode';
+            desc.textContent = 'Quick answers to product and compliance questions';
+        }
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       Learn mode
+    ──────────────────────────────────────────────────────────── */
+    function sendMessage() {
+        var input = document.getElementById('chatInput');
+        var text  = input.value.trim();
+        if (!text || isTyping) return;
+        appendMsg('user', text);
+        input.value = ''; input.style.height = '';
+        showTyping();
+        setTimeout(function() { replyLearn(text); }, 900 + Math.random() * 600);
+    }
+
+    function sendChip(btn, text) {
+        document.getElementById('chatInput').value = text;
+        sendMessage();
+    }
+
+    function chatKeydown(e) {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    }
+
+    function replyLearn(userText) {
+        var t = userText.toLowerCase();
+        var reply;
+        if (t.includes('quiz') || t.includes('test me') || t.includes('quiz me')) {
+            var r = learnResponses.quiz;
+            reply = r[Math.floor(Math.random() * r.length)];
+        } else if (t.includes('fais') || t.includes('what does fais')) {
+            reply = learnResponses.fais;
+        } else if (t.includes('risk') || t.includes('risk profil')) {
+            reply = learnResponses.risk;
+        } else if (t.includes('needs analysis') || t.includes('fna')) {
+            reply = learnResponses.needs;
+        } else if (t.includes('simpler') || t.includes('explain') || t.includes('simple')) {
+            reply = learnResponses.simple;
+        } else if (t.includes('example') || t.includes('real world')) {
+            reply = learnResponses.example;
+        } else if (t.includes('pass mark') || t.includes('80%') || t.includes('pass mark')) {
+            reply = learnResponses.pass;
+        } else {
+            var dr = learnResponses.default;
+            reply = dr[Math.floor(Math.random() * dr.length)];
+        }
+        removeTyping();
+        appendMsg('ai', reply);
+    }
+
+    function appendMsg(role, text) {
+        var area   = document.getElementById('chatArea');
+        var time   = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        var bubble = document.createElement('div');
+        bubble.className = 'mai-msg ' + role;
+        bubble.innerHTML =
+            '<div class="mai-msg-av"><i class="fas fa-' + (role === 'ai' ? 'robot' : 'user') + '"></i></div>' +
+            '<div>' +
+                '<div class="mai-msg-bubble">' + text.replace(/\n/g, '<br>') + '</div>' +
+                '<div class="mai-msg-time">' + time + '</div>' +
+            '</div>';
+        area.appendChild(bubble);
+        area.scrollTop = area.scrollHeight;
+    }
+
+    function showTyping() {
+        isTyping = true;
+        document.getElementById('sendBtn').disabled = true;
+        var area = document.getElementById('chatArea');
+        var t    = document.createElement('div');
+        t.className = 'mai-typing'; t.id = 'typingIndicator';
+        t.innerHTML = '<div class="mai-msg-av" style="background:linear-gradient(135deg,#065f46,#10b981);color:#fff;"><i class="fas fa-robot"></i></div>' +
+            '<div class="mai-typing-dots"><div class="mai-dot"></div><div class="mai-dot"></div><div class="mai-dot"></div></div>';
+        area.appendChild(t);
+        area.scrollTop = area.scrollHeight;
+    }
+
+    function removeTyping() {
+        isTyping = false;
+        document.getElementById('sendBtn').disabled = false;
+        var t = document.getElementById('typingIndicator');
+        if (t) t.remove();
+    }
+
+    function autoResize(el) {
+        el.style.height = '';
+        el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+    }
+
+    function clearChat() {
+        var area = document.getElementById('chatArea');
+        area.innerHTML = '';
+        appendMsg('ai', 'Chat cleared! I\'m ready for a fresh start. What would you like to explore?');
+    }
+
+    function newSession() {
+        clearChat();
+        switchMode('learn');
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       Role Play mode
+    ──────────────────────────────────────────────────────────── */
+    function startScenario(sc) {
+        rpScenario = sc;
+        rpTurn     = 0;
+        var cfg    = rpConfigs[sc];
+        document.getElementById('rpSelector').style.display = 'none';
+        document.getElementById('rpSession').classList.add('active');
+        document.getElementById('rpReview').classList.remove('active');
+
+        document.getElementById('rpCharAv').innerHTML   = '<span style="font-size:1.3rem;">' + cfg.charEmoji + '</span>';
+        document.getElementById('rpCharAv').style.background = cfg.charColor + '22';
+        document.getElementById('rpCharName').textContent = cfg.charName;
+        document.getElementById('rpCharRole').textContent = cfg.charRole;
+
+        /* Scenario hint chips */
+        var chipsEl = document.getElementById('rpChips');
+        chipsEl.innerHTML = '';
+        cfg.hints.forEach(function(hint) {
+            var b = document.createElement('button');
+            b.className = 'mai-chip';
+            b.textContent = hint;
+            b.onclick = function() {
+                document.getElementById('rpInput').value = hint;
+                document.getElementById('rpInput').focus();
+            };
+            chipsEl.appendChild(b);
+        });
+
+        /* First client line */
+        var rpArea = document.getElementById('rpChatArea');
+        rpArea.innerHTML = '';
+        appendRpMsg('client', cfg.opening);
+    }
+
+    function sendRpMessage() {
+        var input = document.getElementById('rpInput');
+        var text  = input.value.trim();
+        if (!text || isTyping) return;
+        appendRpMsg('advisor', text);
+        input.value = ''; input.style.height = '';
+        document.getElementById('rpTurnBadge').textContent = 'Client thinking…';
+        var cfg = rpConfigs[rpScenario];
+        setTimeout(function() {
+            if (rpTurn < cfg.clientReplies.length) {
+                appendRpMsg('client', cfg.clientReplies[rpTurn]);
+                rpTurn++;
+                document.getElementById('rpTurnBadge').textContent = 'Your turn';
+            } else {
+                appendRpMsg('client', 'I think we\'ve covered a lot of ground today. Let me reflect on this.');
+                document.getElementById('rpTurnBadge').textContent = 'Session complete';
+            }
+        }, 1000 + Math.random() * 700);
+    }
+
+    function rpKeydown(e) {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendRpMessage(); }
+    }
+
+    function appendRpMsg(role, text) {
+        var area   = document.getElementById('rpChatArea');
+        var cfg    = rpConfigs[rpScenario] || {};
+        var time   = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        var isClient = role === 'client';
+        var wrap = document.createElement('div');
+        wrap.className = 'mai-msg ' + (isClient ? 'ai' : 'user');
+        var avStyle = isClient
+            ? 'background:' + (cfg.charColor || '#1e40af') + '22;font-size:1.1rem;'
+            : 'background:linear-gradient(135deg,#1e40af,#3b82f6);';
+        var avContent = isClient ? (cfg.charEmoji || '👤') : '<i class="fas fa-user" style="font-size:0.85rem;"></i>';
+        wrap.innerHTML =
+            '<div class="mai-msg-av" style="' + avStyle + '">' + avContent + '</div>' +
+            '<div>' +
+                '<div class="mai-msg-bubble">' + text + '</div>' +
+                '<div class="mai-msg-time">' + (isClient ? (cfg.charName || 'Client') : 'You') + ' · ' + time + '</div>' +
+            '</div>';
+        area.appendChild(wrap);
+        area.scrollTop = area.scrollHeight;
+    }
+
+    function endSession() {
+        document.getElementById('rpSession').classList.remove('active');
+        document.getElementById('rpReview').classList.add('active');
+        showReview();
+    }
+
+    function showReview() {
+        /* Simulated performance scores */
+        var scores = {
+            'Rapport Building':   Math.floor(60 + Math.random() * 35),
+            'Product Knowledge':  Math.floor(65 + Math.random() * 30),
+            'Objection Handling': Math.floor(55 + Math.random() * 40),
+            'Communication':      Math.floor(70 + Math.random() * 28)
+        };
+        var overall = Math.round(Object.values(scores).reduce(function(a,b){return a+b;},0) / Object.keys(scores).length);
+
+        /* Animate score ring */
+        setTimeout(function() {
+            var ring = document.getElementById('scoreRing');
+            var val  = document.getElementById('scoreVal');
+            ring.style.strokeDashoffset = 314.16 * (1 - overall / 100);
+            val.textContent = overall + '%';
+        }, 200);
+
+        /* KPI grid */
+        var kpisEl = document.getElementById('reviewKpis');
+        kpisEl.innerHTML = '';
+        var colors = ['#3b82f6','#10b981','#f59e0b','#8b5cf6'];
+        Object.keys(scores).forEach(function(k, i) {
+            var div = document.createElement('div');
+            div.className = 'mai-kpi';
+            div.innerHTML = '<div class="mai-kpi-val" style="color:' + colors[i] + ';">' + scores[k] + '%</div><div class="mai-kpi-lbl">' + k + '</div>';
+            kpisEl.appendChild(div);
+        });
+
+        /* Feedback */
+        var feedbackEl = document.getElementById('reviewFeedback');
+        feedbackEl.innerHTML = '';
+        var feedback = [
+            { type:'good',    text:'You maintained a professional and calm tone throughout the conversation.' },
+            { type:'good',    text:'Good use of open-ended questions to uncover the client\'s real concerns.' },
+            { type:'improve', text:'Try to acknowledge objections explicitly before responding — use "I understand…" framing.' },
+            { type:'improve', text:'You could reference product benefits more specifically tied to the client\'s stated goals.' }
+        ];
+        feedback.forEach(function(f) {
+            var li = document.createElement('li');
+            li.className = 'mai-fb-item ' + f.type;
+            li.innerHTML = '<span class="mai-fb-icon"><i class="fas fa-' + (f.type === 'good' ? 'check-circle" style="color:#10b981;"' : 'exclamation-circle" style="color:#f59e0b;"') + '></i></span>' + f.text;
+            feedbackEl.appendChild(li);
+        });
+    }
+
+    function backToScenarios() {
+        document.getElementById('rpReview').classList.remove('active');
+        document.getElementById('rpSession').classList.remove('active');
+        document.getElementById('rpSelector').style.display = '';
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       Product Q&A mode
+    ──────────────────────────────────────────────────────────── */
+    function renderQA(items) {
+        var el = document.getElementById('qaCards');
+        el.innerHTML = '';
+        if (!items.length) {
+            el.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--color-text-secondary,#9ca3af);font-size:0.85rem;"><i class="fas fa-search" style="font-size:1.5rem;display:block;margin-bottom:0.5rem;"></i>No matches found. Try different keywords.</div>';
+            return;
+        }
+        items.forEach(function(item, idx) {
+            var div = document.createElement('div');
+            div.className = 'mai-qa-card';
+            div.innerHTML =
+                '<div class="mai-qa-q">' +
+                    '<span>' + item.q + '</span>' +
+                    '<span style="display:flex;align-items:center;gap:0.4rem;">' +
+                        '<span class="mai-qa-tag">' + item.cat.toUpperCase() + '</span>' +
+                        '<i class="fas fa-chevron-right mai-qa-chevron"></i>' +
+                    '</span>' +
+                '</div>' +
+                '<div class="mai-qa-a">' + item.a + '</div>';
+            div.onclick = function() {
+                var ans = div.querySelector('.mai-qa-a');
+                var open = ans.classList.toggle('open');
+                div.classList.toggle('open', open);
+            };
+            el.appendChild(div);
+        });
+    }
+
+    function filterCat(btn, cat) {
+        currentQaCat = cat;
+        document.querySelectorAll('.mai-cat-pill').forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        applyQAFilter();
+    }
+
+    function filterQA() { applyQAFilter(); }
+
+    function applyQAFilter() {
+        var search = (document.getElementById('qaSearch').value || '').toLowerCase();
+        var items  = qaData.filter(function(item) {
+            var catOk  = currentQaCat === 'all' || item.cat === currentQaCat;
+            var textOk = !search || item.q.toLowerCase().includes(search) || item.a.toLowerCase().includes(search);
+            return catOk && textOk;
+        });
+        renderQA(items);
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       Sidebar toggle (mobile-aware)
+    ──────────────────────────────────────────────────────────── */
+    function isMobile() { return window.innerWidth <= 768; }
+
+    function toggleMaiSidebar() {
+        var sb  = document.getElementById('maiSidebar');
+        var ov  = document.getElementById('maiOverlay');
+        var ico = document.getElementById('sidebarToggleIcon');
+        var collapsed = sb.classList.toggle('collapsed');
+        if (ov) {
+            if (!collapsed && isMobile()) {
+                ov.style.display = 'block';
+                requestAnimationFrame(function() { ov.classList.add('active'); });
+                document.body.style.overflow = 'hidden';
+            } else {
+                ov.classList.remove('active');
+                document.body.style.overflow = '';
+                setTimeout(function() { if (!ov.classList.contains('active')) ov.style.display = 'none'; }, 260);
+            }
+        }
+        if (ico) ico.className = collapsed ? 'fas fa-bars' : 'fas fa-times';
+    }
+
+    function closeMaiSidebar() {
+        var sb  = document.getElementById('maiSidebar');
+        var ov  = document.getElementById('maiOverlay');
+        var ico = document.getElementById('sidebarToggleIcon');
+        if (!sb) return;
+        sb.classList.add('collapsed');
+        if (ov) {
+            ov.classList.remove('active');
+            document.body.style.overflow = '';
+            setTimeout(function() { ov.style.display = 'none'; }, 260);
+        }
+        if (ico) ico.className = 'fas fa-bars';
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       Init
+    ──────────────────────────────────────────────────────────── */
+    document.addEventListener('DOMContentLoaded', function() {
+        renderQA(qaData);
+        // Auto-collapse on mobile
+        if (isMobile()) {
+            var sb = document.getElementById('maiSidebar');
+            if (sb) sb.classList.add('collapsed');
+        }
+    });
+    </script>
+</body>
+</html>

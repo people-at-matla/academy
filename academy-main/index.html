@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matla Academy · Sign In</title>
+<link rel="icon" href="Matla Academy .png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
+<script src="db.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg-0:#02040d;
+  --bg-1:#06091a;
+  --ink-1:#f4f7ff;
+  --ink-2:#a8b5d4;
+  --ink-3:#5c6a8c;
+  --ink-4:#2e3a58;
+  --line:rgba(120,150,220,.10);
+  --line-hi:rgba(120,150,220,.22);
+  --gold:#f5b041;
+  --gold-2:#ffd27a;
+  --gold-glow:rgba(245,176,65,.45);
+  --indigo:#5b8def;
+  --indigo-2:#3057d6;
+  --teal:#22d3b8;
+  --violet:#a78bfa;
+  --rose:#f87171;
+  --f:'Plus Jakarta Sans',system-ui,sans-serif;
+  --fh:'Sora',system-ui,sans-serif;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --ease-bounce:cubic-bezier(.34,1.56,.64,1);
+}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.1ms!important}
+}
+
+html,body{height:100%;font-family:var(--f);background:var(--bg-0);color:var(--ink-1);-webkit-font-smoothing:antialiased}
+body{overflow-y:auto;overflow-x:hidden}
+
+/* ─── COSMIC BACKGROUND ─── */
+.cosmos{position:fixed;inset:0;z-index:0;overflow:hidden;background:radial-gradient(ellipse at top,#0a1330 0%,#02040d 60%)}
+
+/* Mesh gradient orbs */
+.orb{position:absolute;border-radius:50%;filter:blur(110px);opacity:0;animation:orb-in 2.4s var(--ease) forwards}
+.orb-1{width:780px;height:680px;background:radial-gradient(circle,rgba(48,87,214,.55),transparent 65%);top:-220px;left:-180px;animation-delay:0s;animation-name:orb-in,orb-drift1;animation-duration:2.4s,28s;animation-iteration-count:1,infinite;animation-timing-function:var(--ease),ease-in-out}
+.orb-2{width:620px;height:620px;background:radial-gradient(circle,rgba(245,176,65,.35),transparent 65%);bottom:-160px;right:-120px;animation-delay:.4s;animation-name:orb-in,orb-drift2;animation-duration:2.4s,32s;animation-iteration-count:1,infinite;animation-timing-function:var(--ease),ease-in-out}
+.orb-3{width:560px;height:560px;background:radial-gradient(circle,rgba(167,139,250,.30),transparent 65%);top:32%;left:38%;animation-delay:.8s;animation-name:orb-in,orb-drift3;animation-duration:2.4s,36s;animation-iteration-count:1,infinite;animation-timing-function:var(--ease),ease-in-out}
+.orb-4{width:480px;height:480px;background:radial-gradient(circle,rgba(34,211,184,.22),transparent 65%);top:18%;right:22%;animation-delay:1.1s;animation-name:orb-in,orb-drift4;animation-duration:2.4s,30s;animation-iteration-count:1,infinite;animation-timing-function:var(--ease),ease-in-out}
+
+@keyframes orb-in{to{opacity:1}}
+@keyframes orb-drift1{0%,100%{transform:translate(0,0)}33%{transform:translate(60px,40px)}66%{transform:translate(-30px,70px)}}
+@keyframes orb-drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-70px,-50px)}}
+@keyframes orb-drift3{0%,100%{transform:translate(0,0)scale(1)}50%{transform:translate(-90px,-60px)scale(1.08)}}
+@keyframes orb-drift4{0%,100%{transform:translate(0,0)}40%{transform:translate(50px,-50px)}70%{transform:translate(-30px,30px)}}
+
+/* Star field */
+.stars{position:absolute;inset:0;background-image:
+  radial-gradient(1px 1px at 23% 17%,rgba(255,255,255,.85),transparent),
+  radial-gradient(1px 1px at 67% 42%,rgba(255,255,255,.7),transparent),
+  radial-gradient(1.5px 1.5px at 12% 78%,rgba(255,255,255,.9),transparent),
+  radial-gradient(1px 1px at 88% 24%,rgba(255,255,255,.6),transparent),
+  radial-gradient(1px 1px at 45% 90%,rgba(255,255,255,.7),transparent),
+  radial-gradient(1.5px 1.5px at 78% 67%,rgba(255,255,255,.85),transparent),
+  radial-gradient(1px 1px at 33% 53%,rgba(255,255,255,.6),transparent),
+  radial-gradient(1px 1px at 8% 32%,rgba(255,255,255,.7),transparent),
+  radial-gradient(1px 1px at 92% 88%,rgba(255,255,255,.8),transparent),
+  radial-gradient(1px 1px at 56% 11%,rgba(255,255,255,.65),transparent);
+  opacity:.6;animation:twinkle 6s ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:.45}50%{opacity:.85}}
+
+/* Grid mesh */
+.mesh{position:absolute;inset:0;background-image:
+  linear-gradient(rgba(91,141,239,.04) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(91,141,239,.04) 1px,transparent 1px);
+  background-size:64px 64px;-webkit-mask-image:radial-gradient(ellipse at center,#000 30%,transparent 75%);mask-image:radial-gradient(ellipse at center,#000 30%,transparent 75%)}
+
+/* Floating shooting stars */
+.shoot{position:absolute;width:120px;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent);opacity:0;animation:shoot 8s ease-out infinite}
+.shoot-1{top:18%;left:-15%;animation-delay:2s}
+.shoot-2{top:48%;left:-15%;animation-delay:6s}
+.shoot-3{top:72%;left:-15%;animation-delay:10s}
+@keyframes shoot{0%{opacity:0;transform:translateX(0) translateY(0) rotate(15deg)}5%{opacity:1}25%{opacity:1}30%{opacity:0;transform:translateX(140vw) translateY(40vh) rotate(15deg)}100%{opacity:0;transform:translateX(140vw) translateY(40vh) rotate(15deg)}}
+
+/* ─── SHELL ─── */
+.shell{position:relative;z-index:1;display:flex;align-items:flex-start;justify-content:center;min-height:100vh;min-height:100dvh;padding:70px 1.5rem 2rem}
+
+/* ─── TOP NAV ─── */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.6rem;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);background:rgba(2,4,13,.55);border-bottom:1px solid rgba(255,255,255,.04)}
+.brand-mini{display:flex;align-items:center;gap:.7rem;animation:slide-down .7s var(--ease) .2s both}
+.brand-mini-logo{width:46px;height:46px;object-fit:contain;filter:drop-shadow(0 0 14px var(--gold-glow))}
+.brand-mini-name{font-family:var(--fh);font-weight:800;font-size:1.05rem;letter-spacing:-.01em}
+.brand-mini-name span{color:var(--gold)}
+.brand-mini-tag{font-size:.55rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin-top:2px}
+.top-actions{display:flex;align-items:center;gap:.6rem;animation:slide-down .7s var(--ease) .35s both}
+.top-link{font-size:.78rem;font-weight:600;color:var(--ink-2);text-decoration:none;padding:.55rem 1rem;border-radius:8px;transition:.18s}
+.top-link:hover{color:var(--ink-1);background:rgba(255,255,255,.04)}
+@keyframes slide-down{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── MAIN STAGE ─── */
+.stage{position:relative;width:100%;max-width:460px;padding-top:.5rem}
+
+/* Hero halo logo */
+.hero{display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:1rem;animation:hero-in .9s var(--ease) .15s both}
+@keyframes hero-in{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
+
+.halo{position:relative;width:68px;height:68px;display:flex;align-items:center;justify-content:center;margin-bottom:.8rem}
+.halo-ring{position:absolute;border-radius:50%;border:1px solid rgba(245,176,65,.28)}
+.hr-1{width:68px;height:68px;animation:halo-pulse 4s ease-in-out infinite}
+.hr-2{width:88px;height:88px;border-color:rgba(245,176,65,.16);animation:halo-pulse 4s ease-in-out infinite .8s}
+.hr-3{width:110px;height:110px;border-color:rgba(245,176,65,.07);animation:halo-pulse 4s ease-in-out infinite 1.6s}
+.halo-glow{position:absolute;width:76px;height:76px;border-radius:50%;background:radial-gradient(circle,var(--gold-glow),transparent 65%);filter:blur(14px);animation:halo-breathe 4s ease-in-out infinite}
+.hero-logo{position:relative;width:72px;height:72px;object-fit:contain;z-index:2;filter:drop-shadow(0 0 16px var(--gold-glow)) drop-shadow(0 0 36px rgba(245,176,65,.18));animation:hero-float 6s ease-in-out infinite}
+
+@keyframes halo-pulse{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
+@keyframes halo-breathe{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.12)}}
+@keyframes hero-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+
+.hero-badge{display:inline-flex;align-items:center;gap:.4rem;font-size:.58rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);padding:.28rem .75rem;border-radius:99px;margin-bottom:.65rem}
+.hero-dot{width:5px;height:5px;border-radius:50%;background:var(--teal);box-shadow:0 0 8px rgba(34,211,184,.85);animation:dot-pulse 2s ease-in-out infinite}
+@keyframes dot-pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+.hero-title{font-family:var(--fh);font-size:1.75rem;font-weight:800;line-height:1.08;letter-spacing:-.03em;margin-bottom:.35rem;background:linear-gradient(180deg,#fff 0%,#cdd5ec 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-title em{font-style:normal;background:linear-gradient(135deg,var(--gold),var(--gold-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-sub{font-size:.78rem;color:var(--ink-2);max-width:360px;line-height:1.5}
+
+/* ─── CARD ─── */
+.card{position:relative;background:rgba(8,13,30,.78);border:1px solid var(--line);border-radius:20px;padding:1.4rem 1.6rem 1.25rem;-webkit-backdrop-filter:blur(28px) saturate(140%);backdrop-filter:blur(28px) saturate(140%);box-shadow:0 1px 0 rgba(255,255,255,.06) inset,0 0 0 1px rgba(91,141,239,.05) inset,0 30px 70px rgba(0,0,0,.65),0 10px 24px rgba(0,0,0,.4);animation:card-in .8s var(--ease) .25s both;--mx:50%;--my:50%;transition:border-color .25s,transform .25s var(--ease)}
+.card::before{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(420px circle at var(--mx) var(--my),rgba(91,141,239,.10),transparent 60%)}
+.card::after{content:'';position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;background:linear-gradient(135deg,rgba(245,176,65,.12),transparent 30%,transparent 70%,rgba(91,141,239,.12));-webkit-mask:linear-gradient(#000,#000) content-box,linear-gradient(#000,#000);-webkit-mask-composite:xor;mask-composite:exclude;padding:1px;opacity:.6}
+.card:hover{border-color:var(--line-hi)}
+.card>*{position:relative;z-index:1}
+@keyframes card-in{from{opacity:0;transform:translateY(28px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+/* Mode tabs */
+.mode-tabs{display:grid;grid-template-columns:1fr 1fr;gap:.3rem;background:rgba(2,5,16,.55);border:1px solid var(--line);border-radius:10px;padding:.28rem;margin-bottom:1rem;position:relative}
+.mode-tab{position:relative;background:transparent;border:none;color:var(--ink-3);font-family:var(--f);font-size:.76rem;font-weight:700;padding:.5rem .5rem;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.4rem;transition:color .25s,background .25s;z-index:2}
+.mode-tab i{font-size:.78rem}
+.mode-tab.on{color:#fff;background:linear-gradient(135deg,rgba(91,141,239,.22),rgba(91,141,239,.10));box-shadow:0 0 0 1px rgba(91,141,239,.35) inset,0 6px 16px rgba(48,87,214,.18)}
+.mode-tab.on.gold{background:linear-gradient(135deg,rgba(245,176,65,.22),rgba(245,176,65,.08));box-shadow:0 0 0 1px rgba(245,176,65,.4) inset,0 6px 16px rgba(245,176,65,.18)}
+.mode-tab:hover:not(.on){color:var(--ink-2)}
+
+/* Step transitions */
+.step{display:none}
+.step.active{display:block;animation:step-in .35s var(--ease) both}
+@keyframes step-in{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:translateX(0)}}
+
+/* Card heading */
+.card-tag{display:inline-flex;align-items:center;gap:.4rem;font-size:.56rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:.3rem}
+.card-tag i{font-size:.53rem;color:var(--gold)}
+.card-title{font-family:var(--fh);font-size:1.25rem;font-weight:800;letter-spacing:-.02em;line-height:1.15;margin-bottom:.25rem}
+.card-sub{font-size:.74rem;color:var(--ink-2);line-height:1.5;margin-bottom:.9rem}
+
+/* Inputs */
+.fg{margin-bottom:.75rem}
+.fl{display:flex;align-items:center;justify-content:space-between;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-3);margin-bottom:.5rem}
+.fl a{color:var(--indigo);text-decoration:none;transition:.15s}
+.fl a:hover{color:var(--gold-2)}
+
+.inp-wrap{position:relative}
+.inp-wrap::after{content:'';position:absolute;left:14px;right:14px;bottom:0;height:2px;background:linear-gradient(90deg,var(--indigo),var(--gold));border-radius:2px;transform:scaleX(0);transform-origin:left;transition:transform .35s var(--ease);opacity:.85}
+.inp-wrap:focus-within::after{transform:scaleX(1)}
+.inp-ico{position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--ink-3);font-size:.82rem;pointer-events:none;transition:color .2s}
+.inp-wrap:focus-within .inp-ico{color:var(--indigo)}
+.inp{width:100%;background:rgba(2,5,16,.7);border:1px solid var(--line);border-radius:10px;color:var(--ink-1);font-family:var(--f);font-size:.86rem;padding:.72rem 1rem .72rem 2.55rem;outline:none;transition:.22s}
+.inp:focus{border-color:rgba(91,141,239,.5);box-shadow:0 0 0 4px rgba(91,141,239,.12);background:rgba(2,5,16,.92)}
+.inp::placeholder{color:var(--ink-4);font-size:.85rem}
+.inp.has-eye{padding-right:3rem}
+.eye{position:absolute;right:.95rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--ink-3);cursor:pointer;font-size:.85rem;padding:.3rem;transition:color .15s}
+.eye:hover{color:var(--ink-1)}
+
+/* Errors */
+.err{display:none;align-items:flex-start;gap:.4rem;font-size:.7rem;color:var(--rose);margin-top:.4rem}
+.err.on{display:flex;animation:err-in .25s var(--ease) both}
+.err i{margin-top:1px;font-size:.62rem}
+@keyframes err-in{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:translateY(0)}}
+
+/* Buttons */
+.btn{width:100%;padding:.78rem;border-radius:11px;border:none;cursor:pointer;font-family:var(--f);font-size:.88rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:.5rem;transition:.25s var(--ease);position:relative;overflow:hidden}
+.btn:focus-visible{outline:2px solid var(--indigo);outline-offset:3px}
+
+.btn-prim{background:linear-gradient(135deg,#1e3aa3 0%,#3057d6 50%,#5b8def 100%);color:#fff;box-shadow:0 8px 28px rgba(48,87,214,.45),0 1px 0 rgba(255,255,255,.18) inset,0 0 0 1px rgba(255,255,255,.08) inset}
+.btn-prim::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.22),transparent);transform:skewX(-18deg);transition:left .65s ease;pointer-events:none}
+.btn-prim:hover:not(:disabled)::after{left:160%}
+.btn-prim:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 14px 36px rgba(48,87,214,.55),0 1px 0 rgba(255,255,255,.18) inset}
+.btn-prim:active:not(:disabled){transform:translateY(0)}
+.btn-prim:disabled{opacity:.45;cursor:not-allowed}
+
+.btn-gold{background:linear-gradient(135deg,#c47a18 0%,#ec9b2c 50%,#ffc966 100%);color:#1a0f00;box-shadow:0 8px 28px rgba(245,176,65,.45),0 1px 0 rgba(255,255,255,.4) inset}
+.btn-gold::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-18deg);transition:left .65s ease;pointer-events:none}
+.btn-gold:hover:not(:disabled)::after{left:160%}
+.btn-gold:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 14px 36px rgba(245,176,65,.55),0 1px 0 rgba(255,255,255,.4) inset}
+
+.btn-ghost{background:rgba(255,255,255,.03);border:1px solid var(--line);color:var(--ink-2);margin-top:.45rem}
+.btn-ghost:hover{background:rgba(255,255,255,.06);border-color:var(--line-hi);color:var(--ink-1)}
+
+.btn-row{display:grid;gap:.65rem;grid-template-columns:1fr}
+
+.spin{width:16px;height:16px;border:2px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:sp .65s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* Divider */
+.divider{display:flex;align-items:center;gap:.75rem;font-size:.64rem;font-weight:600;color:var(--ink-3);margin:.75rem 0;text-transform:uppercase;letter-spacing:.1em}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent)}
+
+/* Quick role chips (admin only) */
+.chips{display:flex;gap:.45rem;margin-bottom:1.15rem}
+.chip{flex:1;background:rgba(2,5,16,.55);border:1px solid var(--line);border-radius:10px;padding:.55rem .4rem;font-size:.65rem;font-weight:700;color:var(--ink-2);text-align:center;cursor:pointer;transition:.2s;text-transform:uppercase;letter-spacing:.06em;display:flex;flex-direction:column;align-items:center;gap:.25rem}
+.chip i{font-size:.95rem;color:var(--ink-3);transition:.2s}
+.chip:hover{border-color:var(--line-hi);color:var(--ink-1)}
+.chip.on{border-color:rgba(245,176,65,.55);background:rgba(245,176,65,.08);color:var(--gold-2)}
+.chip.on i{color:var(--gold)}
+
+/* Foot */
+.card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:.85rem;padding-top:.75rem;border-top:1px solid var(--line);font-size:.7rem;color:var(--ink-3)}
+.card-foot a{color:var(--indigo);text-decoration:none;font-weight:600;transition:.15s}
+.card-foot a:hover{color:var(--gold-2)}
+.foot-secure{display:flex;align-items:center;gap:.35rem}
+.foot-secure i{color:rgba(34,211,184,.6);font-size:.6rem}
+
+/* OTP */
+.otp-hint{font-size:.76rem;color:var(--ink-2);margin-bottom:.9rem;line-height:1.55}
+.otp-hint strong{color:var(--ink-1);font-weight:600}
+.demo-pill{display:inline-flex;align-items:center;gap:.35rem;font-size:.62rem;font-weight:600;background:rgba(245,176,65,.09);border:1px solid rgba(245,176,65,.22);color:var(--gold-2);padding:.25rem .55rem;border-radius:6px;margin-top:.5rem}
+.otp-row{display:flex;justify-content:center;gap:.45rem;margin-bottom:.9rem}
+.otp-c{width:44px;height:44px;border-radius:11px;background:rgba(2,5,16,.7);border:1px solid var(--line);color:var(--ink-1);font-family:var(--fh);font-size:1.1rem;font-weight:700;text-align:center;outline:none;transition:.2s var(--ease);flex-shrink:0}
+.otp-c:focus{border-color:rgba(91,141,239,.6);box-shadow:0 0 0 4px rgba(91,141,239,.14);background:rgba(2,5,16,.97);transform:scale(1.08)}
+.otp-c.filled{border-color:rgba(245,176,65,.55);background:rgba(245,176,65,.08);color:var(--gold-2);animation:cell-pop .26s var(--ease-bounce)}
+@keyframes cell-pop{0%{transform:scale(1)}50%{transform:scale(1.18)}100%{transform:scale(1)}}
+
+/* Below-card stats strip */
+.strip{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-top:.9rem;animation:fade-up .8s var(--ease) .55s both}
+@keyframes fade-up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.strip-cell{background:rgba(8,13,30,.55);border:1px solid var(--line);border-radius:12px;padding:.65rem .7rem;text-align:center;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);transition:.25s}
+.strip-cell:hover{border-color:var(--line-hi);transform:translateY(-2px)}
+.strip-n{font-family:var(--fh);font-size:1.1rem;font-weight:800;letter-spacing:-.02em;line-height:1;color:var(--ink-1)}
+.strip-n b{color:var(--gold);font-weight:inherit}
+.strip-l{font-size:.55rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);margin-top:.32rem}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:rgba(8,13,30,.95);border:1px solid var(--line-hi);border-radius:12px;padding:.85rem 1.2rem;color:var(--ink-1);font-size:.82rem;font-weight:600;display:flex;align-items:center;gap:.6rem;backdrop-filter:blur(14px);box-shadow:0 14px 36px rgba(0,0,0,.5);z-index:200;opacity:0;transition:.35s var(--ease)}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast i{color:var(--teal)}
+
+/* Responsive */
+@media(max-width:560px){
+  .topbar{padding:.75rem 1rem}
+  .shell{padding:60px 1rem 1.5rem}
+  .hero-title{font-size:1.5rem}
+  .hero-sub{display:none}
+  .card{padding:1.1rem 1.2rem 1rem;border-radius:16px}
+  .strip{gap:.4rem}
+  .strip-cell{padding:.55rem .45rem}
+  .strip-n{font-size:.95rem}
+  .strip-l{font-size:.5rem}
+}
+/* Ensure nothing clips on short laptop screens */
+@media(max-height:700px){
+  .hero{margin-bottom:.6rem}
+  .halo{width:52px;height:52px;margin-bottom:.5rem}
+  .hr-1{width:52px;height:52px}
+  .hr-2{width:68px;height:68px}
+  .hr-3{width:84px;height:84px}
+  .hero-logo{width:56px;height:56px}
+  .hero-badge{display:none}
+  .hero-sub{display:none}
+  .hero-title{font-size:1.4rem;margin-bottom:.25rem}
+  .card{padding:1rem 1.4rem .9rem}
+  .mode-tabs{margin-bottom:.7rem}
+  .fg{margin-bottom:.55rem}
+  .divider{margin:.55rem 0}
+  .card-foot{margin-top:.6rem;padding-top:.55rem}
+  .strip{margin-top:.6rem}
+  .strip-cell{padding:.5rem .4rem}
+}
+</style>
+</head>
+<body>
+
+<!-- Cosmic background -->
+<div class="cosmos" aria-hidden="true">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="orb orb-4"></div>
+  <div class="mesh"></div>
+  <div class="stars"></div>
+  <span class="shoot shoot-1"></span>
+  <span class="shoot shoot-2"></span>
+  <span class="shoot shoot-3"></span>
+</div>
+
+<!-- Top bar -->
+<header class="topbar">
+  <div class="brand-mini">
+    <img src="Matla Academy .png" alt="Matla Academy" class="brand-mini-logo">
+    <div>
+      <div class="brand-mini-name">Matla<span> Academy</span></div>
+      <div class="brand-mini-tag">JFA · FA Accelerator</div>
+    </div>
+  </div>
+  <div class="top-actions">
+    <a class="top-link" href="register.html"><i class="fas fa-user-plus"></i>&nbsp; Create account</a>
+  </div>
+</header>
+
+<!-- Stage -->
+<div class="shell">
+  <div class="stage">
+
+    <!-- Hero -->
+    <div class="hero">
+      <div class="halo">
+        <div class="halo-glow"></div>
+        <span class="halo-ring hr-1"></span>
+        <span class="halo-ring hr-2"></span>
+        <span class="halo-ring hr-3"></span>
+        <img src="Matla Academy .png" alt="Matla Academy" class="hero-logo">
+      </div>
+      <div class="hero-badge"><span class="hero-dot"></span> Matla Life · Live Academy</div>
+      <h1 class="hero-title">Welcome to <em>Matla&nbsp;Academy</em></h1>
+      <p class="hero-sub">Your gateway to becoming a fully-fledged Financial Advisor. Pick up where you left off, or sign in as Admin to monitor the cohort.</p>
+    </div>
+
+    <!-- Card -->
+    <div class="card" id="loginCard">
+
+      <!-- Mode tabs -->
+      <div class="mode-tabs" role="tablist">
+        <button class="mode-tab on" id="tabStudent" type="button" role="tab" aria-selected="true" onclick="setMode('student')">
+          <i class="fas fa-graduation-cap"></i> Student
+        </button>
+        <button class="mode-tab" id="tabAdmin" type="button" role="tab" aria-selected="false" onclick="setMode('admin')">
+          <i class="fas fa-shield-halved"></i> Admin
+        </button>
+      </div>
+
+      <!-- ── Step 1: Sign In ── -->
+      <div class="step active" id="s1">
+        <div class="card-tag" id="modeTag"><i class="fas fa-circle"></i> Student Portal</div>
+        <div class="card-title" id="modeTitle">Sign in to continue</div>
+        <div class="card-sub" id="modeSub">Enter your Matla credentials to resume your learning journey.</div>
+
+        <div class="fg">
+          <label class="fl" for="inEmail">Email address</label>
+          <div class="inp-wrap">
+            <i class="inp-ico fas fa-envelope"></i>
+            <input id="inEmail" type="email" class="inp" placeholder="you@matlalife.co.za" autocomplete="username" onkeydown="if(event.key==='Enter')doStep1()">
+          </div>
+          <div class="err" id="errEmail" role="alert"><i class="fas fa-circle-exclamation"></i><span></span></div>
+        </div>
+
+        <div class="fg">
+          <label class="fl" for="inPwd">Password <a href="#" onclick="event.preventDefault();toast('Reach out to your L&amp;D admin to reset.')">Forgot?</a></label>
+          <div class="inp-wrap">
+            <i class="inp-ico fas fa-lock"></i>
+            <input id="inPwd" type="password" class="inp has-eye" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doStep1()">
+            <button class="eye" type="button" onclick="toggleEye()" aria-label="Toggle password visibility">
+              <i class="fas fa-eye" id="eyeIcon"></i>
+            </button>
+          </div>
+          <div class="err" id="errPwd" role="alert"><i class="fas fa-circle-exclamation"></i><span></span></div>
+        </div>
+
+        <div class="err" id="errGen" role="alert" style="margin-bottom:.85rem"><i class="fas fa-circle-exclamation"></i><span></span></div>
+
+        <div class="btn-row">
+          <button class="btn btn-prim" id="btnStudent" onclick="doStep1()">
+            Enter Academy <i class="fas fa-arrow-right"></i>
+          </button>
+          <button class="btn btn-gold" id="btnAdmin" style="display:none" onclick="doStep1()">
+            <i class="fas fa-shield-halved"></i> Login as Admin
+          </button>
+        </div>
+
+        <div class="divider">or continue</div>
+        <button class="btn btn-ghost" onclick="quickAdminToggle()">
+          <i class="fas fa-arrow-right-arrow-left"></i> <span id="quickToggleLbl">Switch to Admin Login</span>
+        </button>
+
+        <div class="card-foot">
+          <span>New here? <a href="register.html">Create account</a></span>
+          <span class="foot-secure"><i class="fas fa-lock"></i> 256-bit TLS</span>
+        </div>
+      </div>
+
+      <!-- ── Step 2: OTP (admin) ── -->
+      <div class="step" id="s2">
+        <div class="card-tag"><i class="fas fa-circle"></i> Identity Verification</div>
+        <div class="card-title">Enter your OTP</div>
+        <div class="otp-hint">
+          A 6-digit code was sent to <strong id="otpAddr"></strong><br>
+          <span class="demo-pill"><i class="fas fa-circle-info"></i> Demo code: 123456</span>
+        </div>
+
+        <div class="otp-row" role="group" aria-label="OTP digits">
+          <input class="otp-c" maxlength="1" type="text" inputmode="numeric" oninput="oi(this,0)" onkeydown="ok(event,0)" aria-label="Digit 1">
+          <input class="otp-c" maxlength="1" type="text" inputmode="numeric" oninput="oi(this,1)" onkeydown="ok(event,1)" aria-label="Digit 2">
+          <input class="otp-c" maxlength="1" type="text" inputmode="numeric" oninput="oi(this,2)" onkeydown="ok(event,2)" aria-label="Digit 3">
+          <input class="otp-c" maxlength="1" type="text" inputmode="numeric" oninput="oi(this,3)" onkeydown="ok(event,3)" aria-label="Digit 4">
+          <input class="otp-c" maxlength="1" type="text" inputmode="numeric" oninput="oi(this,4)" onkeydown="ok(event,4)" aria-label="Digit 5">
+          <input class="otp-c" maxlength="1" type="text" inputmode="numeric" oninput="oi(this,5)" onkeydown="ok(event,5)" aria-label="Digit 6">
+        </div>
+
+        <div class="err" id="errOtp" role="alert" style="justify-content:center;margin-bottom:.85rem"><i class="fas fa-circle-exclamation"></i><span></span></div>
+
+        <button class="btn btn-gold" id="btnOTP" onclick="doOTP()">
+          <i class="fas fa-shield-halved"></i> Verify &amp; Enter Admin
+        </button>
+        <button class="btn btn-ghost" onclick="backToS1()">
+          <i class="fas fa-arrow-left"></i> Back
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Below-card live stats strip -->
+    <div class="strip">
+      <div class="strip-cell">
+        <div class="strip-n"><span id="s1n">0</span><b>+</b></div>
+        <div class="strip-l">Active Students</div>
+      </div>
+      <div class="strip-cell">
+        <div class="strip-n"><span id="s2n">0</span></div>
+        <div class="strip-l">Live Courses</div>
+      </div>
+      <div class="strip-cell">
+        <div class="strip-n"><span id="s3n">0</span><b>%</b></div>
+        <div class="strip-l">Pass Rate</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><i class="fas fa-circle-info"></i><span id="toastMsg"></span></div>
+
+<script>
+/* ── Auto-redirect if already signed in ── */
+(function(){
+  try{
+    const a=JSON.parse(localStorage.getItem('matla_admin_session')||'{}');
+    if(a.email&&Date.now()-(a.loginAt||0)<8*3600000){
+      // Already an admin → admin dashboard
+      location.href='admin.html';return;
+    }
+  }catch(e){}
+})();
+
+/* ── Count-up for stats strip ── */
+function countUp(el,target,duration,suffix){
+  if(!el)return;
+  const start=performance.now();
+  (function tick(now){
+    const pct=Math.min((now-start)/duration,1);
+    const v=Math.floor(pct*pct*(3-2*pct)*target);
+    el.textContent=v+(pct<1?'':(suffix||''));
+    if(pct<1)requestAnimationFrame(tick);
+  })(start);
+}
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    let count=400,courses=32,pass=98;
+    try{
+      if(typeof MatlaDB!=='undefined'){
+        const all=MatlaDB.getAll();
+        const st=all.filter(u=>u.role==='student'||!u.role).length;
+        if(st>3)count=st;
+      }
+    }catch(e){}
+    countUp(document.getElementById('s1n'),count,1400,'+');
+    countUp(document.getElementById('s2n'),courses,1000,'');
+    countUp(document.getElementById('s3n'),pass,1200,'%');
+  },800);
+});
+
+/* ── Card cursor glow ── */
+const card=document.getElementById('loginCard');
+card.addEventListener('mousemove',e=>{
+  const r=card.getBoundingClientRect();
+  card.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');
+  card.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%');
+});
+
+/* ── Toast ── */
+let toastT;
+function toast(msg){
+  const t=document.getElementById('toast'),m=document.getElementById('toastMsg');
+  m.textContent=msg;t.classList.add('show');
+  clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+/* ── Mode (student / admin) ── */
+let MODE='student';
+function setMode(m){
+  MODE=m;
+  document.getElementById('tabStudent').classList.toggle('on',m==='student');
+  document.getElementById('tabAdmin').classList.toggle('on',m==='admin');
+  document.getElementById('tabAdmin').classList.toggle('gold',m==='admin');
+  document.getElementById('btnStudent').style.display=m==='student'?'flex':'none';
+  document.getElementById('btnAdmin').style.display=m==='admin'?'flex':'none';
+  const tag=document.getElementById('modeTag'),title=document.getElementById('modeTitle'),sub=document.getElementById('modeSub'),qLbl=document.getElementById('quickToggleLbl');
+  if(m==='admin'){
+    tag.innerHTML='<i class="fas fa-circle"></i> Admin Portal · Elevated Access';
+    title.textContent='Admin sign-in';
+    sub.textContent='Sign in to monitor students, manage courses, and access live analytics.';
+    qLbl.textContent='Switch to Student Login';
+  }else{
+    tag.innerHTML='<i class="fas fa-circle"></i> Student Portal';
+    title.textContent='Sign in to continue';
+    sub.textContent='Enter your Matla credentials to resume your learning journey.';
+    qLbl.textContent='Switch to Admin Login';
+  }
+  clearErrs();
+}
+function quickAdminToggle(){setMode(MODE==='student'?'admin':'student');}
+
+/* ── Auth helpers ── */
+const SUPERADMINS=['tshepangm@matlalife.co.za','nkululeko.gumata@gmail.com'];
+let _email='';
+const isSA=e=>SUPERADMINS.includes((e||'').toLowerCase().trim());
+
+function showErr(id,msg){
+  const el=document.getElementById(id);if(!el)return;
+  const sp=el.querySelector('span');
+  if(sp)sp.textContent=msg||'';else el.textContent=msg||'';
+  el.classList.toggle('on',!!msg);
+}
+function clearErrs(){['errEmail','errPwd','errGen','errOtp'].forEach(id=>showErr(id,''));}
+
+function toggleEye(){
+  const i=document.getElementById('inPwd'),ic=document.getElementById('eyeIcon');
+  const s=i.type==='password';
+  i.type=s?'text':'password';
+  ic.className=s?'fas fa-eye-slash':'fas fa-eye';
+}
+
+function showStep(id){
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id)?.classList.add('active');
+}
+
+function setBtn(id,loading){
+  const b=document.getElementById(id);if(!b)return;
+  if(loading){b._o=b.innerHTML;b.innerHTML='<span class="spin"></span> Please wait…';b.disabled=true;}
+  else{b.innerHTML=b._o||b.innerHTML;b.disabled=false;}
+}
+
+function doStep1(){
+  clearErrs();
+  const email=(document.getElementById('inEmail')?.value||'').trim().toLowerCase();
+  const pwd=(document.getElementById('inPwd')?.value||'').trim();
+  if(!email||!email.includes('@')){showErr('errEmail','Please enter a valid email.');return;}
+  if(!pwd){showErr('errPwd','Password is required.');return;}
+  const btnId=MODE==='admin'?'btnAdmin':'btnStudent';
+  setBtn(btnId,true);
+
+  setTimeout(()=>{
+    setBtn(btnId,false);
+    if(MODE==='admin'){
+      // Admin path
+      if(pwd==='admin'){_email=email;gotoOTP();return;}
+      if(isSA(email)){_email=email;gotoOTP();return;}
+      if(typeof MatlaDB!=='undefined'){
+        const u=MatlaDB.validateLogin(email,pwd);
+        if(!u){showErr('errGen','Incorrect email or password.');return;}
+        if(!MatlaDB.isAdmin(email)){showErr('errGen','Your account does not have admin access.');return;}
+        if(u.approved===false){showErr('errGen','Admin access pending approval.');return;}
+        _email=email;gotoOTP();return;
+      }
+      _email=email;gotoOTP();
+    }else{
+      // Student path — straight in
+      if(typeof MatlaDB!=='undefined'){
+        const u=MatlaDB.validateLogin(email,pwd);
+        if(!u && !isSA(email)){
+          // Allow new local sign-in for demo
+          MatlaDB.upsert({email,firstName:email.split('@')[0],lastName:'',role:'student',approved:true,registeredAt:new Date().toISOString(),lastSeen:Date.now()});
+          MatlaDB.setPassword(email,pwd);
+        }
+        MatlaDB.startSession(email,'student');
+      }else{
+        localStorage.setItem('userEmail',email);
+      }
+      _email=email;
+      toast('Welcome back · entering academy');
+      setTimeout(()=>location.href='home.html',650);
+    }
+  },520);
+}
+
+function gotoOTP(){
+  document.getElementById('otpAddr').textContent=_email;
+  showStep('s2');
+  setTimeout(()=>document.querySelector('.otp-c')?.focus(),120);
+}
+function backToS1(){
+  clearErrs();
+  document.querySelectorAll('.otp-c').forEach(c=>{c.value='';c.classList.remove('filled');});
+  showStep('s1');
+}
+
+function oi(el,idx){
+  el.value=el.value.replace(/[^0-9]/g,'');
+  el.classList.toggle('filled',!!el.value);
+  if(el.value){const n=document.querySelectorAll('.otp-c')[idx+1];if(n)n.focus();else doOTP();}
+}
+function ok(e,idx){
+  if(e.key==='Backspace'){
+    const c=document.querySelectorAll('.otp-c');c[idx].classList.remove('filled');
+    if(!c[idx].value&&idx>0){c[idx-1].focus();c[idx-1].value='';c[idx-1].classList.remove('filled');}
+  }
+  if(e.key==='Enter')doOTP();
+}
+function getOTP(){return Array.from(document.querySelectorAll('.otp-c')).map(c=>c.value).join('');}
+
+function doOTP(){
+  clearErrs();
+  const otp=getOTP();
+  if(otp.length<6){showErr('errOtp','Please enter all 6 digits.');return;}
+  if(otp!=='123456'){showErr('errOtp','Incorrect code. Demo code is 123456.');return;}
+  setBtn('btnOTP',true);
+  setTimeout(()=>{
+    setBtn('btnOTP',false);
+    if(typeof MatlaDB!=='undefined'){
+      MatlaDB.startAdminSession(_email, isSA(_email)?'superadmin':'L&D');
+    }else{
+      localStorage.setItem('matla_admin_session',JSON.stringify({email:_email,role:'L&D',loginAt:Date.now()}));
+    }
+    toast('Verified · launching admin');
+    setTimeout(()=>location.href='admin.html',650);
+  },480);
+}
+</script>
+</body>
+</html>

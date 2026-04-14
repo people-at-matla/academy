@@ -1,0 +1,1245 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matla Academy — Admin Control Centre</title>
+<link rel="icon" href="Matla Academy .png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
+<script src="db.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="admin-style.css">
+</head>
+<body>
+
+<!-- ══════════ LOADING SCREEN ══════════ -->
+<div class="app-loader" id="appLoader">
+  <div class="loader-bg"></div>
+  <div class="loader-grid"></div>
+  <div class="loader-orbs">
+    <div class="loader-orb loader-orb-1"></div>
+    <div class="loader-orb loader-orb-2"></div>
+    <div class="loader-orb loader-orb-3"></div>
+    <div class="loader-orb loader-orb-4"></div>
+  </div>
+  <div class="loader-scene">
+    <div class="loader-ring-outer"></div>
+    <div class="loader-ring-mid"></div>
+    <div class="loader-ring-inner"></div>
+    <div class="loader-dots"></div>
+    <div class="loader-logo-wrap">
+      <div class="loader-glow"></div>
+      <img src="Matla Academy .png" alt="Matla Academy" class="loader-logo">
+    </div>
+  </div>
+  <div class="loader-content">
+    <div class="loader-title">Matla Academy</div>
+    <div class="loader-sub">Loading Command Centre</div>
+    <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+  </div>
+  <div class="loader-version">Admin CRM · v2.0</div>
+</div>
+
+<div class="side-scrim" id="sideScrim" onclick="closeSidebarMobile()"></div>
+
+<div class="app">
+
+  <!-- ══════════ SIDEBAR ══════════ -->
+  <aside class="side" id="sidePanel">
+    <div class="side-head">
+      <img src="Matla Academy .png" alt="Matla" class="side-logo">
+      <div class="side-brand">
+        <div class="side-brand-name">Matla Academy</div>
+        <div class="side-brand-sub">Admin Control Centre</div>
+      </div>
+    </div>
+
+    <div class="workspace" title="Switch workspace">
+      <div class="workspace-ico">ML</div>
+      <div class="workspace-info">
+        <div class="workspace-name">Matla Life Workspace</div>
+        <div class="workspace-sub">Production · Live</div>
+      </div>
+      <i class="fas fa-chevron-down"></i>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-section">Main</div>
+      <a class="nav-item active" data-view="dashboard"><i class="fas fa-table-columns"></i><span>Dashboard</span></a>
+      <a class="nav-item" data-view="students"><i class="fas fa-users"></i><span>Students</span><span class="nav-badge live" id="navStuCt">0</span></a>
+      <a class="nav-item" data-view="courses"><i class="fas fa-book-open"></i><span>Courses</span></a>
+      <a class="nav-item" data-view="assess"><i class="fas fa-clipboard-check"></i><span>Assessments</span></a>
+      <a class="nav-item" data-view="upload"><i class="fas fa-film"></i><span>Upload Video</span></a>
+      <a class="nav-item" data-view="activity"><i class="fas fa-bolt"></i><span>Activity Feed</span><span class="nav-badge live">live</span></a>
+
+      <div class="nav-section">Insights</div>
+      <a class="nav-item" data-view="analytics"><i class="fas fa-chart-bar"></i><span>Analytics</span></a>
+      <a class="nav-item" data-view="reports"><i class="fas fa-chart-pie"></i><span>Reports</span></a>
+      <a class="nav-item" data-view="graduates"><i class="fas fa-graduation-cap"></i><span>Graduates</span><span class="nav-badge" id="navGradCt" style="background:var(--purple)">0</span></a>
+      <a class="nav-item" data-view="leader"><i class="fas fa-trophy"></i><span>Leaderboard</span></a>
+
+      <div class="nav-section">Communications</div>
+      <a class="nav-item" data-view="announce"><i class="fas fa-bullhorn"></i><span>Announcements</span><span class="announce-count" id="navAnnounceCt" style="display:none">0</span></a>
+      <a class="nav-item" data-view="sm-management"><i class="fas fa-users-gear"></i><span>Sales Managers</span></a>
+      <a class="nav-item" data-view="livestream"><i class="fas fa-circle-play"></i><span>Live Stream <span id="liveIndicator" class="hidden" style="color:#f87171;font-size:.7rem;font-weight:700;animation:live-pulse 2s infinite">● LIVE</span></span></a>
+
+      <div class="nav-section">System</div>
+      <a class="nav-item" data-view="settings"><i class="fas fa-gear"></i><span>Settings</span></a>
+      <a class="nav-item" href="home.html"><i class="fas fa-arrow-up-right-from-square"></i><span>View Academy</span></a>
+    </nav>
+
+    <div class="side-foot">
+      <div class="side-avatar" id="sideAvatar">A</div>
+      <div class="side-user">
+        <div class="side-user-name" id="sideName">Admin</div>
+        <div class="side-user-role" id="sideRole">Superadmin</div>
+      </div>
+      <button title="Sign out" onclick="signOut()"><i class="fas fa-arrow-right-from-bracket"></i></button>
+    </div>
+  </aside>
+
+  <!-- ══════════ MAIN ══════════ -->
+  <main class="main">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <button class="side-toggle-btn" id="sideToggleBtn" type="button" aria-label="Collapse menu" aria-controls="sidePanel" aria-expanded="true" onclick="toggleSidebar()">
+        <i class="fas fa-chevron-left" id="sideToggleIcon"></i>
+      </button>
+      <div class="crumbs">
+        <i class="fas fa-house"></i> Workspace <i class="fas fa-chevron-right"></i> <span id="crumbLabel">Dashboard</span>
+      </div>
+      <div class="search">
+        <i class="fas fa-search"></i>
+        <input id="searchInput" type="text" placeholder="Search students, courses, assessments…" oninput="filterBoard()">
+        <kbd>Ctrl+K</kbd>
+      </div>
+      <div class="top-actions">
+        <span class="clock-pill" id="liveClock">--:-- · ---</span>
+        <span class="live-pill"><span class="dot"></span> Live · <span id="syncedAgo">just now</span></span>
+        <div class="top-btn-wrap">
+          <button class="top-btn" title="Notifications" id="notifBtn" onclick="toggleNotifPanel()"><i class="fas fa-bell"></i><span class="pip" id="notifPip" style="display:none"></span></button>
+          <div class="notif-panel" id="notifPanel">
+            <div class="notif-panel-h"><span>Notifications</span><button onclick="markAllRead()">Mark all read</button></div>
+            <div class="notif-list" id="notifList"><div style="padding:1.2rem;text-align:center;color:var(--ink-3);font-size:.78rem">No notifications</div></div>
+          </div>
+        </div>
+        <button class="top-btn" title="Refresh data" onclick="refresh(true)"><i class="fas fa-rotate"></i></button>
+        <button class="top-btn" title="Export CSV" onclick="openCsvModal()"><i class="fas fa-file-arrow-down"></i></button>
+        <button class="top-btn" title="Export PDF" onclick="openPdfModal()"><i class="fas fa-file-pdf"></i></button>
+        <button class="btn-prim" onclick="openAddStudentModal()"><i class="fas fa-user-plus"></i> Add Student</button>
+      </div>
+    </header>
+
+    <!-- Page -->
+    <div class="page">
+
+    <!-- ═══ DASHBOARD VIEW ═══ -->
+    <div id="view-dashboard" class="view active">
+
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">Command <em>Centre</em></h1>
+          <div class="page-sub">
+            Real-time oversight of every student across the JFA → FA Accelerator pipeline.
+            <b>Updates stream live</b> from the academy.
+          </div>
+        </div>
+        <div class="page-tools">
+          <button class="tool-btn" onclick="openCsvModal()"><i class="fas fa-file-arrow-down"></i> Export CSV</button>
+          <button class="tool-btn" onclick="openPdfModal()"><i class="fas fa-file-pdf"></i> Export PDF</button>
+          <button class="tool-btn" onclick="refresh(true)"><i class="fas fa-rotate"></i> Sync</button>
+        </div>
+      </div>
+
+      <!-- KPIs -->
+      <div class="kpis">
+        <div class="kpi">
+          <div class="kpi-top">
+            <div class="kpi-ico"><i class="fas fa-user-graduate"></i></div>
+            <div class="kpi-trend" id="kpiTrendStu"><i class="fas fa-arrow-up"></i> +12%</div>
+          </div>
+          <div class="kpi-l">Total Students</div>
+          <div class="kpi-n" id="kpiTotal">0</div>
+          <div class="kpi-foot"><b id="kpiNew">0</b> joined this week</div>
+        </div>
+        <div class="kpi k-green">
+          <div class="kpi-top">
+            <div class="kpi-ico"><i class="fas fa-bolt"></i></div>
+            <div class="kpi-trend"><i class="fas fa-circle" style="animation:live-pulse 2s infinite"></i> live</div>
+          </div>
+          <div class="kpi-l">Active Now</div>
+          <div class="kpi-n" id="kpiActive">0</div>
+          <div class="kpi-foot">last 15 min · <b id="kpiActPct">0%</b> of cohort</div>
+        </div>
+        <div class="kpi k-gold">
+          <div class="kpi-top">
+            <div class="kpi-ico"><i class="fas fa-chart-line"></i></div>
+            <div class="kpi-trend"><i class="fas fa-arrow-up"></i> +4.2%</div>
+          </div>
+          <div class="kpi-l">Avg Progress</div>
+          <div class="kpi-n"><span id="kpiAvg">0</span>%</div>
+          <div class="kpi-foot">across all courses</div>
+        </div>
+        <div class="kpi k-purple">
+          <div class="kpi-top">
+            <div class="kpi-ico"><i class="fas fa-medal"></i></div>
+            <div class="kpi-trend"><i class="fas fa-arrow-up"></i> +8%</div>
+          </div>
+          <div class="kpi-l">Module Completions</div>
+          <div class="kpi-n" id="kpiDone">0</div>
+          <div class="kpi-foot">modules finished</div>
+        </div>
+        <div class="kpi k-pink">
+          <div class="kpi-top">
+            <div class="kpi-ico"><i class="fas fa-clipboard-check"></i></div>
+            <div class="kpi-trend" id="kpiPassTrend"><i class="fas fa-arrow-up"></i> +2%</div>
+          </div>
+          <div class="kpi-l">Pass Rate</div>
+          <div class="kpi-n"><span id="kpiPass">0</span>%</div>
+          <div class="kpi-foot"><b id="kpiPassN">0</b> assessments submitted</div>
+        </div>
+      </div>
+
+      <!-- Secondary stats row -->
+      <div class="dash-row-2">
+        <div class="mini-stat-card">
+          <div class="mini-stat-ico" style="background:var(--green-soft);color:var(--green)"><i class="fas fa-graduation-cap"></i></div>
+          <div class="mini-stat-info">
+            <div class="mini-stat-n" id="dashGradCount">0</div>
+            <div class="mini-stat-l">Confirmed Graduates</div>
+            <div class="mini-stat-delta delta-up" id="dashGradDelta"><i class="fas fa-arrow-up"></i> This month</div>
+          </div>
+        </div>
+        <div class="mini-stat-card">
+          <div class="mini-stat-ico" style="background:var(--red-soft);color:var(--red)"><i class="fas fa-triangle-exclamation"></i></div>
+          <div class="mini-stat-info">
+            <div class="mini-stat-n" id="dashStuckCount">0</div>
+            <div class="mini-stat-l">Students at Risk</div>
+            <div class="mini-stat-delta delta-dn" id="dashStuckLabel"><i class="fas fa-clock"></i> Inactive 14+ days</div>
+          </div>
+        </div>
+        <div class="mini-stat-card">
+          <div class="mini-stat-ico" style="background:var(--gold-soft);color:var(--gold)"><i class="fas fa-star"></i></div>
+          <div class="mini-stat-info">
+            <div class="mini-stat-n" id="dashAvgXP">0</div>
+            <div class="mini-stat-l">Avg XP per Student</div>
+            <div class="mini-stat-delta delta-up"><i class="fas fa-arrow-trend-up"></i> Engagement</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stuck student alerts (visible when relevant) -->
+      <div class="alerts-panel" id="stuckAlert" style="display:none">
+        <div class="alerts-panel-h">
+          <h3><i class="fas fa-triangle-exclamation"></i> Students at Risk — Action Required</h3>
+          <button class="tool-btn" onclick="openCsvModal('stuck')"><i class="fas fa-file-arrow-down"></i> Export</button>
+        </div>
+        <div id="stuckAlertList"></div>
+      </div>
+
+      <!-- Main grid -->
+      <div class="grid">
+
+        <!-- Student board (left) -->
+        <div class="card">
+          <div class="card-h">
+            <div class="card-h-l">
+              <h3>Student Pipeline</h3>
+              <span class="count" id="boardCount">0 students</span>
+            </div>
+            <div class="card-h-r">
+              <button class="icon-btn" title="Refresh" onclick="refresh(true)"><i class="fas fa-rotate"></i></button>
+              <button class="icon-btn" title="Export CSV" onclick="openCsvModal()"><i class="fas fa-file-arrow-down"></i></button>
+              <button class="icon-btn" title="Export PDF" onclick="openPdfModal()"><i class="fas fa-file-pdf"></i></button>
+            </div>
+          </div>
+
+          <div class="filter-bar">
+            <button class="pill on" data-fil="all"><i class="fas fa-circle"></i> All</button>
+            <button class="pill" data-fil="active"><i class="fas fa-bolt"></i> Active</button>
+            <button class="pill" data-fil="onboarding"><i class="fas fa-seedling"></i> Onboarding</button>
+            <button class="pill" data-fil="stuck"><i class="fas fa-triangle-exclamation"></i> At Risk</button>
+            <button class="pill" data-fil="done"><i class="fas fa-check"></i> Completed</button>
+            <span class="sep"></span>
+            <button class="pill" onclick="openCsvModal()"><i class="fas fa-file-arrow-down"></i> Export</button>
+          </div>
+
+          <div class="board-wrap">
+            <table class="board">
+              <thead>
+                <tr>
+                  <th class="col-h-cell">Student</th>
+                  <th>Status</th>
+                  <th>Progress</th>
+                  <th>Courses</th>
+                  <th>Assessment</th>
+                  <th>XP</th>
+                  <th>Last Active</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="boardBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Right column -->
+        <div class="right-col">
+
+          <!-- Live Activity -->
+          <div class="card">
+            <div class="card-h">
+              <div class="card-h-l">
+                <h3>Live Activity</h3>
+                <span class="count" id="feedCount">0</span>
+              </div>
+              <div class="card-h-r">
+                <span class="live-pill"><span class="dot"></span> Live</span>
+              </div>
+            </div>
+            <div class="feed" id="feed"></div>
+          </div>
+
+          <!-- Course Performance -->
+          <div class="card">
+            <div class="card-h">
+              <div class="card-h-l"><h3>Course Performance</h3></div>
+              <div class="card-h-r"><button class="icon-btn" onclick="showView('courses')"><i class="fas fa-arrow-right"></i></button></div>
+            </div>
+            <div class="course-list" id="courseList"></div>
+          </div>
+
+          <!-- Weekly Engagement -->
+          <div class="card">
+            <div class="card-h">
+              <div class="card-h-l"><h3>Weekly Engagement</h3></div>
+              <div class="card-h-r"><span class="count">7d</span></div>
+            </div>
+            <div class="mini-chart">
+              <div class="mini-chart-bars" id="weekBars"></div>
+              <div class="mini-labels"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Charts row -->
+      <div class="charts-row">
+        <div class="chart-card">
+          <h3>Student Status Distribution</h3>
+          <p>Breakdown across all cohort members</p>
+          <div class="chart-wrap"><canvas id="pieChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <h3>14-Day Engagement Trend</h3>
+          <p>Daily active students over the past two weeks</p>
+          <div class="chart-wrap"><canvas id="lineChart"></canvas></div>
+        </div>
+      </div>
+
+    </div><!-- /view-dashboard -->
+
+    <!-- ═══ STUDENTS VIEW ═══ -->
+    <div id="view-students" class="view">
+      <div class="view-head">
+        <div>
+          <div class="view-title">All <em>Students</em></div>
+          <div class="view-sub">Full student register · click any row to open the detail drawer.</div>
+        </div>
+        <div class="view-actions">
+          <button class="tool-btn" onclick="openCsvModal('students')"><i class="fas fa-file-arrow-down"></i> Export CSV</button>
+          <button class="tool-btn" onclick="openPdfModal('register')"><i class="fas fa-file-pdf"></i> Export PDF</button>
+          <button class="btn-prim" onclick="openAddStudentModal()"><i class="fas fa-user-plus"></i> Add Student</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="filter-bar">
+          <button class="pill on" data-fil2="all"><i class="fas fa-circle"></i> All</button>
+          <button class="pill" data-fil2="active"><i class="fas fa-bolt"></i> Active</button>
+          <button class="pill" data-fil2="onboarding"><i class="fas fa-seedling"></i> Onboarding</button>
+          <button class="pill" data-fil2="stuck"><i class="fas fa-triangle-exclamation"></i> At Risk</button>
+          <button class="pill" data-fil2="done"><i class="fas fa-check"></i> Completed</button>
+        </div>
+        <div class="board-wrap">
+          <table class="board">
+            <thead><tr>
+              <th class="col-h-cell">Student</th><th>Status</th><th>Progress</th>
+              <th>Courses</th><th>Assessment</th><th>XP</th><th>Last Active</th><th></th>
+            </tr></thead>
+            <tbody id="boardBody2"></tbody>
+          </table>
+        </div>
+      </div>
+    </div><!-- /view-students -->
+
+    <!-- ═══ COURSES VIEW ═══ -->
+    <div id="view-courses" class="view">
+      <div class="view-head">
+        <div>
+          <div class="view-title">Course <em>Management</em></div>
+          <div class="view-sub">Edit existing courses or add new ones · changes reflect on the student portal immediately.</div>
+        </div>
+        <div class="view-actions">
+          <button class="tool-btn" onclick="openCsvModal('courses')"><i class="fas fa-file-arrow-down"></i> Export CSV</button>
+          <button class="btn-prim" onclick="openAddCourse()"><i class="fas fa-plus"></i> Add Course</button>
+        </div>
+      </div>
+      <div class="course-grid" id="courseAdminGrid"></div>
+    </div><!-- /view-courses -->
+
+    <!-- ═══ ASSESSMENTS VIEW ═══ -->
+    <div id="view-assess" class="view">
+      <div class="view-head">
+        <div>
+          <div class="view-title">Assessment <em>Editor</em></div>
+          <div class="view-sub">Edit questions and answers · changes publish to the student portal immediately.</div>
+        </div>
+        <div class="view-actions">
+          <button class="tool-btn" onclick="openCsvModal('assessments')"><i class="fas fa-file-arrow-down"></i> Export Results</button>
+          <button class="btn-prim" onclick="openAddAssess()"><i class="fas fa-plus"></i> New Assessment</button>
+        </div>
+      </div>
+      <div class="assess-list" id="assessAdminList"></div>
+    </div><!-- /view-assess -->
+
+    <!-- ═══ UPLOAD VIDEO VIEW ═══ -->
+    <div id="view-upload" class="view">
+      <div class="view-head">
+        <div>
+          <div class="view-title">Upload <em>Video</em></div>
+          <div class="view-sub">Add video lessons to any course · they appear on the student portal automatically.</div>
+        </div>
+      </div>
+      <div style="max-width:720px;margin:0 auto">
+        <div class="upload-area" id="uploadArea" onclick="document.getElementById('videoFileInput').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleVideoDrop(event)">
+          <input type="file" id="videoFileInput" accept="video/*" onchange="handleVideoFile(this.files[0])">
+          <i class="fas fa-cloud-arrow-up"></i>
+          <h3>Drop a video file or click to browse</h3>
+          <p>MP4, MOV, WebM up to 2 GB · Drag &amp; drop supported</p>
+        </div>
+        <div class="card" style="padding:1.5rem">
+          <div class="fg">
+            <label>Video Title</label>
+            <input type="text" id="vidTitle" placeholder="e.g. Introduction to FAIS Compliance">
+          </div>
+          <div class="fg-row">
+            <div class="fg">
+              <label>Assign to Course</label>
+              <select id="vidCourse">
+                <option value="sales">Sales Training</option>
+                <option value="rma">Product RMA</option>
+                <option value="capital">Capital Legacy</option>
+                <option value="fais">FAIS Compliance</option>
+                <option value="fin">Financial Literacy</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label>Module Number</label>
+              <input type="number" id="vidModule" min="1" max="20" value="1" placeholder="1">
+            </div>
+          </div>
+          <div class="fg">
+            <label>Description</label>
+            <textarea id="vidDesc" placeholder="Brief description of the video content…"></textarea>
+          </div>
+          <div id="vidProgress" style="display:none;margin-bottom:.9rem">
+            <div style="background:var(--panel-2);border:1px solid var(--line);border-radius:99px;height:10px;overflow:hidden">
+              <div id="vidProgressBar" style="height:100%;background:linear-gradient(90deg,var(--brand),#6366f1);border-radius:99px;width:0%;transition:width .3s"></div>
+            </div>
+            <div style="font-size:.72rem;color:var(--ink-3);margin-top:.4rem" id="vidProgressLabel">Uploading…</div>
+          </div>
+          <button class="btn-prim" onclick="saveVideo()" style="width:100%;justify-content:center;padding:.8rem"><i class="fas fa-cloud-arrow-up"></i> Save Video to Academy</button>
+        </div>
+        <h3 style="font-family:var(--fh);font-weight:800;font-size:.95rem;margin:1.5rem 0 .75rem;color:var(--ink-1)">Uploaded Videos</h3>
+        <div class="video-list" id="videoList"></div>
+      </div>
+    </div><!-- /view-upload -->
+
+    <!-- ═══ ACTIVITY VIEW ═══ -->
+    <div id="view-activity" class="view">
+      <div class="view-head">
+        <div>
+          <div class="view-title">Live <em>Activity</em></div>
+          <div class="view-sub">Real-time stream of every student action on the academy.</div>
+        </div>
+        <div class="view-actions">
+          <span class="live-pill"><span class="dot"></span> Live</span>
+          <button class="tool-btn" onclick="FEED=[];renderFeed();renderFeedFull()"><i class="fas fa-trash"></i> Clear</button>
+        </div>
+      </div>
+      <div style="max-width:820px;margin:0 auto">
+        <div class="feed-full" id="feedFull">
+          <div class="empty"><i class="fas fa-wave-square"></i><p>No activity yet</p><span>Student actions will appear here in real time.</span></div>
+        </div>
+      </div>
+    </div><!-- /view-activity -->
+
+    <!-- ═══ ANALYTICS VIEW ═══ -->
+    <div id="view-analytics" class="view">
+      <div class="view-head">
+        <div>
+          <div class="view-title">Deep <em>Analytics</em></div>
+          <div class="view-sub">Engagement heatmaps, funnel analysis, retention metrics, and risk intelligence.</div>
+        </div>
+        <div class="view-actions">
+          <button class="tool-btn" onclick="openCsvModal('analytics')"><i class="fas fa-file-arrow-down"></i> Export Data</button>
+          <button class="tool-btn" onclick="openPdfModal('analytics')"><i class="fas fa-file-pdf"></i> Export PDF</button>
+          <button class="tool-btn" onclick="renderAnalytics()"><i class="fas fa-rotate"></i> Refresh</button>
+        </div>
+      </div>
+
+      <!-- KPI stat blocks -->
+      <div class="analytics-grid" style="margin-bottom:1.2rem">
+        <div class="analytics-card analytics-full">
+          <h3>Key Performance Indicators</h3>
+          <p>Snapshot of academy-wide metrics</p>
+          <div class="stat-blocks" id="anaStatBlocks"></div>
+        </div>
+      </div>
+
+      <!-- Menner Readiness Row -->
+      <div class="analytics-grid" style="margin-bottom:1.2rem">
+        <div class="analytics-card analytics-full">
+          <h3><i class="fas fa-medal" style="color:#6c3bff;margin-right:.4rem"></i>Readiness Status</h3>
+          <p>Final Readiness Score distribution across students</p>
+          <div id="anaMennerRow" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-top:.75rem"></div>
+        </div>
+      </div>
+
+      <!-- Region & SM Performance -->
+      <div class="analytics-grid" style="margin-bottom:1.2rem;grid-template-columns:1fr 1fr">
+        <div class="analytics-card">
+          <h3><i class="fas fa-map-location-dot" style="color:#0073ea;margin-right:.4rem"></i>Performance per Region</h3>
+          <p>Average Final Readiness Score by region</p>
+          <div style="height:220px;margin-top:.75rem"><canvas id="anaRegionChart"></canvas></div>
+        </div>
+        <div class="analytics-card">
+          <h3><i class="fas fa-users-gear" style="color:#00b96b;margin-right:.4rem"></i>Performance per SM</h3>
+          <p>Average Final Readiness Score by Sales Manager</p>
+          <div style="height:220px;margin-top:.75rem"><canvas id="anaSMChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="analytics-grid">
+        <!-- Enrollment Funnel -->
+        <div class="analytics-card">
+          <h3>Enrolment Funnel</h3>
+          <p>Student journey from registration to graduation</p>
+          <div class="funnel-steps" id="anaFunnel"></div>
+        </div>
+
+        <!-- Course Distribution -->
+        <div class="analytics-card">
+          <h3>Course Distribution</h3>
+          <p>Students enrolled per course</p>
+          <div class="retention-bars" id="anaTopCourses"></div>
+        </div>
+
+        <!-- Progress Distribution -->
+        <div class="analytics-card">
+          <h3>Progress Distribution</h3>
+          <p>Students grouped by completion range</p>
+          <div class="retention-bars" id="anaRetention"></div>
+        </div>
+
+        <!-- Weekly Engagement -->
+        <div class="analytics-card analytics-full">
+          <h3>Weekly Engagement Activity</h3>
+          <p>Number of active students by day of week</p>
+          <div class="engagement-heat" id="anaHeatmap" style="margin-top:.75rem"></div>
+          <div class="heat-labels"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+        </div>
+
+        <!-- Progress Breakdown doughnut -->
+        <div class="analytics-card">
+          <h3>Completion Stage Breakdown</h3>
+          <p>Students by progress milestone</p>
+          <div style="height:200px"><canvas id="anaChartProg"></canvas></div>
+        </div>
+
+        <!-- XP Leaderboard -->
+        <div class="analytics-card">
+          <h3>XP Leaderboard</h3>
+          <p>Top 10 students by XP earned</p>
+          <div style="height:200px"><canvas id="anaChartXP"></canvas></div>
+        </div>
+
+        <!-- Risk Intelligence (full width) -->
+        <div class="analytics-card analytics-full">
+          <h3><i class="fas fa-triangle-exclamation" style="color:#ff6b6b;margin-right:.4rem"></i>Risk Intelligence</h3>
+          <p>Students categorised by risk type — take action before they disengage</p>
+          <div id="anaRiskBreakdown"></div>
+        </div>
+
+        <!-- Assessment Performance -->
+        <div class="analytics-card">
+          <h3>Assessment Performance</h3>
+          <p>Pass rate and submission stats</p>
+          <div id="anaAssessStats" style="margin-top:.5rem"></div>
+        </div>
+
+      </div>
+    </div><!-- /view-analytics -->
+
+    <!-- ═══ REPORTS VIEW ═══ -->
+    <div id="view-reports" class="view">
+      <div class="view-head">
+        <div>
+          <div class="view-title">Student <em>Reports</em></div>
+          <div class="view-sub">Click any student to view or download their report.</div>
+        </div>
+        <div class="view-actions">
+          <button class="tool-btn" onclick="openCsvModal('students')"><i class="fas fa-file-arrow-down"></i> Export CSV</button>
+          <button class="tool-btn" onclick="openPdfModal('register')"><i class="fas fa-file-pdf"></i> Export PDF</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="board-wrap">
+          <table class="register-table" id="registerTable">
+            <thead><tr>
+              <th>#</th><th>Student</th><th>Email</th><th>Department</th>
+              <th>Job Title</th><th>Employee #</th><th>Phone</th><th>Registered</th><th>Status</th><th>Progress</th>
+            </tr></thead>
+            <tbody id="registerBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div><!-- /view-reports -->
+
+    <!-- ═══ GRADUATES VIEW ═══ -->
+    <div id="view-graduates" class="view">
+      <div class="view-head">
+        <div>
+          <div class="view-title">Graduate <em>Confirmation</em></div>
+          <div class="view-sub">Students who passed their assessment · confirm or reject graduation status.</div>
+        </div>
+        <div class="view-actions">
+          <button class="tool-btn" onclick="openCsvModal('graduates')"><i class="fas fa-file-arrow-down"></i> Export Graduates CSV</button>
+          <button class="tool-btn" onclick="openPdfModal('graduates')"><i class="fas fa-file-pdf"></i> Export Certificates PDF</button>
+          <button class="tool-btn" onclick="renderGraduates()"><i class="fas fa-rotate"></i> Refresh</button>
+        </div>
+      </div>
+      <div id="gradGrid" class="grad-grid"></div>
+    </div><!-- /view-graduates -->
+
+    <!-- ═══ LEADERBOARD VIEW ═══ -->
+    <div id="view-leader" class="view">
+      <div class="view-head">
+        <div>
+          <div class="view-title">XP <em>Leaderboard</em></div>
+          <div class="view-sub">Students ranked by experience points and course completions.</div>
+        </div>
+        <div class="view-actions">
+          <button class="tool-btn" onclick="openCsvModal('leaderboard')"><i class="fas fa-file-arrow-down"></i> Export CSV</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="board-wrap">
+          <table class="leader-table">
+            <thead><tr><th>Rank</th><th>Student</th><th>XP</th><th>XP Progress</th><th>Level</th><th>Status</th></tr></thead>
+            <tbody id="leaderBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div><!-- /view-leader -->
+
+    <!-- ═══ ANNOUNCEMENTS VIEW ═══ -->
+    <div id="view-announce" class="view">
+      <div class="view-head">
+        <div>
+          <div class="view-title">Announcements <em>&amp; Comms</em></div>
+          <div class="view-sub">Compose and broadcast messages to student groups.</div>
+        </div>
+      </div>
+      <div class="announce-layout">
+        <div class="announce-compose">
+          <h3><i class="fas fa-pen-nib"></i> Compose Announcement</h3>
+          <div class="fg">
+            <label>Subject Line</label>
+            <input type="text" id="announceSubject" placeholder="e.g. Important: Assessment deadline reminder">
+          </div>
+          <div class="fg">
+            <label>Audience</label>
+            <div class="audience-pills">
+              <button class="audience-pill on" data-aud="all">All Students</button>
+              <button class="audience-pill" data-aud="active">Active</button>
+              <button class="audience-pill" data-aud="onboarding">Onboarding</button>
+              <button class="audience-pill" data-aud="stuck">At Risk</button>
+              <button class="audience-pill" data-aud="done">Completed</button>
+            </div>
+          </div>
+          <div class="fg">
+            <label>Message</label>
+            <textarea id="announceBody" rows="6" placeholder="Write your announcement here…" oninput="updateAnnouncePreview()"></textarea>
+          </div>
+          <div class="fg">
+            <label>Priority</label>
+            <select id="announcePriority">
+              <option value="normal">Normal</option>
+              <option value="high">High Priority</option>
+              <option value="urgent">Urgent</option>
+            </select>
+          </div>
+          <div class="announce-preview" id="announcePreview">
+            <div class="announce-preview-label">Live Preview</div>
+            <div class="announce-preview-title" id="previewTitle">Your subject line will appear here</div>
+            <div class="announce-preview-body" id="previewBody">Your message body will appear here…</div>
+          </div>
+          <div style="display:flex;gap:.6rem;margin-top:1.1rem">
+            <button class="btn-prim" onclick="sendAnnouncement()" style="flex:1;justify-content:center"><i class="fas fa-paper-plane"></i> Send Announcement</button>
+            <button class="btn-sec" onclick="clearAnnounce()"><i class="fas fa-trash"></i></button>
+          </div>
+        </div>
+        <div class="sent-list">
+          <div class="sent-list-h">
+            <h4>Sent Announcements</h4>
+            <span class="count" id="announceCount">0 sent</span>
+          </div>
+          <div id="sentList">
+            <div class="empty" style="padding:2rem"><i class="fas fa-bullhorn"></i><p>No announcements yet</p><span>Your sent messages will appear here.</span></div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /view-announce -->
+
+    <!-- ═══ SM MANAGEMENT VIEW ═══ -->
+    <div id="view-sm-management" class="view">
+      <div class="view-head">
+        <div>
+          <div class="view-title">Sales <em>Managers</em></div>
+          <div class="view-sub">Manage SM teams and student assignments.</div>
+        </div>
+        <div class="page-tools">
+          <button class="btn-prim" onclick="openAddSMModal()"><i class="fas fa-plus"></i> Add SM</button>
+        </div>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <table class="data-table" id="smTable">
+          <thead>
+            <tr>
+              <th>Team Name</th>
+              <th>SM Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Students</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="smTableBody">
+            <tr><td colspan="6" style="padding:2rem;text-align:center;color:var(--ink-3)">No Sales Managers yet. Click "Add SM" to get started.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div><!-- /view-sm-management -->
+
+    <!-- Add SM Modal -->
+    <div id="addSMModal" class="modal-backdrop hidden">
+      <div class="modal-box" style="max-width:480px">
+        <div class="modal-head"><h3>Add Sales Manager</h3><button onclick="closeAddSMModal()"><i class="fas fa-times"></i></button></div>
+        <div class="modal-body">
+          <div class="fg"><label>Full Name *</label><input id="smFullName" type="text" placeholder="e.g. Thato Mokoena"/></div>
+          <div class="fg"><label>Team Name *</label><input id="smTeamName" type="text" placeholder="e.g. Team Thato"/></div>
+          <div class="fg"><label>Email *</label><input id="smEmail" type="email" placeholder="thato@matlalife.co.za"/></div>
+          <div class="fg"><label>Phone</label><input id="smPhone" type="tel" placeholder="+27 81 000 0000"/></div>
+        </div>
+        <div class="modal-foot">
+          <button class="btn-sec" onclick="closeAddSMModal()">Cancel</button>
+          <button class="btn-prim" onclick="saveNewSM()"><i class="fas fa-save"></i> Save SM</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ LIVE STREAM VIEW ═══ -->
+    <div id="view-livestream" class="view">
+      <div class="view-head">
+        <div>
+          <div class="view-title">Live <em>Stream</em></div>
+          <div class="view-sub">Broadcast a live session or webinar directly to all students in real time.</div>
+        </div>
+        <div class="page-tools">
+          <div id="liveStatusBadge" style="display:none;align-items:center;gap:.5rem;background:#dcfce7;border:1px solid #86efac;color:#16a34a;font-weight:700;font-size:.8rem;padding:.35rem .85rem;border-radius:2rem">
+            <span style="animation:live-pulse 2s infinite;font-size:.6rem">●</span> LIVE NOW
+            <span id="liveDuration" style="font-weight:400;color:#15803d;margin-left:.25rem"></span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 380px;gap:1.5rem;align-items:start">
+
+        <!-- Left: Setup + Preview -->
+        <div>
+          <!-- Stream Setup Card -->
+          <div class="card" style="margin-bottom:1.2rem">
+            <div style="font-weight:700;font-size:.9rem;color:var(--ink-1);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem">
+              <i class="fas fa-sliders" style="color:var(--brand)"></i> Stream Setup
+            </div>
+            <div class="fg">
+              <label>Stream Title <span style="color:#e2445c">*</span></label>
+              <input id="streamTitle" type="text" placeholder="e.g. Week 3 — Product Training Webinar" oninput="updateStreamPreview()"/>
+            </div>
+            <div class="fg">
+              <label>Description <span style="font-weight:400;color:var(--ink-3)">(optional)</span></label>
+              <textarea id="streamDesc" rows="2" placeholder="Brief description of what students will learn today…" style="resize:vertical" oninput="updateStreamPreview()"></textarea>
+            </div>
+            <div class="fg">
+              <label>Stream URL <span style="color:#e2445c">*</span></label>
+              <input id="streamUrl" type="url" placeholder="Paste YouTube Live, Zoom, Teams, or Google Meet link" oninput="detectPlatform();updateStreamPreview()"/>
+              <div id="platformDetect" style="display:none;margin-top:.4rem;font-size:.78rem;font-weight:600;display:flex;align-items:center;gap:.35rem"></div>
+              <div style="font-size:.75rem;color:var(--ink-3);margin-top:.3rem">YouTube watch?v= links are auto-converted to embed format. Zoom/Teams links open in a new tab for students.</div>
+            </div>
+            <div style="display:flex;gap:.75rem;margin-top:1.25rem">
+              <button id="goLiveBtn" onclick="goLive()" class="btn-prim" style="background:#16a34a;border-color:#16a34a;flex:1;justify-content:center"><i class="fas fa-circle-play"></i> Go Live</button>
+              <button id="endStreamBtn" onclick="endStream()" class="btn-prim" style="background:#dc2626;border-color:#dc2626;flex:1;justify-content:center;display:none"><i class="fas fa-stop-circle"></i> End Stream</button>
+            </div>
+          </div>
+
+          <!-- Live Preview -->
+          <div class="card" id="livePreviewCard">
+            <div style="font-weight:700;font-size:.9rem;color:var(--ink-1);margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem">
+              <i class="fas fa-eye" style="color:var(--brand)"></i> Live Preview
+              <span style="font-size:.72rem;font-weight:400;color:var(--ink-3);margin-left:.25rem">— how students will see it</span>
+            </div>
+            <div id="streamPreviewBox" style="background:#0f172a;border-radius:.75rem;overflow:hidden;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.3);font-size:.85rem;gap:.5rem">
+              <i class="fas fa-video"></i> Enter a URL above to preview
+            </div>
+            <div id="streamPreviewMeta" style="margin-top:.75rem;display:none">
+              <div id="streamPreviewTitle" style="font-weight:700;font-size:1rem;color:var(--ink-1)"></div>
+              <div id="streamPreviewDesc" style="font-size:.82rem;color:var(--ink-3);margin-top:.2rem"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Status + History -->
+        <div>
+          <!-- Current Status -->
+          <div class="card" style="margin-bottom:1.2rem">
+            <div style="font-weight:700;font-size:.9rem;color:var(--ink-1);margin-bottom:.85rem;display:flex;align-items:center;gap:.5rem">
+              <i class="fas fa-signal" style="color:var(--brand)"></i> Broadcast Status
+            </div>
+            <div id="statusOffline" style="text-align:center;padding:1.2rem 0">
+              <div style="width:48px;height:48px;background:#f1f5f9;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .75rem">
+                <i class="fas fa-tower-broadcast" style="color:#94a3b8;font-size:1.3rem"></i>
+              </div>
+              <div style="font-weight:600;color:var(--ink-2);font-size:.875rem">No active stream</div>
+              <div style="font-size:.75rem;color:var(--ink-3);margin-top:.25rem">Configure and go live to broadcast</div>
+            </div>
+            <div id="statusOnline" style="display:none">
+              <div style="display:flex;align-items:center;gap:.75rem;padding:.75rem;background:#f0fdf4;border-radius:.65rem;margin-bottom:.85rem">
+                <div style="width:40px;height:40px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                  <i class="fas fa-circle-play" style="color:#16a34a;font-size:1.1rem"></i>
+                </div>
+                <div>
+                  <div style="font-weight:700;font-size:.875rem;color:#15803d">Stream is live</div>
+                  <div id="streamInfoTitle" style="font-size:.78rem;color:#166534;margin-top:.1rem"></div>
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.75rem">
+                <div style="background:#f8fafc;border-radius:.5rem;padding:.6rem .75rem;text-align:center">
+                  <div style="font-size:1.1rem;font-weight:700;color:var(--ink-1)" id="liveTimer">0:00</div>
+                  <div style="font-size:.7rem;color:var(--ink-3);margin-top:.1rem">Duration</div>
+                </div>
+                <div style="background:#f8fafc;border-radius:.5rem;padding:.6rem .75rem;text-align:center">
+                  <div style="font-size:1.1rem;font-weight:700;color:var(--ink-1)" id="studentCount">—</div>
+                  <div style="font-size:.7rem;color:var(--ink-3);margin-top:.1rem">Students</div>
+                </div>
+              </div>
+              <div style="font-size:.75rem;color:var(--ink-3);margin-bottom:.4rem">Stream URL</div>
+              <div id="currentStreamUrl" style="font-size:.75rem;color:var(--brand);word-break:break-all;margin-bottom:.75rem"></div>
+              <button onclick="copyStreamUrl()" class="btn-sec" style="width:100%;justify-content:center;font-size:.8rem"><i class="fas fa-copy"></i> Copy Stream Link</button>
+            </div>
+          </div>
+
+          <!-- Stream History -->
+          <div class="card">
+            <div style="font-weight:700;font-size:.9rem;color:var(--ink-1);margin-bottom:.85rem;display:flex;align-items:center;justify-content:space-between">
+              <span><i class="fas fa-clock-rotate-left" style="color:var(--brand);margin-right:.4rem"></i> Stream History</span>
+              <button onclick="clearStreamHistory()" style="font-size:.72rem;color:var(--ink-3);background:none;border:none;cursor:pointer">Clear</button>
+            </div>
+            <div id="streamHistory" style="max-height:240px;overflow-y:auto">
+              <div style="text-align:center;color:var(--ink-3);font-size:.78rem;padding:1rem 0">No previous streams</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /view-livestream -->
+
+    <!-- ═══ SETTINGS VIEW ═══ -->
+    <div id="view-settings" class="view">
+      <div class="view-head">
+        <div>
+          <div class="view-title">Admin <em>Settings</em></div>
+          <div class="view-sub">Configure academy-wide preferences and admin controls.</div>
+        </div>
+      </div>
+      <div class="settings-grid">
+        <div class="settings-card">
+          <h3><i class="fas fa-bell"></i> Notifications</h3>
+          <div class="toggle-row"><div><label>New student alert</label><small>Alert when a student registers</small></div><label class="toggle"><input type="checkbox" checked onchange="saveSetting('notif_register',this.checked)"><span class="toggle-slider"></span></label></div>
+          <div class="toggle-row"><div><label>Assessment submission</label><small>Alert when assessment submitted</small></div><label class="toggle"><input type="checkbox" checked onchange="saveSetting('notif_assess',this.checked)"><span class="toggle-slider"></span></label></div>
+          <div class="toggle-row"><div><label>At-risk student alert</label><small>Alert when student inactive 14+ days</small></div><label class="toggle"><input type="checkbox" onchange="saveSetting('notif_stuck',this.checked)"><span class="toggle-slider"></span></label></div>
+          <div class="toggle-row"><div><label>Graduate confirmed</label><small>Alert when a graduate is confirmed</small></div><label class="toggle"><input type="checkbox" checked onchange="saveSetting('notif_grad',this.checked)"><span class="toggle-slider"></span></label></div>
+        </div>
+        <div class="settings-card">
+          <h3><i class="fas fa-shield-halved"></i> Access Control</h3>
+          <div class="toggle-row"><div><label>Require email verification</label><small>Students must verify email on signup</small></div><label class="toggle"><input type="checkbox" onchange="saveSetting('req_verify',this.checked)"><span class="toggle-slider"></span></label></div>
+          <div class="toggle-row"><div><label>Allow self-registration</label><small>Public sign-up page accessible</small></div><label class="toggle"><input type="checkbox" checked onchange="saveSetting('self_reg',this.checked)"><span class="toggle-slider"></span></label></div>
+          <div class="toggle-row"><div><label>Maintenance mode</label><small>Blocks student access to academy</small></div><label class="toggle"><input type="checkbox" onchange="saveSetting('maintenance',this.checked)"><span class="toggle-slider"></span></label></div>
+          <div class="toggle-row"><div><label>Require 2FA for admin</label><small>Two-factor auth for admin login</small></div><label class="toggle"><input type="checkbox" onchange="saveSetting('admin_2fa',this.checked)"><span class="toggle-slider"></span></label></div>
+        </div>
+        <div class="settings-card">
+          <h3><i class="fas fa-graduation-cap"></i> Grading</h3>
+          <div class="fg" style="margin-top:.4rem"><label>Pass Mark (%)</label><input type="number" id="passMarkInput" value="80" min="0" max="100" onchange="saveSetting('pass_mark',this.value)"></div>
+          <div class="fg"><label>Max Assessment Attempts</label><input type="number" id="maxAttempts" value="3" min="1" onchange="saveSetting('max_attempts',this.value)"></div>
+          <div class="fg"><label>Certificate Threshold (%)</label><input type="number" id="certThreshold" value="80" min="0" max="100" onchange="saveSetting('cert_threshold',this.value)"></div>
+        </div>
+        <div class="settings-card">
+          <h3><i class="fas fa-database"></i> Data &amp; Exports</h3>
+          <div style="display:flex;flex-direction:column;gap:.6rem;margin-top:.2rem">
+            <button class="tool-btn" style="justify-content:flex-start" onclick="openCsvModal()"><i class="fas fa-file-arrow-down"></i> Export all data CSV</button>
+            <button class="tool-btn" style="justify-content:flex-start" onclick="openPdfModal('register')"><i class="fas fa-file-pdf"></i> Export register PDF</button>
+            <button class="tool-btn" style="justify-content:flex-start" onclick="openPdfModal('graduates')"><i class="fas fa-graduation-cap"></i> Export graduates PDF</button>
+            <button class="btn-danger" style="border-radius:9px;font-size:.76rem;font-weight:700;padding:.6rem 1rem;display:flex;align-items:center;gap:.45rem" onclick="clearDemoData()"><i class="fas fa-trash"></i> Clear all demo data</button>
+          </div>
+        </div>
+      </div>
+    </div><!-- /view-settings -->
+
+    </div><!-- /.page -->
+  </main>
+</div>
+
+<!-- ══════════ COURSE EDIT MODAL ══════════ -->
+<div class="modal-ov" id="courseModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="courseModalTitle">Edit Course</h3>
+      <button class="modal-close" onclick="closeCourseModal()"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="courseKey">
+      <div class="fg"><label>Course Title</label><input type="text" id="cTitle" placeholder="e.g. FAIS Compliance"></div>
+      <div class="fg"><label>Description</label><textarea id="cDesc" placeholder="What will students learn?"></textarea></div>
+      <div class="fg-row">
+        <div class="fg"><label>Total Modules</label><input type="number" id="cModules" min="1" max="30" value="6"></div>
+        <div class="fg"><label>Duration</label><input type="text" id="cDuration" placeholder="e.g. 4 weeks"></div>
+      </div>
+      <div class="fg"><label>Category Tag</label>
+        <select id="cTag">
+          <option value="ct-blue">Blue — Core</option>
+          <option value="ct-green">Green — Compliance</option>
+          <option value="ct-gold">Gold — Finance</option>
+          <option value="ct-purple">Purple — Advanced</option>
+          <option value="ct-pink">Pink — Speciality</option>
+        </select>
+      </div>
+      <div class="fg"><label>Status</label>
+        <select id="cStatus">
+          <option value="active">Active</option>
+          <option value="draft">Draft</option>
+          <option value="archived">Archived</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-sec" onclick="closeCourseModal()">Cancel</button>
+      <button class="btn-prim" onclick="saveCourse()"><i class="fas fa-check"></i> Save Course</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ ASSESSMENT EDIT MODAL ══════════ -->
+<div class="modal-ov" id="assessModal">
+  <div class="modal" style="max-width:680px">
+    <div class="modal-head">
+      <h3 id="assessModalTitle">Edit Assessment</h3>
+      <button class="modal-close" onclick="closeAssessModal()"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="assessKey">
+      <div class="fg"><label>Assessment Title</label><input type="text" id="aTitle" placeholder="e.g. Week 1 Assessment"></div>
+      <div class="fg-row">
+        <div class="fg"><label>Pass Mark (%)</label><input type="number" id="aPassMark" value="70" min="0" max="100"></div>
+        <div class="fg"><label>Time Limit (mins)</label><input type="number" id="aTime" value="30" min="5"></div>
+      </div>
+      <div class="fg"><label>Description</label><textarea id="aDesc" rows="2" placeholder="Brief description of this assessment"></textarea></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem">
+        <label style="font-size:.72rem;font-weight:700;color:var(--ink-2);text-transform:uppercase;letter-spacing:.05em">Questions</label>
+        <button class="btn-prim" style="font-size:.72rem;padding:.4rem .75rem" onclick="addQuestion()"><i class="fas fa-plus"></i> Add Question</button>
+      </div>
+      <ul class="q-list" id="qList"></ul>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-sec" onclick="closeAssessModal()">Cancel</button>
+      <button class="btn-prim" onclick="saveAssessment()"><i class="fas fa-check"></i> Publish Assessment</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ ADD QUESTION MODAL ══════════ -->
+<div class="modal-ov" id="qModal">
+  <div class="modal" style="max-width:500px">
+    <div class="modal-head">
+      <h3>Add Question</h3>
+      <button class="modal-close" onclick="document.getElementById('qModal').classList.remove('open')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="fg"><label>Question</label><textarea id="qText" rows="2" placeholder="Type the question…"></textarea></div>
+      <div class="fg"><label>Option A</label><input type="text" id="qA" placeholder="Option A"></div>
+      <div class="fg"><label>Option B</label><input type="text" id="qB" placeholder="Option B"></div>
+      <div class="fg"><label>Option C</label><input type="text" id="qC" placeholder="Option C"></div>
+      <div class="fg"><label>Option D</label><input type="text" id="qD" placeholder="Option D"></div>
+      <div class="fg"><label>Correct Answer</label>
+        <select id="qCorrect"><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-sec" onclick="document.getElementById('qModal').classList.remove('open')">Cancel</button>
+      <button class="btn-prim" onclick="confirmAddQuestion()"><i class="fas fa-check"></i> Add Question</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ REPORT PICK MODAL ══════════ -->
+<div class="modal-ov" id="reportPickModal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-head">
+      <h3 id="reportPickName">Select Report Type</h3>
+      <button class="modal-close" onclick="document.getElementById('reportPickModal').classList.remove('open')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:.8rem;color:var(--ink-2);margin-bottom:.8rem">What information would you like to view?</p>
+      <div class="info-pick-grid" id="reportPickGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ ADD STUDENT MODAL ══════════ -->
+<div class="modal-ov" id="addStudentModal">
+  <div class="modal" style="max-width:660px">
+    <div class="modal-head">
+      <div>
+        <h3><i class="fas fa-user-plus" style="color:var(--brand);margin-right:.4rem"></i>Add New Student</h3>
+        <div class="add-stu-steps" id="addStuStepBar">
+          <span class="add-stu-step active" data-s="1">1</span>
+          <span class="add-stu-step-line"></span>
+          <span class="add-stu-step" data-s="2">2</span>
+          <span class="add-stu-step-line"></span>
+          <span class="add-stu-step" data-s="3">3</span>
+          <span class="add-stu-step-line"></span>
+          <span class="add-stu-step" data-s="4">4</span>
+        </div>
+        <div class="add-stu-step-lbl" id="addStuStepLabel">Step 1 of 4 — Personal Information</div>
+      </div>
+      <button class="modal-close" onclick="closeAddStudentModal()"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+
+      <!-- ── Step 1: Personal ── -->
+      <div class="add-stu-page" id="addStuPage1">
+        <div class="fg-row">
+          <div class="fg"><label>First Name <span class="req">*</span></label><input type="text" id="asfFirstName" placeholder="e.g. Thabo"></div>
+          <div class="fg"><label>Last Name <span class="req">*</span></label><input type="text" id="asfLastName" placeholder="e.g. Mokoena"></div>
+        </div>
+        <div class="fg-row">
+          <div class="fg"><label>Date of Birth</label><input type="date" id="asfDob"></div>
+          <div class="fg"><label>Gender</label>
+            <select id="asfGender"><option value="">— Select —</option><option>Male</option><option>Female</option><option>Other</option><option>Prefer not to say</option></select>
+          </div>
+        </div>
+        <div class="fg-row">
+          <div class="fg"><label>SA ID Number</label><input type="text" id="asfIdNumber" placeholder="e.g. 9001015026082" maxlength="13"></div>
+          <div class="fg"><label>Nationality</label><input type="text" id="asfNationality" placeholder="South African"></div>
+        </div>
+        <div class="fg"><label>Marital Status</label>
+          <select id="asfMarital"><option value="">— Select —</option><option>Single</option><option>Married</option><option>Divorced</option><option>Widowed</option></select>
+        </div>
+      </div>
+
+      <!-- ── Step 2: Contact & Location ── -->
+      <div class="add-stu-page" id="addStuPage2" style="display:none">
+        <div class="fg"><label>Email Address <span class="req">*</span></label><input type="email" id="asfEmail" placeholder="e.g. thabo.mokoena@matlalife.co.za"></div>
+        <div class="fg-row">
+          <div class="fg"><label>Mobile Number</label><input type="tel" id="asfPhone" placeholder="+27 83 000 0000"></div>
+          <div class="fg"><label>Work Number</label><input type="tel" id="asfWorkPhone" placeholder="+27 11 000 0000"></div>
+        </div>
+        <div class="fg"><label>Physical Address</label><input type="text" id="asfAddress" placeholder="123 Main Street, City, Province, 0000"></div>
+        <div class="fg"><label>Postal Address</label><input type="text" id="asfPostal" placeholder="PO Box or same as physical"></div>
+        <div class="fg"><label>Region / Province</label>
+          <select id="asfRegion">
+            <option value="">— Select Province —</option>
+            <option>Gauteng</option><option>Western Cape</option><option>KwaZulu-Natal</option>
+            <option>Eastern Cape</option><option>Limpopo</option><option>Mpumalanga</option>
+            <option>North West</option><option>Free State</option><option>Northern Cape</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- ── Step 3: Professional ── -->
+      <div class="add-stu-page" id="addStuPage3" style="display:none">
+        <div class="fg-row">
+          <div class="fg"><label>Employee Number</label><input type="text" id="asfEmpId" placeholder="ML-0001"></div>
+          <div class="fg"><label>Department</label>
+            <select id="asfDept"><option value="">— Select —</option><option>Financial Advisory</option><option>Sales</option><option>Operations</option><option>Compliance</option><option>Finance</option><option>HR</option></select>
+          </div>
+        </div>
+        <div class="fg-row">
+          <div class="fg"><label>Job Title</label><input type="text" id="asfJobTitle" placeholder="Junior Financial Advisor"></div>
+          <div class="fg"><label>Direct Manager</label><input type="text" id="asfManager" placeholder="Manager's full name"></div>
+        </div>
+        <div class="fg-row">
+          <div class="fg"><label>Start Date</label><input type="date" id="asfStartDate"></div>
+          <div class="fg"><label>Contract Type</label>
+            <select id="asfContract"><option value="">— Select —</option><option>Permanent</option><option>Contract</option><option>Probation</option><option>Intern</option></select>
+          </div>
+        </div>
+        <div class="fg-row">
+          <div class="fg"><label>FSP Number</label><input type="text" id="asfFsp" placeholder="FSP 12345"></div>
+          <div class="fg"><label>RE Number</label><input type="text" id="asfRe" placeholder="RE 67890"></div>
+        </div>
+      </div>
+
+      <!-- ── Step 4: Course & Account ── -->
+      <div class="add-stu-page" id="addStuPage4" style="display:none">
+        <div class="fg-row">
+          <div class="fg"><label>Assign Course</label>
+            <select id="asfCourse"><option value="">— No course yet —</option><option value="sales">Sales Training</option><option value="rma">Product RMA</option><option value="capital">Capital Legacy</option><option value="fais">FAIS Compliance</option><option value="fin">Financial Literacy</option></select>
+          </div>
+          <div class="fg"><label>Role</label>
+            <select id="asfRole"><option value="student">Student</option><option value="L&D">L&D Staff</option><option value="IT">IT Staff</option></select>
+          </div>
+        </div>
+        <div class="fg"><label>Temporary Password <span class="req">*</span></label><input type="text" id="asfPassword" placeholder="Set a secure temporary password" autocomplete="new-password"></div>
+        <div class="fg"><label>Notes (optional)</label><textarea id="asfNotes" placeholder="Any notes about this student…" style="min-height:64px"></textarea></div>
+        <div class="add-stu-info-box"><i class="fas fa-circle-info"></i><span>The student can log in immediately with their email and temporary password. They will be able to update their password and complete their profile after first login.</span></div>
+      </div>
+
+      <div class="err" id="addStuErr" style="display:none;margin-top:.6rem"><i class="fas fa-circle-exclamation"></i><span></span></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-sec" id="addStuBack" onclick="addStuBack()" style="display:none"><i class="fas fa-arrow-left"></i> Back</button>
+      <button class="btn-sec" onclick="closeAddStudentModal()">Cancel</button>
+      <button class="btn-prim" id="addStuNext" onclick="addStuNext()">Next <i class="fas fa-arrow-right"></i></button>
+      <button class="btn-prim" id="addStuSave" onclick="saveNewStudent()" style="display:none"><i class="fas fa-user-plus"></i> Create Student</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ REPORT VIEW MODAL ══════════ -->
+<div class="modal-ov" id="reportViewModal">
+  <div class="modal" style="max-width:580px">
+    <div class="modal-head">
+      <h3 id="reportViewTitle">Student Report</h3>
+      <button class="modal-close" onclick="document.getElementById('reportViewModal').classList.remove('open')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body" id="reportViewBody"></div>
+    <div class="modal-foot">
+      <button class="btn-sec" onclick="document.getElementById('reportViewModal').classList.remove('open')">Close</button>
+      <button class="btn-prim" onclick="openPdfModal('student')"><i class="fas fa-download"></i> Download PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PDF SIZE PICKER MODAL ══════════ -->
+<div class="modal-ov" id="pdfSizeModal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-head">
+      <h3><i class="fas fa-file-pdf" style="color:var(--red)"></i> &nbsp;Export PDF</h3>
+      <button class="modal-close" onclick="closePdfModal()"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="fg">
+        <label>Report Type</label>
+        <div class="pdf-export-types" id="pdfTypeSelector"></div>
+      </div>
+      <div class="fg">
+        <label>Page Size</label>
+        <div class="pdf-size-grid" id="pdfSizeGrid"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-sec" onclick="closePdfModal()">Cancel</button>
+      <button class="btn-prim" id="pdfGenerateBtn" onclick="doExportPdf()"><i class="fas fa-file-pdf"></i> Generate PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ CSV EXPORT TYPE MODAL ══════════ -->
+<div class="modal-ov" id="csvModal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-head">
+      <h3><i class="fas fa-file-arrow-down" style="color:var(--green)"></i> &nbsp;Export CSV</h3>
+      <button class="modal-close" onclick="closeCsvModal()"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:.8rem;color:var(--ink-2);margin-bottom:1rem">Select what data to export. Each template is formatted for Excel.</p>
+      <div class="export-types-grid" id="csvTypeGrid"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-sec" onclick="closeCsvModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ DRAWER (student detail) ══════════ -->
+<div class="drawer-ov" id="drawerOv" onclick="closeDrawer()"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true">
+  <div class="drawer-h">
+    <div class="avatar av-1" id="drAvatar">A</div>
+    <div class="drawer-h-info">
+      <div class="drawer-h-name" id="drName">—</div>
+      <div class="drawer-h-mail" id="drMail">—</div>
+    </div>
+    <button class="drawer-close" onclick="closeDrawer()"><i class="fas fa-xmark"></i></button>
+  </div>
+  <div class="drawer-actions">
+    <button class="drawer-action-btn" onclick="openDrawerReport()"><i class="fas fa-file-lines"></i>Report</button>
+    <button class="drawer-action-btn" onclick="openDrawerMsg()"><i class="fas fa-envelope"></i>Message</button>
+    <button class="drawer-action-btn" onclick="openDrawerFlag()"><i class="fas fa-flag"></i>Flag</button>
+    <button class="drawer-action-btn" onclick="openDrawerCert()"><i class="fas fa-certificate"></i>Cert</button>
+  </div>
+  <div class="drawer-body">
+
+    <div class="drawer-section">
+      <h4>Overview</h4>
+      <div class="drawer-stats">
+        <div class="drawer-stat"><div class="drawer-stat-n" id="drProg">0%</div><div class="drawer-stat-l">Progress</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-n" id="drXP">0</div><div class="drawer-stat-l">XP</div></div>
+        <div class="drawer-stat"><div class="drawer-stat-n" id="drLvl">1</div><div class="drawer-stat-l">Level</div></div>
+      </div>
+    </div>
+
+    <div class="drawer-section">
+      <h4>Personal Details</h4>
+      <div id="drDetails" style="font-size:.78rem;color:var(--ink-2);line-height:1.8"></div>
+    </div>
+
+    <div class="drawer-section drawer-courses">
+      <h4>Course Progress</h4>
+      <div id="drCourses"></div>
+    </div>
+
+    <div class="drawer-section">
+      <h4>Assessment Results</h4>
+      <div id="drAssess" style="font-size:.78rem;color:var(--ink-2);line-height:1.6"></div>
+    </div>
+
+    <div class="drawer-section">
+      <h4>Activity Timeline</h4>
+      <div class="drawer-timeline" id="drTimeline"></div>
+    </div>
+
+  </div>
+</aside>
+
+<!-- Toast -->
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+
+<script src="admin-script.js"></script>
+</body>
+</html>

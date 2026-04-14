@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matla Academy - JFA Training Platform</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #1e3a8a; --primary-light: #3b82f6;
+            --secondary-dark: #1e40af; --secondary-light: #2563eb;
+            --accent-dark: #f59e0b; --accent-light: #fbbf24;
+            --text-primary: #ffffff; --text-secondary: #e5e7eb;
+            --bg-primary: #0f172a; --bg-secondary: #1e293b; --bg-tertiary: #334155;
+        }
+        .logo-fallback {
+            background: #1a3461; color: white; font-weight: bold; font-size: 20px;
+            width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .logo-img.error + .logo-fallback { display: flex; }
+
+        /* ── 1. Scroll progress bar ─────────────────────── */
+        #scrollProgress {
+            position: fixed; top: 0; left: 0; z-index: 99999;
+            height: 3px; width: 0%;
+            background: linear-gradient(90deg, #f59e0b, #3b82f6, #10b981);
+            transition: width 0.08s linear;
+            pointer-events: none;
+        }
+
+        /* ── 2. Animated gradient on title words ──────────── */
+        .hero-title-3d .title-word {
+            background: linear-gradient(135deg, #ffffff 0%, #bfdbfe 50%, #ffffff 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            opacity: 1;                           /* override styles.css opacity:0 */
+            transform: none;                      /* override styles.css transform */
+            animation: titleGrad 5s ease infinite;
+        }
+        .hero-title-3d .title-word-5,
+        .hero-title-3d .title-word-6 {
+            background: linear-gradient(135deg, #fbbf24 0%, #f97316 40%, #fbbf24 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            opacity: 1;
+            transform: none;
+            animation: titleGrad 3.5s ease infinite;
+        }
+        @keyframes titleGrad {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* ── Light/grey/blue themes: title words need dark gradient ── */
+        [data-theme="light"] .hero-title-3d .title-word,
+        [data-theme="grey"]  .hero-title-3d .title-word,
+        [data-theme="blue"]  .hero-title-3d .title-word {
+            background: linear-gradient(135deg, #0f1f5c 0%, #1e3a8a 50%, #0f172a 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        [data-theme="light"] .hero-title-3d .title-word-5,
+        [data-theme="light"] .hero-title-3d .title-word-6,
+        [data-theme="grey"]  .hero-title-3d .title-word-5,
+        [data-theme="grey"]  .hero-title-3d .title-word-6,
+        [data-theme="blue"]  .hero-title-3d .title-word-5,
+        [data-theme="blue"]  .hero-title-3d .title-word-6 {
+            background: linear-gradient(135deg, #d97706 0%, #ea580c 40%, #d97706 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ── Light mode overrides for hero elements ── */
+        [data-theme="light"] .hero-slogan {
+            color: rgba(15, 23, 42, 0.7);
+            border-left-color: rgba(245, 158, 11, 1);
+            border-right-color: rgba(245, 158, 11, 1);
+        }
+        [data-theme="light"] .welcome-message {
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+        [data-theme="light"] .hero-glass-card {
+            background: rgba(15, 23, 42, 0.05);
+            border-color: rgba(15, 23, 42, 0.1);
+        }
+        [data-theme="light"] .glass-stat-val {
+            color: #1e3a8a;
+        }
+        [data-theme="light"] .glass-stat-lbl {
+            color: rgba(15, 23, 42, 0.6);
+        }
+        [data-theme="light"] .stat-number {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        [data-theme="light"] .stat-label {
+            color: #4b5563;
+        }
+        [data-theme="light"] .stat-icon i {
+            color: rgba(59, 130, 246, 0.4);
+        }
+        [data-theme="light"] .trust-badge {
+            background: rgba(15, 23, 42, 0.05);
+            color: #4b5563;
+            border: 1px solid rgba(15, 23, 42, 0.1);
+        }
+        [data-theme="light"] .trust-badge i {
+            color: #3b82f6;
+        }
+
+        /* ── 3. Scroll-reveal ─────────────────────────────── */
+        .sr { opacity: 0; transform: translateY(36px); transition: opacity 0.65s ease, transform 0.65s cubic-bezier(.22,1,.36,1); }
+        .sr.sr-left  { transform: translateX(-36px); }
+        .sr.sr-right { transform: translateX(36px); }
+        .sr.sr-scale { transform: scale(0.93) translateY(10px); }
+        .sr.in { opacity: 1 !important; transform: none !important; }
+
+        /* ── 4. How It Works pulse connectors ─────────────── */
+        .how-arrow { position: relative; }
+        .how-arrow i { position: relative; z-index: 1; }
+        .how-arrow::after {
+            content: '';
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+            width: 36px; height: 36px; border-radius: 50%;
+            background: rgba(59,130,246,0.12);
+            animation: arrowPulse 2s ease-out infinite;
+        }
+        @keyframes arrowPulse {
+            0%   { transform: translate(-50%,-50%) scale(0.6); opacity: 0.9; }
+            100% { transform: translate(-50%,-50%) scale(2);   opacity: 0; }
+        }
+        .how-step { transition: transform 0.3s ease; }
+        .how-step:hover { transform: translateY(-6px); }
+
+        /* ── 5. Card colour glow on hover ────────────────── */
+        .overview-card {
+            transition: transform 0.22s ease, box-shadow 0.25s ease !important;
+            will-change: transform;
+        }
+        .overview-card[href="dashboard.html"]:hover  { box-shadow: 0 20px 50px rgba(59,130,246,0.28) !important; }
+        .overview-card[href="courses.html"]:hover     { box-shadow: 0 20px 50px rgba(20,184,166,0.28) !important; }
+        .overview-card[href="assessments.html"]:hover { box-shadow: 0 20px 50px rgba(245,158,11,0.28) !important; }
+        .overview-card[href="profile.html"]:hover     { box-shadow: 0 20px 50px rgba(139,92,246,0.28) !important; }
+        .overview-card[href="graduation.html"]:hover  { box-shadow: 0 20px 50px rgba(244,114,182,0.28) !important; }
+        .overview-card[href="meneer-ai.html"]:hover   { box-shadow: 0 20px 50px rgba(16,185,129,0.28) !important; }
+
+        /* ── 7. CTA band animated glow ───────────────────── */
+        .cta-band { position: relative; overflow: hidden; }
+        .cta-band::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 20% 50%, rgba(59,130,246,0.25) 0%, transparent 55%),
+                        radial-gradient(ellipse at 80% 50%, rgba(245,158,11,0.18) 0%, transparent 55%);
+            animation: ctaGlow 5s ease-in-out infinite alternate;
+        }
+        @keyframes ctaGlow {
+            from { opacity: 0.5; transform: scale(1); }
+            to   { opacity: 1;   transform: scale(1.06); }
+        }
+
+        /* ── 7b. Begin Your Journey — launch animation ─── */
+        @keyframes rocketFly {
+            0%   { transform: translate(0,0) rotate(0deg) scale(1); opacity: 1; }
+            40%  { transform: translate(2px,-4px) rotate(-15deg) scale(1.25); opacity: 1; }
+            100% { transform: translate(10px,-40px) rotate(-30deg) scale(0.3); opacity: 0; }
+        }
+        @keyframes textFade {
+            0%   { opacity: 1; letter-spacing: 0; }
+            40%  { opacity: 1; letter-spacing: 0.05em; }
+            100% { opacity: 0; letter-spacing: 0.25em; }
+        }
+        @keyframes btnMorph {
+            0%   { transform: translateY(0) scale(1); box-shadow: 0 6px 24px rgba(245,158,11,.4); }
+            35%  { transform: translateY(-5px) scale(1.07); box-shadow: 0 18px 50px rgba(245,158,11,.7), 0 0 80px rgba(245,158,11,.35); }
+            70%  { transform: translateY(-3px) scale(1.03); box-shadow: 0 12px 40px rgba(245,158,11,.5); }
+            100% { transform: translateY(-3px) scale(1.03); opacity: 0.6; }
+        }
+        @keyframes warpRing {
+            0%   { transform: translate(-50%,-50%) scale(0); opacity: 0.9; }
+            100% { transform: translate(-50%,-50%) scale(1); opacity: 0; }
+        }
+        .cta-band-btn.launching { animation: btnMorph 0.65s ease-in forwards; pointer-events: none; }
+        .cta-band-btn.launching #journeyRocket { animation: rocketFly 0.55s cubic-bezier(.4,0,1,1) forwards; }
+        .cta-band-btn.launching #journeyText   { animation: textFade 0.5s ease-in forwards; }
+
+        /* Warp overlay */
+        .journey-warp {
+            position: fixed; inset: 0; z-index: 9999; pointer-events: none;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+        }
+        .journey-warp-ring {
+            position: absolute; border-radius: 50%; border: 3px solid rgba(245,158,11,0.7);
+            animation: warpRing 0.55s ease-out forwards;
+        }
+
+        /* ── 8. Trust badge stagger entrance ─────────────── */
+        .trust-badges { opacity: 1; }
+        .trust-badge {
+            animation: badgeIn 0.5s cubic-bezier(.22,1,.36,1) both;
+        }
+        .trust-badge:nth-child(1) { animation-delay: 0.3s; }
+        .trust-badge:nth-child(2) { animation-delay: 0.5s; }
+        .trust-badge:nth-child(3) { animation-delay: 0.7s; }
+        @keyframes badgeIn {
+            from { opacity: 0; transform: translateY(12px) scale(0.9); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        /* ── 9. Stat numbers gradient colour ─────────────── */
+        .stat-number {
+            background: linear-gradient(135deg, #fff, #bfdbfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ── Hero logo — bigger, clearer, animated ──────── */
+        .hero-logo-standalone {
+            width: auto !important;
+            height: 220px !important;
+            max-width: 88vw;
+            object-fit: contain;
+            filter: drop-shadow(0 10px 40px rgba(30,64,175,0.45)) drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+            animation: heroLogoReveal 1.6s cubic-bezier(.22,1,.36,1) both !important;
+            transition: filter 0.35s ease, transform 0.3s ease;
+        }
+        .hero-logo-standalone:hover {
+            filter: drop-shadow(0 14px 52px rgba(59,130,246,0.6)) drop-shadow(0 4px 12px rgba(0,0,0,0.35));
+            transform: scale(1.06) !important;
+        }
+        @keyframes heroLogoReveal {
+            0%   { opacity: 0; transform: scale(0.78) translateY(24px); filter: blur(12px) drop-shadow(0 0 0 transparent); }
+            40%  { opacity: 0.7; filter: blur(3px); }
+            70%  { opacity: 1; filter: blur(0); }
+            100% { opacity: 1; transform: scale(1) translateY(0); filter: drop-shadow(0 10px 40px rgba(30,64,175,0.45)) drop-shadow(0 2px 8px rgba(0,0,0,0.3)); }
+        }
+        @media (max-width: 640px) {
+            .hero-logo-standalone { height: 160px !important; }
+        }
+
+        /* ── Leadership quote mark ───────────────────────── */
+        .t-quote-mark {
+            font-family: 'Space Grotesk', Georgia, serif;
+            font-size: 4rem; line-height: 0.8;
+            font-weight: 900;
+            background: linear-gradient(135deg, #1e40af, #f59e0b);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+            user-select: none; margin-bottom: -0.4rem;
+        }
+
+        /* ── 10. Section heading accent underline ────────── */
+        .how-heading, .overview-heading, .t-heading {
+            position: relative;
+        }
+        .how-heading::after, .overview-heading::after, .t-heading::after {
+            content: '';
+            display: block;
+            width: 52px; height: 3px;
+            background: linear-gradient(90deg, #f59e0b, #3b82f6);
+            border-radius: 99px;
+            margin: 0.5rem auto 0;
+        }
+
+        /* ── Hero passive-aggressive slogan ─────────────── */
+        .hero-slogan {
+            font-family: 'DM Sans', sans-serif;
+            font-size: clamp(0.95rem, 2.2vw, 1.2rem);
+            font-style: italic;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+            color: rgba(255,255,255,0.55);
+            text-align: center;
+            position: relative;
+            display: inline-block;
+            padding: 0.5rem 1.8rem;
+            border-left: 3px solid rgba(251,191,36,0.7);
+            border-right: 3px solid rgba(251,191,36,0.7);
+            animation: sloganFade 1.4s ease 0.6s both;
+        }
+        .hero-slogan em { color: #fbbf24; font-style: normal; font-weight: 700; }
+        @keyframes sloganFade {
+            from { opacity: 0; letter-spacing: 0.12em; }
+            to   { opacity: 1; letter-spacing: 0.01em; }
+        }
+
+        /* ═══════════════════════════════════════════════════
+           ACADEMY OVERVIEW OVERLAY
+           ═══════════════════════════════════════════════════ */
+        .ao-overlay {
+            position: fixed; inset: 0; z-index: 10000;
+            background: #060d1f;
+            overflow-y: auto; -webkit-overflow-scrolling: touch;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.32s ease;
+        }
+        .ao-overlay.open { opacity: 1; pointer-events: all; }
+        .ao-close {
+            position: fixed; top: 1.1rem; right: 1.1rem; z-index: 10001;
+            width: 44px; height: 44px; border-radius: 50%;
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18);
+            color: rgba(255,255,255,0.75); font-size: 1rem;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; backdrop-filter: blur(10px);
+            transition: all 0.2s; pointer-events: none; opacity: 0;
+        }
+        .ao-close.visible { opacity: 1; pointer-events: all; }
+        .ao-close:hover { background: rgba(255,255,255,0.16); color: #fff; transform: scale(1.08); }
+
+        /* Hero band */
+        .ao-hero {
+            background: linear-gradient(135deg, #06091a 0%, #0f1f5c 45%, #1a2d5a 100%);
+            padding: 5rem 1.5rem 4rem; text-align: center; position: relative; overflow: hidden;
+        }
+        .ao-hero::before {
+            content: ''; position: absolute; inset: 0;
+            background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            pointer-events: none;
+        }
+        .ao-hero::after {
+            content: ''; position: absolute; width: 600px; height: 600px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%);
+            top: -200px; left: 50%; transform: translateX(-50%); pointer-events: none;
+        }
+        .ao-hero-eyebrow {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3);
+            color: #fbbf24; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em;
+            text-transform: uppercase; padding: 0.3rem 0.85rem; border-radius: 99px;
+            margin-bottom: 1.25rem;
+        }
+        .ao-hero-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2rem, 5vw, 3.4rem); font-weight: 900; color: #fff;
+            line-height: 1.12; margin-bottom: 1rem; position: relative; z-index: 1;
+        }
+        .ao-hero-title em { color: #fbbf24; font-style: normal; }
+        .ao-hero-sub {
+            font-size: clamp(0.95rem, 2vw, 1.15rem); color: rgba(255,255,255,0.6);
+            max-width: 680px; margin: 0 auto 2.5rem; line-height: 1.7; position: relative; z-index: 1;
+        }
+        .ao-pills {
+            display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center;
+            position: relative; z-index: 1;
+        }
+        .ao-pill {
+            background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 99px; padding: 0.4rem 1rem; font-size: 0.78rem; font-weight: 600; color: rgba(255,255,255,0.75);
+            display: flex; align-items: center; gap: 0.4rem;
+        }
+        .ao-pill i { color: #f59e0b; }
+
+        /* Sections */
+        .ao-section { padding: 4rem 1.5rem; max-width: 900px; margin: 0 auto; }
+        .ao-section-label {
+            font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.14em;
+            color: #f59e0b; margin-bottom: 0.6rem;
+        }
+        .ao-section-title {
+            font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+            font-weight: 800; color: #fff; line-height: 1.2; margin-bottom: 0.85rem;
+        }
+        .ao-section-body { font-size: 0.95rem; color: rgba(255,255,255,0.6); line-height: 1.8; margin-bottom: 1.5rem; }
+
+        /* Timeline */
+        .ao-timeline { display: flex; flex-direction: column; gap: 1rem; }
+        .ao-week {
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px; padding: 1.5rem 1.75rem; position: relative; overflow: hidden;
+        }
+        .ao-week::before {
+            content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+            width: 3px; border-radius: 3px;
+        }
+        .ao-week.w1::before { background: linear-gradient(180deg, #3b82f6, #10b981); }
+        .ao-week.w2::before { background: linear-gradient(180deg, #f59e0b, #ef4444); }
+        .ao-week.w3::before { background: linear-gradient(180deg, #8b5cf6, #ec4899); }
+        .ao-week.w4::before { background: linear-gradient(180deg, #10b981, #f59e0b); }
+        .ao-week-hd { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.75rem; }
+        .ao-week-num {
+            font-family: 'Space Grotesk', sans-serif; font-size: 0.65rem; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 0.1em; padding: 0.2rem 0.6rem;
+            border-radius: 6px; flex-shrink: 0;
+        }
+        .ao-week.w1 .ao-week-num { background: rgba(59,130,246,0.2); color: #60a5fa; }
+        .ao-week.w2 .ao-week-num { background: rgba(245,158,11,0.2); color: #fbbf24; }
+        .ao-week.w3 .ao-week-num { background: rgba(139,92,246,0.2); color: #a78bfa; }
+        .ao-week.w4 .ao-week-num { background: rgba(16,185,129,0.2); color: #34d399; }
+        .ao-week-name { font-family: 'Space Grotesk', sans-serif; font-size: 1.05rem; font-weight: 700; color: #fff; }
+        .ao-week-sub { font-size: 0.8rem; color: rgba(255,255,255,0.4); margin-top: 0.1rem; }
+        .ao-week-modules { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+        .ao-mod-tag {
+            font-size: 0.7rem; font-weight: 600; color: rgba(255,255,255,0.6);
+            background: rgba(255,255,255,0.06); border-radius: 6px; padding: 0.2rem 0.5rem;
+        }
+
+        /* Skill grid */
+        .ao-skill-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+        .ao-skill-card {
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px; padding: 1.25rem 1.25rem 1rem;
+        }
+        .ao-skill-icon {
+            width: 40px; height: 40px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; margin-bottom: 0.75rem;
+        }
+        .ao-skill-name { font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem; font-weight: 700; color: #fff; margin-bottom: 0.3rem; }
+        .ao-skill-desc { font-size: 0.77rem; color: rgba(255,255,255,0.5); line-height: 1.6; }
+
+        /* Stats band */
+        .ao-stats-band {
+            background: linear-gradient(135deg, #0f1f5c 0%, #1e3a8a 100%);
+            padding: 3.5rem 1.5rem; text-align: center;
+        }
+        .ao-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1.5rem; max-width: 860px; margin: 0 auto; }
+        .ao-stat-num {
+            font-family: 'Space Grotesk', sans-serif; font-size: 2.6rem; font-weight: 900;
+            color: #fff; line-height: 1;
+        }
+        .ao-stat-num em { font-style: normal; color: #fbbf24; }
+        .ao-stat-lbl { font-size: 0.78rem; color: rgba(255,255,255,0.5); margin-top: 0.3rem; }
+
+        /* Motivational section */
+        .ao-motive {
+            background: linear-gradient(135deg, #0a0f1e 0%, #0f172a 100%);
+            padding: 4rem 1.5rem;
+        }
+        .ao-motive-inner { max-width: 860px; margin: 0 auto; }
+        .ao-motive-headline {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(1.6rem, 4vw, 2.6rem); font-weight: 900;
+            color: #fff; line-height: 1.2; margin-bottom: 1.5rem;
+        }
+        .ao-motive-headline em { color: #fbbf24; font-style: normal; }
+        .ao-truth-row { display: flex; flex-direction: column; gap: 0.85rem; margin-bottom: 2rem; }
+        .ao-truth {
+            display: flex; align-items: flex-start; gap: 0.85rem;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 12px; padding: 1rem 1.1rem;
+        }
+        .ao-truth-icon {
+            width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center; font-size: 0.9rem;
+        }
+        .ao-truth-text { font-size: 0.88rem; color: rgba(255,255,255,0.72); line-height: 1.65; }
+        .ao-truth-text strong { color: #fff; }
+
+        /* Quote block */
+        .ao-quote-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .ao-quote-card {
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px; padding: 1.5rem 1.4rem;
+        }
+        .ao-quote-mark { font-size: 2.5rem; font-weight: 900; color: #f59e0b; line-height: 0.8; margin-bottom: 0.6rem; }
+        .ao-quote-text { font-size: 0.9rem; color: rgba(255,255,255,0.75); line-height: 1.7; font-style: italic; margin-bottom: 1rem; }
+        .ao-quote-author { font-size: 0.75rem; font-weight: 700; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.06em; }
+
+        /* CTA */
+        .ao-cta {
+            background: linear-gradient(135deg, #0f1f5c, #1e3a8a);
+            padding: 4rem 1.5rem; text-align: center; position: relative; overflow: hidden;
+        }
+        .ao-cta::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(ellipse at center, rgba(245,158,11,0.15) 0%, transparent 65%);
+        }
+        .ao-cta-title {
+            font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+            font-weight: 900; color: #fff; margin-bottom: 0.75rem; position: relative; z-index: 1;
+        }
+        .ao-cta-sub { font-size: 0.95rem; color: rgba(255,255,255,0.55); margin-bottom: 2rem; position: relative; z-index: 1; }
+        .ao-cta-btns { display: flex; gap: 0.85rem; justify-content: center; flex-wrap: wrap; position: relative; z-index: 1; }
+        .ao-btn-primary {
+            padding: 0.85rem 2rem; border-radius: 12px;
+            background: linear-gradient(135deg, #f59e0b, #ea580c);
+            color: #fff; font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 800;
+            border: none; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;
+            box-shadow: 0 6px 24px rgba(245,158,11,0.4); transition: all 0.2s; text-decoration: none;
+        }
+        .ao-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(245,158,11,0.55); }
+        .ao-btn-ghost {
+            padding: 0.85rem 2rem; border-radius: 12px;
+            background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.18);
+            color: rgba(255,255,255,0.8); font-size: 0.95rem; font-weight: 600;
+            cursor: pointer; display: flex; align-items: center; gap: 0.5rem;
+            transition: all 0.2s; text-decoration: none;
+        }
+        .ao-btn-ghost:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+        /* Divider */
+        .ao-divider { height: 1px; background: rgba(255,255,255,0.06); max-width: 860px; margin: 0 auto; }
+
+        @media (max-width: 640px) {
+            .ao-quote-grid { grid-template-columns: 1fr; }
+            .ao-skill-grid { grid-template-columns: 1fr 1fr; }
+            .ao-stats-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        /* ── Glassmorphism hero stats card ───────────────── */
+        .hero-glass-card {
+            display: inline-flex; gap: 2rem;
+            background: rgba(255,255,255,0.07);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 18px;
+            padding: 1rem 2.2rem;
+            margin: 0 auto 2rem;
+            animation: floatCard 7s ease-in-out infinite;
+        }
+        @keyframes floatCard {
+            0%,100% { transform: translateY(0); }
+            50%      { transform: translateY(-7px); }
+        }
+        .glass-stat { text-align: center; }
+        .glass-stat-val { font-family:'Space Grotesk',sans-serif; font-weight:800; font-size:1.2rem; color:#fff; }
+        .glass-stat-lbl { font-size:0.68rem; color:rgba(255,255,255,0.55); letter-spacing:0.04em; }
+    </style>
+</head>
+<body>
+    <nav class="enhanced-nav"></nav>
+    <aside id="sidebar" class="sidebar"></aside>
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- ── Hero Section ──────────────────────────────────────────────── -->
+    <section id="home" class="page-section active hero-gradient text-gray-900 py-20 relative overflow-hidden min-h-screen flex items-center">
+        <div class="hero-background">
+            <div class="gradient-bg"></div>
+            <canvas id="rainCanvas" class="rain-canvas"></canvas>
+            <div class="particles-container" id="particles"></div>
+            <div class="light-beam light-beam-1"></div>
+            <div class="light-beam light-beam-2"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 w-full">
+
+            <!-- Logo -->
+            <div class="mb-8 animate-fade-in flex justify-center">
+                <img src="Matla%20Academy%20.png" alt="Matla Academy Logo" class="hero-logo-standalone">
+            </div>
+
+            <!-- Re-engagement banner (hidden until JS injects name) -->
+            <div id="reengageBanner" class="reengage-banner" style="display:none;">
+                <i class="fas fa-bolt"></i>
+                Welcome back, <strong id="reengageName"></strong> &mdash;
+                <a href="courses.html" class="reengage-link">continue Module 2 &rarr;</a>
+            </div>
+
+            <!-- Hero Title -->
+            <h1 class="hero-title-3d mb-6">
+                <span class="title-word title-word-1">Become</span>
+                <span class="title-word title-word-2">the</span>
+                <span class="title-word title-word-3">Advisor</span>
+                <span class="title-word title-word-4">They</span>
+                <span class="title-word title-word-5">Never</span>
+                <span class="title-word title-word-6">Forget</span>
+            </h1>
+
+            <!-- Typewriter subtitle -->
+            <p class="hero-subtitle-3d mb-8 max-w-3xl mx-auto">
+                <span id="typewriterText"></span><span class="typewriter-cursor"></span>
+            </p>
+
+            <!-- Passive-aggressive hero slogan -->
+            <p class="hero-slogan mb-6">"Because <em>almost qualified</em> doesn't close deals."</p>
+
+            <!-- Welcome message -->
+            <div class="welcome-message-container mb-8">
+                <div id="welcomeMessage" class="welcome-message">Welcome to Your JFA Journey!</div>
+            </div>
+
+            <!-- Glassmorphism programme card -->
+            <div class="hero-glass-card mb-6">
+                <div class="glass-stat"><div class="glass-stat-val">4</div><div class="glass-stat-lbl">Week Programme</div></div>
+                <div class="glass-stat"><div class="glass-stat-val">80%</div><div class="glass-stat-lbl">Pass Mark</div></div>
+                <div class="glass-stat"><div class="glass-stat-val">FSCA</div><div class="glass-stat-lbl">Aligned</div></div>
+                <div class="glass-stat"><div class="glass-stat-val">FA</div><div class="glass-stat-lbl">Qualification</div></div>
+            </div>
+
+            <!-- Stats -->
+            <div class="hero-stats mb-8">
+                <div class="stat-item">
+                    <div class="stat-number" data-target="5000">0</div>
+                    <div class="stat-label">Graduates</div>
+                    <div class="stat-icon"><i class="fas fa-graduation-cap"></i></div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="98">0</div>
+                    <div class="stat-label">Success Rate %</div>
+                    <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="150">0</div>
+                    <div class="stat-label">Expert Mentors</div>
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                </div>
+            </div>
+
+            <!-- Trust badges -->
+            <div class="trust-badges mb-10">
+                <span class="trust-badge"><i class="fas fa-shield-alt"></i> FSCA Accredited</span>
+                <span class="trust-badge"><i class="fas fa-robot"></i> AI-Powered Coaching</span>
+                <span class="trust-badge"><i class="fas fa-clock"></i> 100% Online &amp; Flexible</span>
+            </div>
+
+            <!-- CTAs -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+                <button onclick="toggleSidebar()" class="cta-button primary">
+                    <i class="fas fa-bars mr-2"></i>Open Dashboard
+                </button>
+                <button onclick="openAcademyOverview()" class="cta-button secondary">
+                    <i class="fas fa-info-circle mr-2"></i>Learn More
+                </button>
+            </div>
+        </div>
+
+        <!-- Scroll indicator -->
+        <div class="scroll-indicator" onclick="document.querySelector('.how-section').scrollIntoView({behavior:'smooth'})">
+            <span>Explore</span>
+            <div class="scroll-arrow"><i class="fas fa-chevron-down"></i></div>
+        </div>
+    </section>
+
+    <!-- ── How It Works ───────────────────────────────────────────────── -->
+    <section class="how-section">
+        <div class="how-inner">
+            <h2 class="how-heading">How It Works</h2>
+            <p class="how-subhead">Four simple steps from enrolment to certification</p>
+            <div class="how-steps">
+                <div class="how-step">
+                    <div class="how-num">01</div>
+                    <div class="how-icon"><i class="fas fa-user-plus"></i></div>
+                    <div class="how-label">Enroll</div>
+                    <p class="how-desc">Create your account and set up your learner profile in minutes.</p>
+                </div>
+                <div class="how-arrow"><i class="fas fa-chevron-right"></i></div>
+                <div class="how-step">
+                    <div class="how-num">02</div>
+                    <div class="how-icon"><i class="fas fa-book-open"></i></div>
+                    <div class="how-label">Study</div>
+                    <p class="how-desc">Work through structured JFA modules at your own pace.</p>
+                </div>
+                <div class="how-arrow"><i class="fas fa-chevron-right"></i></div>
+                <div class="how-step">
+                    <div class="how-num">03</div>
+                    <div class="how-icon"><i class="fas fa-clipboard-check"></i></div>
+                    <div class="how-label">Assess</div>
+                    <p class="how-desc">Take timed quizzes and scenario-based assessments.</p>
+                </div>
+                <div class="how-arrow"><i class="fas fa-chevron-right"></i></div>
+                <div class="how-step">
+                    <div class="how-num">04</div>
+                    <div class="how-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <div class="how-label">Graduate</div>
+                    <p class="how-desc">Earn your certified JFA badge and launch your career.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Why Matla Strip ────────────────────────────────────────────── -->
+    <section class="why-section">
+        <div class="why-inner">
+            <div class="why-item">
+                <div class="why-icon"><i class="fas fa-certificate"></i></div>
+                <div>
+                    <div class="why-label">Industry-Accredited</div>
+                    <div class="why-sub">Recognised by FSCA and leading financial institutions</div>
+                </div>
+            </div>
+            <div class="why-divider"></div>
+            <div class="why-item">
+                <div class="why-icon"><i class="fas fa-robot"></i></div>
+                <div>
+                    <div class="why-label">AI Coaching 24/7</div>
+                    <div class="why-sub">Meneer AI is always on hand to answer your questions</div>
+                </div>
+            </div>
+            <div class="why-divider"></div>
+            <div class="why-item">
+                <div class="why-icon"><i class="fas fa-clock"></i></div>
+                <div>
+                    <div class="why-label">Flexible Schedule</div>
+                    <div class="why-sub">Study anywhere, anytime, on any device</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Platform Overview Cards ───────────────────────────────────── -->
+    <section class="overview-section">
+        <div class="overview-inner">
+            <h2 class="overview-heading">Everything you need to succeed</h2>
+            <p class="overview-subheading">Six powerful modules designed for aspiring JFA professionals</p>
+
+            <!-- Filter tabs -->
+            <div class="ov-tabs">
+                <button class="ov-tab active" data-filter="all">All</button>
+                <button class="ov-tab" data-filter="training">Training</button>
+                <button class="ov-tab" data-filter="tools">AI Tools</button>
+                <button class="ov-tab" data-filter="account">Account</button>
+            </div>
+
+            <div class="overview-grid">
+
+                <a href="dashboard.html" class="overview-card" data-category="account">
+                    <div class="overview-card-icon" style="background:linear-gradient(135deg,#1e40af,#3b82f6);">
+                        <i class="fas fa-th-large"></i>
+                    </div>
+                    <h3 class="overview-card-title">Dashboard</h3>
+                    <p class="overview-card-desc">Your personal command centre. Track progress, view recent activity, and get a snapshot of your entire training journey.</p>
+                    <span class="overview-card-link">Explore <i class="fas fa-arrow-right"></i></span>
+                    <div class="card-overlay">
+                        <ul>
+                            <li>Live progress tracking</li>
+                            <li>Recent activity feed</li>
+                            <li>Quick links to all modules</li>
+                        </ul>
+                    </div>
+                </a>
+
+                <a href="courses.html" class="overview-card" data-category="training">
+                    <div class="overview-card-icon" style="background:linear-gradient(135deg,#0f766e,#14b8a6);">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h3 class="overview-card-title">Courses</h3>
+                    <p class="overview-card-desc">Structured JFA training modules covering sales techniques, product knowledge, FAIS compliance, and financial planning fundamentals.</p>
+                    <span class="overview-card-link">Browse courses <i class="fas fa-arrow-right"></i></span>
+                    <div class="card-overlay">
+                        <ul>
+                            <li>6 structured modules</li>
+                            <li>Video &amp; text content</li>
+                            <li>Self-paced learning</li>
+                        </ul>
+                    </div>
+                </a>
+
+                <a href="assessments.html" class="overview-card" data-category="training">
+                    <div class="overview-card-icon" style="background:linear-gradient(135deg,#b45309,#f59e0b);">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <h3 class="overview-card-title">Assessments</h3>
+                    <p class="overview-card-desc">Test your knowledge with timed quizzes and scenario-based evaluations. Instant feedback helps you identify gaps fast.</p>
+                    <span class="overview-card-link">Take a test <i class="fas fa-arrow-right"></i></span>
+                    <div class="card-overlay">
+                        <ul>
+                            <li>Timed quiz formats</li>
+                            <li>Instant detailed feedback</li>
+                            <li>Retry until you pass</li>
+                        </ul>
+                    </div>
+                </a>
+
+                <a href="profile.html" class="overview-card" data-category="account">
+                    <div class="overview-card-icon" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <h3 class="overview-card-title">Profile</h3>
+                    <p class="overview-card-desc">Manage your account details, track certifications earned, and download your training record — all in one hub.</p>
+                    <span class="overview-card-link">View profile <i class="fas fa-arrow-right"></i></span>
+                    <div class="card-overlay">
+                        <ul>
+                            <li>Edit personal details</li>
+                            <li>Download certificates</li>
+                            <li>View earned badges</li>
+                        </ul>
+                    </div>
+                </a>
+
+                <a href="graduation.html" class="overview-card" data-category="training">
+                    <div class="overview-card-icon" style="background:linear-gradient(135deg,#be185d,#f472b6);">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3 class="overview-card-title">Graduation</h3>
+                    <p class="overview-card-desc">Celebrate your achievements. View completed certifications, share your badge, and prepare for the next JFA level.</p>
+                    <span class="overview-card-link">See milestones <i class="fas fa-arrow-right"></i></span>
+                    <div class="card-overlay">
+                        <ul>
+                            <li>Official JFA certificate</li>
+                            <li>Shareable digital badge</li>
+                            <li>Level progression map</li>
+                        </ul>
+                    </div>
+                </a>
+
+                <a href="meneer-ai.html" class="overview-card overview-card--ai" data-category="tools">
+                    <div class="overview-card-icon" style="background:linear-gradient(135deg,#065f46,#10b981);">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3 class="overview-card-title">Meneer AI <span class="overview-badge">Beta</span></h3>
+                    <p class="overview-card-desc">Your AI-powered coaching assistant. Ask rule questions, get scenario walkthroughs, and receive personalised tips 24/7.</p>
+                    <span class="overview-card-link">Chat with Meneer <i class="fas fa-arrow-right"></i></span>
+                    <div class="card-overlay">
+                        <ul>
+                            <li>24/7 natural language chat</li>
+                            <li>Personalised study plans</li>
+                            <li>Career guidance</li>
+                        </ul>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Leadership Quotes ─────────────────────────────────────────── -->
+    <section class="testimonials-section">
+        <div class="testimonials-inner">
+            <h2 class="t-heading">Advice from our Leaders</h2>
+            <p class="t-subhead">Words that drive us forward — straight from the people who built this</p>
+
+            <div class="t-wrap">
+                <div class="t-track" id="tTrack">
+
+                    <!-- Card 1: Zolani Mpungutye -->
+                    <div class="t-card t-active">
+                        <div class="t-quote-mark">&ldquo;</div>
+                        <p class="t-text" style="font-size:1.05rem;line-height:1.7;font-style:normal;font-weight:500;">"Never stop being creative, never stop creating. The day you stop creating, you DIE!"</p>
+                        <div class="t-author">
+                            <div class="t-av" style="background:linear-gradient(135deg,#0a1440,#e85d2a);font-size:1rem;">ZM</div>
+                            <div>
+                                <div class="t-name">Zolani Mpungutye</div>
+                                <div class="t-role">CEO, Matla Life &nbsp;·&nbsp; Parktown, Johannesburg</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Reamogetse Segeo -->
+                    <div class="t-card">
+                        <div class="t-quote-mark">&ldquo;</div>
+                        <p class="t-text" style="font-size:1.05rem;line-height:1.7;font-style:normal;font-weight:500;">"Has anyone seen my iPhone 17 Pro Max, with a shiny case? Nevermind, I'll buy another one!"</p>
+                        <div class="t-author">
+                            <div class="t-av" style="background:linear-gradient(135deg,#7c3aed,#c084fc);font-size:1rem;">RS</div>
+                            <div>
+                                <div class="t-name">Reamogetse Segeo</div>
+                                <div class="t-role">Head of Department &nbsp;·&nbsp; Parktown, Johannesburg</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Tshepang Mofomme -->
+                    <div class="t-card">
+                        <div class="t-quote-mark">&ldquo;</div>
+                        <p class="t-text" style="font-size:1.05rem;line-height:1.7;font-style:normal;font-weight:500;">"Money is a mirror — it reflects human values, but never creates them."</p>
+                        <div class="t-author">
+                            <div class="t-av" style="background:linear-gradient(135deg,#0f766e,#2dd4bf);font-size:1rem;">TM</div>
+                            <div>
+                                <div class="t-name">Tshepang Mofomme</div>
+                                <div class="t-role">Learning &amp; Development Manager &nbsp;·&nbsp; Parktown, Johannesburg</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Nkululeko Gumata -->
+                    <div class="t-card">
+                        <div class="t-quote-mark">&ldquo;</div>
+                        <p class="t-text" style="font-size:1.05rem;line-height:1.7;font-style:normal;font-weight:500;">"Dreams really do come true. You just have to stay awake to live within them."</p>
+                        <div class="t-author">
+                            <div class="t-av" style="background:linear-gradient(135deg,#1e40af,#60a5fa);font-size:1rem;">NG</div>
+                            <div>
+                                <div class="t-name">Nkululeko Gumata</div>
+                                <div class="t-role">Developer &nbsp;·&nbsp; Parktown, Johannesburg</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="t-controls">
+                <button class="t-arrow-btn" id="tPrev" onclick="testimonialPrev()">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div class="t-dots" id="tDots"></div>
+                <button class="t-arrow-btn" id="tNext" onclick="testimonialNext()">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── CTA Band ───────────────────────────────────────────────────── -->
+    <section class="cta-band">
+        <div class="cta-band-inner">
+            <div class="cta-cohort-pill">
+                <span class="gpulse"></span> Next cohort enrolling now
+            </div>
+            <h2>Ready to start your JFA journey?</h2>
+            <p>Join 5,000+ graduates who transformed their careers with Matla Academy.</p>
+            <a href="courses.html" class="cta-band-btn" id="journeyBtn" onclick="launchJourney(event)">
+                <i class="fas fa-rocket" id="journeyRocket"></i>
+                <span id="journeyText">Begin Your Journey</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Back to top -->
+    <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <footer id="main-footer"></footer>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         ACADEMY OVERVIEW OVERLAY
+    ════════════════════════════════════════════════════════════════ -->
+    <div class="ao-overlay" id="aoOverlay">
+
+        <!-- ── Close button (fixed inside overlay) ── -->
+        <button class="ao-close" id="aoClose" onclick="closeAcademyOverview()" aria-label="Close">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <!-- ── HERO BAND ─────────────────────────────────────────── -->
+        <div class="ao-hero">
+            <div class="ao-hero-eyebrow"><i class="fas fa-star"></i> JFA → FA Accelerator Programme</div>
+            <h1 class="ao-hero-title">Your 4-Week Transformation from<br><em>Learner to Licensed Financial Advisor</em></h1>
+            <p class="ao-hero-sub">Matla Academy exists for one reason — to build the next generation of world-class Financial Advisors. This isn't a casual online course. It's a structured, intensive, FSCA-aligned professional development programme designed to get you qualified, client-ready, and career-launched.</p>
+            <div class="ao-pills">
+                <span class="ao-pill"><i class="fas fa-calendar-alt"></i> 4-Week Programme</span>
+                <span class="ao-pill"><i class="fas fa-shield-alt"></i> FSCA Aligned</span>
+                <span class="ao-pill"><i class="fas fa-chart-bar"></i> 80% Pass Mark</span>
+                <span class="ao-pill"><i class="fas fa-file-alt"></i> 150 Marks Per Assessment</span>
+                <span class="ao-pill"><i class="fas fa-robot"></i> AI-Powered Coaching</span>
+                <span class="ao-pill"><i class="fas fa-certificate"></i> FA Qualification</span>
+            </div>
+        </div>
+
+        <!-- ── PURPOSE SECTION ───────────────────────────────────── -->
+        <div class="ao-section">
+            <div class="ao-section-label"><i class="fas fa-bullseye"></i> The Mission</div>
+            <h2 class="ao-section-title">Why This Programme Exists</h2>
+            <p class="ao-section-body">South Africa has one of the most underserved financial advisory markets in the world. Millions of families lack access to qualified advisors who understand their lives, their language, and their needs. Matla Academy was built to close that gap — by investing in people like you.</p>
+            <p class="ao-section-body">The JFA (Junior Financial Advisor) to FA Accelerator is a fast-tracked, mentorship-backed training programme. You were selected because Matla Life Insurance Group saw potential in you. This programme is your bridge from where you are to where you deserve to be — a credentialed, earning, impactful Financial Advisor.</p>
+
+            <div class="ao-skill-grid" style="margin-top:1.5rem;">
+                <div class="ao-skill-card">
+                    <div class="ao-skill-icon" style="background:rgba(37,99,235,0.2);color:#60a5fa;"><i class="fas fa-user-shield"></i></div>
+                    <div class="ao-skill-name">FSCA Compliance</div>
+                    <div class="ao-skill-desc">Learn the legal framework governing all financial advice in South Africa. Non-negotiable. Career-defining.</div>
+                </div>
+                <div class="ao-skill-card">
+                    <div class="ao-skill-icon" style="background:rgba(16,185,129,0.2);color:#34d399;"><i class="fas fa-handshake"></i></div>
+                    <div class="ao-skill-name">Client Mastery</div>
+                    <div class="ao-skill-desc">From prospecting to closing — learn the art of needs analysis, active listening, and building lasting client relationships.</div>
+                </div>
+                <div class="ao-skill-card">
+                    <div class="ao-skill-icon" style="background:rgba(245,158,11,0.2);color:#fbbf24;"><i class="fas fa-book-open"></i></div>
+                    <div class="ao-skill-name">Product Knowledge</div>
+                    <div class="ao-skill-desc">Master funeral cover, life insurance, income protection, and investment products — know them better than anyone in the room.</div>
+                </div>
+                <div class="ao-skill-card">
+                    <div class="ao-skill-icon" style="background:rgba(139,92,246,0.2);color:#a78bfa;"><i class="fas fa-coins"></i></div>
+                    <div class="ao-skill-name">Financial Literacy</div>
+                    <div class="ao-skill-desc">Understand money the way your clients need to. Budgeting, debt, savings, and wealth — you become the guide you wish you had.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ao-divider"></div>
+
+        <!-- ── 4-WEEK TIMELINE ───────────────────────────────────── -->
+        <div class="ao-section">
+            <div class="ao-section-label"><i class="fas fa-calendar-check"></i> Programme Agenda</div>
+            <h2 class="ao-section-title">What the 4 Weeks Look Like</h2>
+            <p class="ao-section-body">Every week builds on the last. By Week 4, you won't just have a certificate — you'll have the knowledge, confidence, and regulatory standing to walk into any client meeting and deliver real, life-changing advice.</p>
+
+            <div class="ao-timeline">
+                <div class="ao-week w1">
+                    <div class="ao-week-hd">
+                        <span class="ao-week-num">Week 1</span>
+                        <div>
+                            <div class="ao-week-name">Foundation Block — The Fundamentals</div>
+                            <div class="ao-week-sub">4 courses · 28 modules · 1 Friday Assessment (150 marks)</div>
+                        </div>
+                    </div>
+                    <div class="ao-week-modules">
+                        <span class="ao-mod-tag"><i class="fas fa-chart-line"></i> Sales Training (6 modules)</span>
+                        <span class="ao-mod-tag"><i class="fas fa-folder-open"></i> Product Knowledge (7 modules)</span>
+                        <span class="ao-mod-tag"><i class="fas fa-gavel"></i> FAIS Compliance (7 modules)</span>
+                        <span class="ao-mod-tag"><i class="fas fa-wallet"></i> Financial Literacy I (8 modules)</span>
+                        <span class="ao-mod-tag" style="color:#fbbf24;border-color:rgba(245,158,11,0.3);background:rgba(245,158,11,0.08);"><i class="fas fa-file-alt"></i> Friday Assessment — 50 Questions · 90 min</span>
+                    </div>
+                </div>
+
+                <div class="ao-week w2">
+                    <div class="ao-week-hd">
+                        <span class="ao-week-num">Week 2</span>
+                        <div>
+                            <div class="ao-week-name">Advanced Techniques — Going Deeper</div>
+                            <div class="ao-week-sub">Advanced sales strategy · Complex product structures · Regulatory scenarios</div>
+                        </div>
+                    </div>
+                    <div class="ao-week-modules">
+                        <span class="ao-mod-tag">Advanced Sales Psychology</span>
+                        <span class="ao-mod-tag">Estate Planning Fundamentals</span>
+                        <span class="ao-mod-tag">FAIS Intermediary Obligations</span>
+                        <span class="ao-mod-tag">Financial Literacy II</span>
+                        <span class="ao-mod-tag" style="color:#fbbf24;border-color:rgba(245,158,11,0.3);background:rgba(245,158,11,0.08);"><i class="fas fa-file-alt"></i> Friday Assessment</span>
+                    </div>
+                </div>
+
+                <div class="ao-week w3">
+                    <div class="ao-week-hd">
+                        <span class="ao-week-num">Week 3</span>
+                        <div>
+                            <div class="ao-week-name">Real-World Application — Simulations & Scenarios</div>
+                            <div class="ao-week-sub">Case studies · Client simulations · Compliance audits</div>
+                        </div>
+                    </div>
+                    <div class="ao-week-modules">
+                        <span class="ao-mod-tag">Live Client Scenario Simulations</span>
+                        <span class="ao-mod-tag">Objection Handling Masterclass</span>
+                        <span class="ao-mod-tag">Claims & Complaints Process</span>
+                        <span class="ao-mod-tag">Portfolio Building</span>
+                        <span class="ao-mod-tag" style="color:#fbbf24;border-color:rgba(245,158,11,0.3);background:rgba(245,158,11,0.08);"><i class="fas fa-file-alt"></i> Friday Assessment</span>
+                    </div>
+                </div>
+
+                <div class="ao-week w4">
+                    <div class="ao-week-hd">
+                        <span class="ao-week-num">Week 4</span>
+                        <div>
+                            <div class="ao-week-name">Examination & Certification — Your Moment</div>
+                            <div class="ao-week-sub">Final exam preparation · Comprehensive assessment · Graduation</div>
+                        </div>
+                    </div>
+                    <div class="ao-week-modules">
+                        <span class="ao-mod-tag">Exam Preparation Intensive</span>
+                        <span class="ao-mod-tag">Mock Assessments</span>
+                        <span class="ao-mod-tag">Regulatory Review</span>
+                        <span class="ao-mod-tag" style="color:#34d399;border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.08);"><i class="fas fa-graduation-cap"></i> Final Comprehensive Exam</span>
+                        <span class="ao-mod-tag" style="color:#34d399;border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.08);"><i class="fas fa-certificate"></i> FA Certification & Graduation</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── STATS BAND ─────────────────────────────────────────── -->
+        <div class="ao-stats-band">
+            <div class="ao-section-label" style="color:#fbbf24;margin-bottom:1.5rem;text-align:center;"><i class="fas fa-chart-bar"></i> The Numbers That Matter</div>
+            <div class="ao-stats-grid">
+                <div class="ao-stat-item">
+                    <div class="ao-stat-num">R<em>80k</em>+</div>
+                    <div class="ao-stat-lbl">Monthly earning potential for top-performing FAs</div>
+                </div>
+                <div class="ao-stat-item">
+                    <div class="ao-stat-num"><em>5 000</em>+</div>
+                    <div class="ao-stat-lbl">Matla Academy graduates currently active in the field</div>
+                </div>
+                <div class="ao-stat-item">
+                    <div class="ao-stat-num"><em>98</em>%</div>
+                    <div class="ao-stat-lbl">Programme completion rate among committed learners</div>
+                </div>
+                <div class="ao-stat-item">
+                    <div class="ao-stat-num"><em>4</em> weeks</div>
+                    <div class="ao-stat-lbl">From JFA to FSCA-compliant Financial Advisor</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── MOTIVATIONAL SECTION ──────────────────────────────── -->
+        <div class="ao-motive">
+            <div class="ao-motive-inner">
+                <div class="ao-section-label"><i class="fas fa-fire"></i> The Real Talk</div>
+                <h2 class="ao-motive-headline">You Were <em>Chosen.</em><br>Now Choose to Show Up.</h2>
+
+                <div class="ao-truth-row">
+                    <div class="ao-truth">
+                        <div class="ao-truth-icon" style="background:rgba(245,158,11,0.15);color:#fbbf24;"><i class="fas fa-gem"></i></div>
+                        <div class="ao-truth-text"><strong>This opportunity is rare.</strong> Most people spend years trying to get into financial services. You have a structured programme, a supportive team, and a guaranteed path — if you commit. Do not take that for granted.</div>
+                    </div>
+                    <div class="ao-truth">
+                        <div class="ao-truth-icon" style="background:rgba(37,99,235,0.15);color:#60a5fa;"><i class="fas fa-users"></i></div>
+                        <div class="ao-truth-text"><strong>Your community needs you qualified.</strong> There is a chronic shortage of Black financial advisors in South Africa. When you succeed, you don't just change your life — you become accessible expertise for people who've never had it before. That is power.</div>
+                    </div>
+                    <div class="ao-truth">
+                        <div class="ao-truth-icon" style="background:rgba(16,185,129,0.15);color:#34d399;"><i class="fas fa-rocket"></i></div>
+                        <div class="ao-truth-text"><strong>Your income has no ceiling.</strong> Financial advisors earn based on the value they deliver. The more clients you serve, the more policies you place, the more protection you provide — the more you earn. This is not a job. It's a business you build inside an established brand.</div>
+                    </div>
+                    <div class="ao-truth">
+                        <div class="ao-truth-icon" style="background:rgba(139,92,246,0.15);color:#a78bfa;"><i class="fas fa-clock"></i></div>
+                        <div class="ao-truth-text"><strong>Every module you skip is a client you'll lose.</strong> The assessment tests everything. FAIS, sales ethics, product structures, financial planning — all of it is examined. Advisors who cut corners on training get caught. The ones who master the material get trusted, get referrals, and get rich.</div>
+                    </div>
+                    <div class="ao-truth">
+                        <div class="ao-truth-icon" style="background:rgba(239,68,68,0.12);color:#f87171;"><i class="fas fa-exclamation-triangle"></i></div>
+                        <div class="ao-truth-text"><strong>Failing is recoverable. Quitting is not.</strong> If you don't pass on the first attempt, the programme has a retake path. But if you disengage, stop showing up, or stop caring — that door closes. The people who succeed are rarely the smartest. They are the most consistent.</div>
+                    </div>
+                </div>
+
+                <!-- Divider -->
+                <div style="height:1px;background:rgba(255,255,255,0.06);margin:2rem 0;"></div>
+
+                <!-- Quotes from leadership -->
+                <div class="ao-section-label" style="margin-bottom:1rem;"><i class="fas fa-quote-left"></i> From Our Leaders</div>
+                <div class="ao-quote-grid">
+                    <div class="ao-quote-card">
+                        <div class="ao-quote-mark">&ldquo;</div>
+                        <p class="ao-quote-text">Dreams really do come true. You just have to stay awake to live within them. This programme is the alarm clock for your future — don't hit snooze.</p>
+                        <div class="ao-quote-author">Nkululeko Gumata &mdash; Developer, Matla Academy</div>
+                    </div>
+                    <div class="ao-quote-card">
+                        <div class="ao-quote-mark">&ldquo;</div>
+                        <p class="ao-quote-text">Money is a mirror — it reflects human values, but never creates them. This programme teaches you to be a person of value first, and the money follows.</p>
+                        <div class="ao-quote-author">Tshepang Mofomme &mdash; L&amp;D Manager, Matla Life</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── CTA ────────────────────────────────────────────────── -->
+        <div class="ao-cta">
+            <h2 class="ao-cta-title">You Have Everything You Need.<br>Start Week 1 Today.</h2>
+            <p class="ao-cta-sub">Your cohort is already in progress. Every day you wait is a day someone else gets ahead. The course is ready. The material is waiting. <strong style="color:#fff;">Are you?</strong></p>
+            <div class="ao-cta-btns">
+                <a href="courses.html" class="ao-btn-primary"><i class="fas fa-play-circle"></i> Begin Week 1 Now</a>
+                <a href="dashboard.html" class="ao-btn-ghost"><i class="fas fa-th-large"></i> View My Dashboard</a>
+                <button onclick="closeAcademyOverview()" class="ao-btn-ghost"><i class="fas fa-times"></i> Close</button>
+            </div>
+        </div>
+
+    </div><!-- /.ao-overlay -->
+
+    <script src="script.js"></script>
+    <script>
+        // ── Rain animation ────────────────────────────────────────────
+        (function initRain() {
+            const canvas = document.getElementById('rainCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const hero = document.getElementById('home');
+
+            function resize() { canvas.width = hero.offsetWidth; canvas.height = hero.offsetHeight; }
+            resize();
+            window.addEventListener('resize', resize);
+
+            const DROPS = 180;
+            const drops = Array.from({ length: DROPS }, () => ({
+                x: Math.random(), y: Math.random(),
+                speed: 0.0018 + Math.random() * 0.003,
+                len: 0.04 + Math.random() * 0.07,
+                opacity: 0.08 + Math.random() * 0.28,
+                width: 0.6 + Math.random() * 0.8,
+            }));
+            const ANGLE_RAD = 0.18;
+
+            function getColor() {
+                const t = document.documentElement.getAttribute('data-theme');
+                return (t === 'dark' || t === 'blue') ? '255,255,255' : '59,130,246';
+            }
+
+            let raf;
+            function draw() {
+                const W = canvas.width, H = canvas.height;
+                ctx.clearRect(0, 0, W, H);
+                const col = getColor();
+                for (const d of drops) {
+                    const x1 = d.x * W, y1 = d.y * H, len = d.len * H;
+                    ctx.beginPath();
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(x1 + Math.sin(ANGLE_RAD) * len, y1 + Math.cos(ANGLE_RAD) * len);
+                    ctx.strokeStyle = `rgba(${col},${d.opacity})`;
+                    ctx.lineWidth = d.width;
+                    ctx.stroke();
+                    d.y += d.speed;
+                    d.x += Math.sin(ANGLE_RAD) * d.speed * 0.5;
+                    if (d.y > 1 + d.len) { d.y = -d.len; d.x = Math.random(); d.opacity = 0.08 + Math.random() * 0.28; d.speed = 0.0018 + Math.random() * 0.003; }
+                    if (d.x > 1.05) d.x = -0.05;
+                }
+                raf = requestAnimationFrame(draw);
+            }
+            draw();
+            document.addEventListener('visibilitychange', () => { if (document.hidden) cancelAnimationFrame(raf); else draw(); });
+        })();
+
+        // ── Typewriter subtitle ───────────────────────────────────────
+        (function initTypewriter() {
+            const phrases = [
+                'Become a certified Financial Advisor',
+                'Study at your own pace, anywhere',
+                'Get certified in weeks, not years',
+                'Launch your career in financial services'
+            ];
+            let idx = 0, chars = 0, deleting = false;
+            const el = document.getElementById('typewriterText');
+
+            function step() {
+                const phrase = phrases[idx];
+                if (!deleting) {
+                    chars++;
+                    el.textContent = phrase.slice(0, chars);
+                    if (chars === phrase.length) {
+                        deleting = true;
+                        setTimeout(step, 2400);
+                        return;
+                    }
+                } else {
+                    chars--;
+                    el.textContent = phrase.slice(0, chars);
+                    if (chars === 0) {
+                        deleting = false;
+                        idx = (idx + 1) % phrases.length;
+                    }
+                }
+                setTimeout(step, deleting ? 38 : 68);
+            }
+            step();
+        })();
+
+        // ── Re-engagement banner ──────────────────────────────────────
+        (function initReengage() {
+            const profile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+            if (profile.name) {
+                document.getElementById('reengageName').textContent = profile.name;
+                document.getElementById('reengageBanner').style.display = 'inline-flex';
+            }
+        })();
+
+        // ── Stat counter animation ────────────────────────────────────
+        function animateCounter(el, target, duration) {
+            const start = performance.now();
+            const suffix = el.dataset.suffix || '';
+            const update = (now) => {
+                const elapsed = Math.min((now - start) / duration, 1);
+                const eased = 1 - Math.pow(1 - elapsed, 3);
+                el.textContent = Math.round(eased * target) + suffix;
+                if (elapsed < 1) requestAnimationFrame(update);
+            };
+            requestAnimationFrame(update);
+        }
+        const statsObs = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounter(entry.target, parseInt(entry.target.dataset.target, 10), 1800);
+                    statsObs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.4 });
+        document.querySelectorAll('.stat-number[data-target]').forEach(el => { el.textContent = '0'; statsObs.observe(el); });
+
+        // ── Scroll-triggered overview cards ──────────────────────────
+        const cardObs = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const delay = Array.from(entry.target.parentElement.children).indexOf(entry.target) * 75;
+                    setTimeout(() => entry.target.classList.add('revealed'), delay);
+                    cardObs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.12 });
+        document.querySelectorAll('.overview-card').forEach(card => cardObs.observe(card));
+
+        // ── Overview filter tabs ──────────────────────────────────────
+        document.querySelectorAll('.ov-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.ov-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const filter = tab.dataset.filter;
+                document.querySelectorAll('.overview-card').forEach(card => {
+                    if (filter === 'all' || card.dataset.category === filter) {
+                        card.classList.remove('card-filtered');
+                    } else {
+                        card.classList.add('card-filtered');
+                    }
+                });
+            });
+        });
+
+        // ── Leadership quotes carousel (single-card crossfade) ──────
+        (function initTestimonials() {
+            const track  = document.getElementById('tTrack');
+            const cards  = track ? Array.from(track.querySelectorAll('.t-card')) : [];
+            const dotsEl = document.getElementById('tDots');
+            if (!track || !cards.length) return;
+
+            let current = 0;
+
+            // Build dots
+            cards.forEach((_, i) => {
+                const d = document.createElement('button');
+                d.className = 't-dot' + (i === 0 ? ' active' : '');
+                d.onclick = () => goTo(i);
+                dotsEl.appendChild(d);
+            });
+
+            function goTo(n) {
+                if (n === current) return;
+                cards[current].classList.remove('t-active');
+                current = (n + cards.length) % cards.length;
+                cards[current].classList.add('t-active');
+                dotsEl.querySelectorAll('.t-dot').forEach((d, i) =>
+                    d.classList.toggle('active', i === current));
+            }
+
+            window.testimonialNext = () => goTo((current + 1) % cards.length);
+            window.testimonialPrev = () => goTo((current - 1 + cards.length) % cards.length);
+
+            // Auto-advance every 5.5s
+            let autoTimer = setInterval(() => window.testimonialNext(), 5500);
+            const wrap = track.closest('.t-wrap');
+            if (wrap) {
+                wrap.addEventListener('mouseenter', () => clearInterval(autoTimer));
+                wrap.addEventListener('mouseleave', () => {
+                    autoTimer = setInterval(() => window.testimonialNext(), 5500);
+                });
+            }
+        })();
+
+        // ── Back to top ───────────────────────────────────────────────
+        const btt = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => {
+            btt.classList.toggle('visible', window.scrollY > window.innerHeight * 0.6);
+        }, { passive: true });
+
+        // ── Scroll progress bar ───────────────────────────────────────
+        const progBar = document.createElement('div');
+        progBar.id = 'scrollProgress';
+        document.body.prepend(progBar);
+        window.addEventListener('scroll', () => {
+            const docH = document.body.scrollHeight - window.innerHeight;
+            progBar.style.width = (docH > 0 ? (window.scrollY / docH) * 100 : 0) + '%';
+        }, { passive: true });
+
+        // ── Scroll reveal ─────────────────────────────────────────────
+        const srObs = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const delay = parseInt(entry.target.dataset.srDelay || 0, 10);
+                    setTimeout(() => entry.target.classList.add('in'), delay);
+                    srObs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.how-step').forEach((el, i) => {
+            el.classList.add('sr'); el.dataset.srDelay = i * 120; srObs.observe(el);
+        });
+        document.querySelectorAll('.why-item').forEach((el, i) => {
+            el.classList.add('sr', 'sr-scale'); el.dataset.srDelay = i * 100; srObs.observe(el);
+        });
+        // t-card cards use their own crossfade carousel, not scroll-reveal
+
+        // ── Begin Your Journey launch animation ──────────────────────
+        function launchJourney(e) {
+            e.preventDefault();
+            const btn  = document.getElementById('journeyBtn');
+            const dest = btn.getAttribute('href');
+            btn.classList.add('launching');
+
+            // Spawn expanding warp rings from button center
+            const rect = btn.getBoundingClientRect();
+            const cx   = rect.left + rect.width  / 2;
+            const cy   = rect.top  + rect.height / 2;
+            const warp = document.createElement('div');
+            warp.className = 'journey-warp';
+            document.body.appendChild(warp);
+
+            const sizes  = [120, 260, 450, 700, 1100];
+            const delays = [0, 80, 170, 270, 390];
+            sizes.forEach((s, i) => {
+                const ring = document.createElement('div');
+                ring.className = 'journey-warp-ring';
+                ring.style.cssText = `width:${s}px;height:${s}px;left:${cx}px;top:${cy}px;animation-delay:${delays[i]}ms;border-color:rgba(245,158,11,${0.7 - i*0.12});`;
+                warp.appendChild(ring);
+            });
+
+            // Full-screen flash then navigate
+            setTimeout(() => {
+                const flash = document.createElement('div');
+                flash.style.cssText = 'position:fixed;inset:0;background:radial-gradient(circle at center,rgba(245,158,11,0.18),rgba(30,58,138,0.95));z-index:10000;transition:opacity 0.3s ease;opacity:1;';
+                document.body.appendChild(flash);
+                setTimeout(() => { window.location.href = dest; }, 280);
+            }, 480);
+        }
+
+        // ── 3D card tilt on mousemove ─────────────────────────────────
+        document.querySelectorAll('.overview-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const r = card.getBoundingClientRect();
+                const x = (e.clientX - r.left) / r.width  - 0.5;
+                const y = (e.clientY - r.top)  / r.height - 0.5;
+                card.style.transform = `perspective(700px) rotateX(${-y * 7}deg) rotateY(${x * 7}deg) translateY(-6px)`;
+            });
+            card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+        });
+
+        // ── Academy Overview Overlay ──────────────────────────────────
+        function openAcademyOverview() {
+            const ov  = document.getElementById('aoOverlay');
+            const btn = document.getElementById('aoClose');
+            if (!ov) return;
+            ov.classList.add('open');
+            if (btn) btn.classList.add('visible');
+            document.body.style.overflow = 'hidden';
+            ov.scrollTop = 0;
+        }
+
+        function closeAcademyOverview() {
+            const ov  = document.getElementById('aoOverlay');
+            const btn = document.getElementById('aoClose');
+            if (!ov) return;
+            ov.classList.remove('open');
+            if (btn) btn.classList.remove('visible');
+            document.body.style.overflow = '';
+        }
+
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeAcademyOverview();
+        });
+    </script>
+</body>
+</html>
